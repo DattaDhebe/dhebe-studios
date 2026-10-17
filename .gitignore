@@ -26,9 +26,12 @@ yarn-error.log*
 # Local env files
 .env*.local
 
-# Trading bot runtime data
+# Trading belongs to F:/ai_projects/ai-trading, not this website repository.
+/trade/
+/trading_bot/
+
+# Runtime data
 /data/
-/trading_bot/data/
 
 # Vercel
 .vercel

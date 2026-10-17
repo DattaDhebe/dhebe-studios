@@ -4,6 +4,18 @@ Base64 Studio is a static Next.js web application with browser-based Base64 enco
 
 Live website: [https://www.dhebe.com](https://www.dhebe.com)
 
+## Repository Ownership
+
+This repository owns the DHEBE website, browser tools, conversion service, and
+DhebeVoice tester signup. Its storage/deployment boundaries are documented in
+[STORAGE.md](STORAGE.md).
+
+Trading code, trading data storage, VPS trading deployment scripts, tests, and
+commits belong to the separate `F:\ai_projects\ai-trading` repository. Do not
+create or commit `trade/` or `trading_bot/` here. Historical shared-host trading
+paths must also be preserved when deploying this website; do not replace or wipe
+the entire hosting document root.
+
 ## Features
 
 - Text, Image, URL, Hex, PDF, HTML, CSS, File, and Audio to Base64 encoders
