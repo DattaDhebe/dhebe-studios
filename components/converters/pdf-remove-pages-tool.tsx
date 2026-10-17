@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import { formatPageSummary, parsePageSelection } from '@/lib/pdf-page-selection';
 import { PdfDropZone } from '@/components/converters/pdf-drop-zone';
+import { isPdfFile } from '@/lib/download';
 
 export function PdfRemovePagesTool() {
   const [file, setFile] = useState<File | null>(null);
@@ -13,9 +14,15 @@ export function PdfRemovePagesTool() {
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const selection = useRef(0);
 
   const handleFileSelect = async (selectedFile: File) => {
-    if (selectedFile.type !== 'application/pdf') {
+    const version = ++selection.current;
+    setFile(null);
+    setTotalPages(0);
+    setPagesToRemove([]);
+    setError('');
+    if (!isPdfFile(selectedFile)) {
       setError('Please select a valid PDF file');
       return;
     }
@@ -23,6 +30,7 @@ export function PdfRemovePagesTool() {
     try {
       const pdfDoc = await PDFDocument.load(await selectedFile.arrayBuffer());
       const pages = pdfDoc.getPageCount();
+      if (version !== selection.current) return;
 
       setFile(selectedFile);
       setTotalPages(pages);
@@ -30,7 +38,7 @@ export function PdfRemovePagesTool() {
       setPagesToRemove([1]);
       setError('');
     } catch {
-      setError('Failed to load PDF file');
+      if (version === selection.current) setError('Failed to load PDF file');
     }
   };
 

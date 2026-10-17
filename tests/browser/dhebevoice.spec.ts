@@ -68,6 +68,17 @@ test('An invalid service response cannot produce a false success message', async
   await expect(page.getByRole('status')).toHaveCount(0);
 });
 
+test('Tester consent links to signup-specific storage and retention details', async ({ page }) => {
+  await page.goto('/dhebevoice/');
+  await expect(page.getByRole('checkbox')).toHaveAttribute('aria-describedby', 'tester-privacy');
+  await page.getByRole('link', { name: 'Tester signup privacy details' }).click();
+  await expect(page.getByRole('heading', { name: 'Optional Website Tester Signup' })).toBeVisible();
+  const details = page.locator('#website-testers');
+  await expect(details).toContainText('Hostinger Premium');
+  await expect(details).toContainText('180 days');
+  await expect(details.getByRole('link', { name: 'support@dhebe.com' })).toHaveAttribute('href', 'mailto:support@dhebe.com?subject=DhebeVoice%20tester%20list%20removal');
+});
+
 for (const width of [360, 390, 768, 1280]) test(`DhebeVoice signup shows consent before submit and fits at ${width}px`, async ({ page }) => {
   await page.setViewportSize({ width, height: 900 });
   await page.goto('/dhebevoice/');
@@ -84,9 +95,10 @@ for (const width of [360, 390, 768, 1280]) test(`DhebeVoice signup shows consent
   await expect(consent).toBeFocused();
   await page.keyboard.press('Tab');
   await expect(submit).toBeFocused();
-  const agreementBounds = await page.locator('.tester-consent').boundingBox();
-  const submitBounds = await submit.boundingBox();
-  expect(agreementBounds).not.toBeNull();
-  expect(submitBounds).not.toBeNull();
-  expect(agreementBounds!.y + agreementBounds!.height).toBeLessThanOrEqual(submitBounds!.y);
+  // Measure both elements in one frame while keyboard focus may scroll the page.
+  const layout = await page.locator('.tester-signup form').evaluate(form => ({
+    agreementBottom: form.querySelector('.tester-consent')!.getBoundingClientRect().bottom,
+    submitTop: form.querySelector('button[type="submit"]')!.getBoundingClientRect().top,
+  }));
+  expect(layout.agreementBottom).toBeLessThanOrEqual(layout.submitTop);
 });

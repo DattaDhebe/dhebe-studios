@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react';
 import { PDFDocument, StandardFonts, rgb, degrees } from 'pdf-lib';
 import { PdfDropZone } from '@/components/converters/pdf-drop-zone';
+import { isPdfFile } from '@/lib/download';
 
 export function PdfWatermarkTool() {
   const [file, setFile] = useState<File | null>(null);
@@ -13,7 +14,8 @@ export function PdfWatermarkTool() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = (selectedFile: File) => {
-    if (selectedFile.type !== 'application/pdf') {
+    setFile(null);
+    if (!isPdfFile(selectedFile)) {
       setError('Please select a valid PDF file');
       return;
     }

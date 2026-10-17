@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { BreadcrumbSchema } from '@/components/breadcrumb-schema';
-import { SITE_NAME, siteRoute } from '@/lib/site';
+import { SITE_NAME, SUPPORT_EMAIL, siteRoute } from '@/lib/site';
 
-const effectiveDate = 'May 13, 2026';
+const effectiveDate = 'October 17, 2026';
 const DHEBEVOICE_PRIVACY_POLICY_URL = siteRoute('/dhebevoice/privacy-policy/');
 
 export const metadata: Metadata = {
@@ -89,10 +89,27 @@ export default function DhebeVoicePrivacyPolicyPage() {
               <section>
                 <h2 className="text-xl font-bold theme-title">Information We Collect</h2>
                 <p className="mt-3">
-                  DhebeVoice does not collect, store, sell, or share personal information.
+                  The DhebeVoice Android app does not collect, store, sell, or share personal information.
                 </p>
                 <p className="mt-3">
                   The app does not require account registration, login, or personal profile creation.
+                </p>
+              </section>
+
+              <section id="website-testers" className="scroll-mt-28">
+                <h2 className="text-xl font-bold theme-title">Optional Website Tester Signup</h2>
+                <p className="mt-3">
+                  The volunteer tester form on this website is separate from using the Android app. If you choose
+                  to sign up and give consent, we save your email address, signup time, and consent version in a
+                  private database on our Hostinger Premium hosting account, outside the public website folder.
+                </p>
+                <p className="mt-3">
+                  We use this list for DhebeVoice testing and early-access emails, not unrelated marketing. Entries
+                  expire after 180 days. Signup requests do not automatically send an invitation or grant app access.
+                  To leave the tester list earlier, email{' '}
+                  <a href={`mailto:${SUPPORT_EMAIL}?subject=DhebeVoice%20tester%20list%20removal`} className="underline">
+                    {SUPPORT_EMAIL}
+                  </a>.
                 </p>
               </section>
 
@@ -143,7 +160,7 @@ export default function DhebeVoicePrivacyPolicyPage() {
 
               <section>
                 <h2 className="text-xl font-bold theme-title">Data Sharing</h2>
-                <p className="mt-3">DhebeVoice does not share user data with third parties.</p>
+                <p className="mt-3">The DhebeVoice Android app does not share user data with third parties.</p>
               </section>
 
               <section>
@@ -165,8 +182,9 @@ export default function DhebeVoicePrivacyPolicyPage() {
               <section>
                 <h2 className="text-xl font-bold theme-title">Security</h2>
                 <p className="mt-3">
-                  Because DhebeVoice does not collect personal information on our server, we do not store user personal
-                  data. Users should avoid pasting or importing sensitive personal information if they do not want it
+                  The Android app does not upload reading content to our servers. Optional website tester contact
+                  details are stored separately in the private list described above. Users should avoid pasting or
+                  importing sensitive personal information if they do not want it
                   processed by their device&apos;s text-to-speech engine.
                 </p>
               </section>

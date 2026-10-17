@@ -33,11 +33,14 @@ file contents or passwords.
 1. Copy `services/tools` to a dedicated directory on the VPS.
 2. Run `docker compose build && docker compose up -d` in that directory.
 3. Check `docker compose exec tools python -c "import urllib.request; print(urllib.request.urlopen('http://localhost:8000/health').read())"` and run the integration tests.
-4. Add the provided nginx location to the site's existing HTTPS configuration.
-   Run `nginx -t` before reloading. The backend port is bound to loopback only.
+4. Use the canonical shared Caddy configuration owned by the separate
+   `F:\ai_projects\ai-trading` repository at `deploy/Caddyfile`. Validate it before
+   reloading; preserve its trading routes and signup compatibility proxy. The
+   backend port is bound to loopback only. The nginx files are examples for a
+   different hosting setup, not the currently deployed proxy.
 5. Rebuild the frontend and deploy `out/` as usual. By default it calls
-   `/api/tools` on the same origin. For a separate API domain set
-   `NEXT_PUBLIC_TOOL_API_URL=https://tools.example.com` before building and set
+   `https://tools.dhebe.com/api/tools`. For a different API base set
+   `NEXT_PUBLIC_TOOL_API_URL=https://tools.example.com/api/tools` before building and set
    `ALLOWED_ORIGINS=https://www.dhebe.com,https://dhebe.com` on the service.
 
 For a separate domain, configure its reverse proxy and TLS before updating the
@@ -48,9 +51,11 @@ job and file-size limits also apply to public requests.
 
 The approved deployment uses the existing Caddy 2.11 proxy on the VPS. The
 original config is backed up at `/opt/dhebe-tools/Caddyfile.before-tools` and the
-reviewed combined config is `Caddyfile.deployment`. Trade routes and global
-timeouts stay intact. Reload with SIGUSR1 after validation; do not restart the
-trading containers.
+canonical combined config is `deploy/Caddyfile` in the separate trading
+repository. `Caddyfile.deployment` in this website repository is a historical
+snapshot and must not replace the live shared proxy: it predates the Premium
+signup compatibility route. Trade routes and global timeouts stay intact. Reload
+with SIGUSR1 after validation; do not restart the trading containers.
 
 If a later trading deployment recreates its Caddy container, reattach that
 container to the tools network before validation/reload:

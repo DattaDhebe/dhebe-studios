@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import { PdfDropZone } from '@/components/converters/pdf-drop-zone';
+import { isPdfFile } from '@/lib/download';
 
 export function PdfSplitterTool() {
   const [file, setFile] = useState<File | null>(null);
@@ -12,9 +13,14 @@ export function PdfSplitterTool() {
   const [splitting, setSplitting] = useState(false);
   const [error, setError] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const selection = useRef(0);
 
   const handleFileSelect = async (selectedFile: File) => {
-    if (selectedFile.type !== 'application/pdf') {
+    const version = ++selection.current;
+    setFile(null);
+    setTotalPages(0);
+    setError('');
+    if (!isPdfFile(selectedFile)) {
       setError('Please select a valid PDF file');
       return;
     }
@@ -23,6 +29,7 @@ export function PdfSplitterTool() {
       const arrayBuffer = await selectedFile.arrayBuffer();
       const pdfDoc = await PDFDocument.load(arrayBuffer);
       const pages = pdfDoc.getPageCount();
+      if (version !== selection.current) return;
 
       setFile(selectedFile);
       setTotalPages(pages);
@@ -30,17 +37,17 @@ export function PdfSplitterTool() {
       setEndPage(String(pages));
       setError('');
     } catch (err) {
-      setError('Failed to load PDF file');
+      if (version === selection.current) setError('Failed to load PDF file');
     }
   };
 
   const handleSplit = async () => {
     if (!file) return;
 
-    const start = parseInt(startPage) || 1;
-    const end = parseInt(endPage) || totalPages;
+    const start = Number(startPage);
+    const end = Number(endPage);
 
-    if (start < 1 || end > totalPages || start > end) {
+    if (!Number.isInteger(start) || !Number.isInteger(end) || start < 1 || end > totalPages || start > end) {
       setError(`Please enter valid page range (1 - ${totalPages})`);
       return;
     }

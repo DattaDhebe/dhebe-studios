@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import { PdfDropZone } from '@/components/converters/pdf-drop-zone';
+import { isPdfFile } from '@/lib/download';
 
 export function PdfCropTool() {
   const [file, setFile] = useState<File | null>(null);
@@ -12,7 +13,8 @@ export function PdfCropTool() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = (selectedFile: File) => {
-    if (selectedFile.type !== 'application/pdf') {
+    setFile(null);
+    if (!isPdfFile(selectedFile)) {
       setError('Please select a valid PDF file.');
       return;
     }

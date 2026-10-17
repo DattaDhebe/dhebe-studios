@@ -74,6 +74,9 @@ the Android application's offline reading features.
 
 `tests.php` exercises the handler against a synthetic temporary database. It is
 not a public endpoint. Run in an isolated PHP 8.3 CLI environment with PDO SQLite.
+On Windows the functional checks run, but POSIX permission assertions are
+explicitly skipped and still require Linux verification. The suite uses only a
+temporary synthetic database and removes it after a successful run.
 Browser tests are `tests/browser/dhebevoice.spec.ts` in the website repository.
 
 For rollback, first reconcile any newer shared-hosting consent records privately;

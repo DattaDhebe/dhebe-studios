@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react';
 import { PDFDocument, rgb } from 'pdf-lib';
 import { PdfDropZone } from '@/components/converters/pdf-drop-zone';
+import { isPdfFile } from '@/lib/download';
 
 export function PdfSignTool() {
   const [file, setFile] = useState<File | null>(null);
@@ -13,9 +14,14 @@ export function PdfSignTool() {
   const [signing, setSigning] = useState(false);
   const [error, setError] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const selection = useRef(0);
 
   const handleFileSelect = async (selectedFile: File) => {
-    if (selectedFile.type !== 'application/pdf') {
+    const version = ++selection.current;
+    setFile(null);
+    setTotalPages(0);
+    setError('');
+    if (!isPdfFile(selectedFile)) {
       setError('Please select a valid PDF file');
       return;
     }
@@ -24,13 +30,14 @@ export function PdfSignTool() {
       const arrayBuffer = await selectedFile.arrayBuffer();
       const pdfDoc = await PDFDocument.load(arrayBuffer);
       const pages = pdfDoc.getPageCount();
+      if (version !== selection.current) return;
 
       setFile(selectedFile);
       setTotalPages(pages);
       setSelectedPage(pages); // Default to last page for signature
       setError('');
     } catch (err) {
-      setError('Failed to load PDF file');
+      if (version === selection.current) setError('Failed to load PDF file');
     }
   };
 
