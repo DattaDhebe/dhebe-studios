@@ -18,6 +18,9 @@ create or commit `trade/` or `trading_bot/` here. Historical shared-host trading
 paths must also be preserved when deploying this website; do not replace or wipe
 the entire hosting document root.
 
+Tester database locations, retention, and private access are documented in
+[DhebeVoice tester data](STORAGE.md#dhebevoice-tester-data).
+
 ## Explore the tool areas
 
 | Area | Repository coverage |

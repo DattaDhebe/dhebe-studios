@@ -262,10 +262,9 @@ svg { flex-shrink: 0; }
 .tester-intro { font-size: 13px; line-height: 1.85; color: var(--app-muted); margin-top: 15px; }
 .tester-signup form { margin-top: 25px; }
 .tester-email-label { display: block; font-size: 12px; font-weight: 500; margin-bottom: 9px; color: var(--app-title); }
-.tester-email-row { display: flex; flex-direction: column; gap: 11px; }
-.tester-email-row > input { min-width: 0; width: 100%; padding: 13px; border: 1px solid var(--app-card-border); border-radius: 7px; background: var(--app-card-soft); color: var(--app-title); font-size: 14px; }
-.tester-email-row > button { justify-content: space-between; padding: 14px 17px; font-size: 12px; }
-.tester-email-row > button:disabled { opacity: .65; }
+.tester-email-input { min-width: 0; width: 100%; padding: 13px; border: 1px solid var(--app-card-border); border-radius: 7px; background: var(--app-card-soft); color: var(--app-title); font-size: 14px; }
+.tester-submit { width: 100%; justify-content: space-between; padding: 14px 17px; margin-top: 17px; font-size: 12px; }
+.tester-submit:disabled { opacity: .65; }
 .tester-consent { display: flex; align-items: flex-start; gap: 9px; font-size: 11px; line-height: 1.8; color: var(--app-muted); margin-top: 19px; cursor: pointer; }
 .tester-consent input { width: 16px; height: 16px; flex-shrink: 0; margin-top: 3px; }
 .tester-privacy { font-size: 10px; line-height: 1.8; color: var(--app-muted); margin-top: 15px; overflow-wrap: anywhere; }

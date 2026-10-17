@@ -68,9 +68,25 @@ test('An invalid service response cannot produce a false success message', async
   await expect(page.getByRole('status')).toHaveCount(0);
 });
 
-for (const width of [360, 390, 768, 1280]) test(`DhebeVoice signup fits at ${width}px`, async ({ page }) => {
+for (const width of [360, 390, 768, 1280]) test(`DhebeVoice signup shows consent before submit and fits at ${width}px`, async ({ page }) => {
   await page.setViewportSize({ width, height: 900 });
   await page.goto('/dhebevoice/');
   await expect(page.getByRole('heading', { name: 'Be one of the first to try DhebeVoice.' })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width + 1);
+  const email = page.getByRole('textbox', { name: 'Your email address' });
+  const consent = page.getByRole('checkbox');
+  const submit = page.getByRole('button', { name: 'Join the tester list' });
+  await expect(consent).toBeEnabled();
+  await expect(consent).not.toBeChecked();
+  await expect(consent).toHaveAttribute('required', '');
+  await email.focus();
+  await page.keyboard.press('Tab');
+  await expect(consent).toBeFocused();
+  await page.keyboard.press('Tab');
+  await expect(submit).toBeFocused();
+  const agreementBounds = await page.locator('.tester-consent').boundingBox();
+  const submitBounds = await submit.boundingBox();
+  expect(agreementBounds).not.toBeNull();
+  expect(submitBounds).not.toBeNull();
+  expect(agreementBounds!.y + agreementBounds!.height).toBeLessThanOrEqual(submitBounds!.y);
 });

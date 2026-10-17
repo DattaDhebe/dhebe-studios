@@ -38,6 +38,38 @@ directories from appearing in future website commits.
   their combined usage was approximately 31 MB, each with a reported 3 GB cap.
   Do not delete or repurpose them for this website without a migration plan.
 
+## DhebeVoice tester data
+
+New website tester signups are stored in a private SQLite database on Hostinger
+Premium, not in MySQL, browser storage, or this Git repository:
+
+```text
+/home/u942725982/domains/dhebe.com/private/dhebevoice-signups/testers.sqlite3
+```
+
+This path is outside `public_html`; it is not a website URL. The directory has
+0700 permissions and the database has 0600 permissions. Use authorized Hostinger
+private-file or SSH administration to access it. There is no public tester-list,
+admin, or export endpoint. Never upload the database to the public website or
+commit it, an export, or real tester addresses to Git.
+
+Each signup stores the normalized email address, original UTC signup timestamp,
+and consent version. Entries expire after 180 days, with pruning on new signups
+and through a daily maintenance job. Signup does not automatically send an
+invitation. Handler, maintenance, and deployment details are in
+[the signup service guide](services/shared-hosting/README.md).
+
+One older tester record remains in the private legacy VPS volume
+`dhebe-tools_tester_signups` at:
+
+```text
+/var/lib/docker/volumes/dhebe-tools_tester_signups/_data/testers.sqlite3
+```
+
+That copy is retained for rollback and awaits explicit owner approval before
+migration. Include it when administering the tester list until reconciliation
+is verified; do not delete or move it as part of routine website deployment.
+
 ## Shared-hosting rollout requirements
 
 Tester signup's same-origin PHP endpoint is website work and is implemented,
