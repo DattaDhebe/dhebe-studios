@@ -3,7 +3,7 @@
 ## Verification
 
 - Production static export builds successfully (123 routes).
-- 89 browser regression tests pass, including responsive UI, multi-page PDF OCR, compression,
+- 98 browser regression tests pass, including tester signup, responsive UI, multi-page PDF OCR, compression,
   editing, merge/split/page tools, image operations, all Base64 source types,
   calculator initialization, and email persistence/undo.
 - Nine shared-library tests pass for Base64 validation, large payloads, calendar
@@ -77,3 +77,21 @@ Keyboard focus, skip navigation, file selection, reduced-motion preferences,
 dark-mode persistence, blocked browser storage, and selected email-control
 contrast have regression coverage. Layout checks cover 390px, 768px, and 1280px.
 The email preview and conversion algorithms retain their existing behavior.
+
+## DhebeVoice Volunteer Testers
+
+The homepage app card opens the early-access form. The app page invites Android
+volunteers, links the official GitHub project, and uses the current icon from
+`F:\apps\android\text_reader_app`. App documentation is a reference only; that
+workspace is not modified. Features are described as testing-build dependent,
+and no immediate Play access or already-sent invitation is promised.
+
+The form requires an email and explicit testing-invitation consent. The approved
+VPS stores only normalized email, UTC signup time, and consent version in a
+private SQLite volume. There is no public list/export endpoint. Requests are
+size-limited and rate-limited, with duplicate protection, a honeypot, capacity
+limits, and expiry cleanup. Existing conversions retain temporary-file cleanup.
+Thirteen signup tests plus the nine conversion tests pass in an isolated VPS
+container. See `services/tools/README.md` for private list administration.
+The real public signup was also verified through to private SQLite storage,
+including consent and file permissions; the synthetic test record was removed.

@@ -15,6 +15,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
 from starlette.datastructures import UploadFile as MemoryUpload
 from pypdf import PdfReader, PdfWriter
+from early_access import router as early_access_router
 
 MAX_BYTES = 25 * 1024 * 1024
 MAX_PAGES = 150
@@ -46,6 +47,7 @@ EXTENSIONS = {
 }
 MIME = {'.pdf': 'application/pdf', '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', '.pptx': 'application/vnd.openxmlformats-officedocument.presentationml.presentation', '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', '.png': 'image/png'}
 app = FastAPI(docs_url=None, redoc_url=None)
+app.include_router(early_access_router)
 origins = [origin.strip() for origin in os.getenv('ALLOWED_ORIGINS', '').split(',') if origin.strip()]
 if origins:
     app.add_middleware(CORSMiddleware, allow_origins=origins, allow_methods=['POST', 'GET'], allow_headers=['Content-Type'], expose_headers=['Content-Disposition'])

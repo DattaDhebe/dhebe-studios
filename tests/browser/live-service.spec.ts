@@ -2,6 +2,16 @@ import { test, expect } from '@playwright/test';
 import { PDFDocument } from 'pdf-lib';
 import { unzipSync } from 'fflate';
 
+test('Live DhebeVoice tester form confirms a synthetic signup', async ({ page }) => {
+  test.skip(!process.env.TEST_BASE_URL || !process.env.TEST_TESTER_EMAIL, 'Requires an explicit disposable example.com address and subsequent private database verification.');
+  expect(process.env.TEST_TESTER_EMAIL).toMatch(/^dv-smoke-[a-z0-9-]+@example\.com$/);
+  await page.goto('/dhebevoice/');
+  await page.getByRole('textbox', { name: 'Your email address' }).fill(process.env.TEST_TESTER_EMAIL!);
+  await page.getByRole('checkbox').check();
+  await page.getByRole('button', { name: 'Join the tester list' }).click();
+  await expect(page.getByRole('status')).toContainText("You're on the tester list.");
+});
+
 test('Live website converts a generated PDF to a real DOCX over the approved VPS API', async ({ page }) => {
   test.skip(!process.env.TEST_BASE_URL, 'Run only after frontend publication.');
   const errors: string[] = [];

@@ -239,6 +239,73 @@ svg { flex-shrink: 0; }
 .hero-shelf.reveal { animation-delay: 100ms; }
 @keyframes reveal-in { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
+/* DhebeVoice volunteer testing */
+.voice-page { padding-bottom: 64px; background: radial-gradient(ellipse at 10% 10%, #b4c9af16, transparent 40%), var(--app-bg); }
+.voice-hero { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 70px; padding-block: 64px; }
+.voice-identity { display: flex; align-items: center; gap: 15px; margin-bottom: 34px; }
+.voice-identity img { width: 60px; height: 60px; border-radius: 13px; object-fit: contain; }
+.voice-identity p { font-family: var(--font-display); font-size: 20px; font-weight: 600; color: var(--app-title); }
+.voice-identity span { color: var(--app-muted); font-size: 11px; }
+.voice-copy h1 { font-size: clamp(48px,4.6vw,67px); font-weight: 500; letter-spacing: -.055em; line-height: 1.08; color: var(--app-title); margin-top: 20px; }
+.voice-copy h1 span { color: var(--tone); }
+.voice-description { max-width: 470px; font-size: 15px; line-height: 1.9; color: var(--app-muted); margin-top: 22px; }
+.voice-highlights { display: grid; gap: 14px; margin-top: 24px; font-size: 12px; color: var(--app-muted); }
+.voice-highlights li { display: flex; align-items: center; gap: 9px; }
+.voice-highlights svg { color: var(--tone); }
+.voice-project-links { display: flex; flex-wrap: wrap; align-items: center; gap: 20px; margin-top: 30px; font-size: 11px; }
+.voice-project-links a:first-child { display: inline-flex; align-items: center; gap: 7px; color: var(--tone); font-weight: 600; }
+.voice-project-links a:last-child { color: var(--app-muted); text-decoration: underline; text-underline-offset: 4px; }
+.tester-signup { scroll-margin-top: 100px; min-width: 0; background: var(--app-card); border: 1px solid var(--app-card-border); border-radius: 13px; padding: 34px; box-shadow: var(--app-shadow); }
+.tester-signup-icon { display: grid; place-items: center; height: 46px; width: 46px; border-radius: 10px; color: var(--tone); background: var(--tone-soft); margin-bottom: 25px; }
+.tester-signup .eyebrow { color: var(--tone); font-size: 9px; }
+.tester-signup h2 { font-size: 28px; letter-spacing: -.04em; color: var(--app-title); line-height: 1.25; margin-top: 13px; font-weight: 500; }
+.tester-intro { font-size: 13px; line-height: 1.85; color: var(--app-muted); margin-top: 15px; }
+.tester-signup form { margin-top: 25px; }
+.tester-email-label { display: block; font-size: 12px; font-weight: 500; margin-bottom: 9px; color: var(--app-title); }
+.tester-email-row { display: flex; flex-direction: column; gap: 11px; }
+.tester-email-row > input { min-width: 0; width: 100%; padding: 13px; border: 1px solid var(--app-card-border); border-radius: 7px; background: var(--app-card-soft); color: var(--app-title); font-size: 14px; }
+.tester-email-row > button { justify-content: space-between; padding: 14px 17px; font-size: 12px; }
+.tester-email-row > button:disabled { opacity: .65; }
+.tester-consent { display: flex; align-items: flex-start; gap: 9px; font-size: 11px; line-height: 1.8; color: var(--app-muted); margin-top: 19px; cursor: pointer; }
+.tester-consent input { width: 16px; height: 16px; flex-shrink: 0; margin-top: 3px; }
+.tester-privacy { font-size: 10px; line-height: 1.8; color: var(--app-muted); margin-top: 15px; overflow-wrap: anywhere; }
+.tester-privacy a, .tester-error a { text-decoration: underline; text-underline-offset: 3px; }
+.tester-honeypot { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+.tester-footnote { border-top: 1px solid var(--app-card-border); padding-top: 16px; margin-top: 22px; font-size: 10px; line-height: 1.8; color: var(--app-muted); }
+.tester-success { display: flex; gap: 11px; align-items: flex-start; padding: 20px; border-radius: 8px; background: var(--tone-soft); color: var(--tone); margin-top: 25px; }
+.tester-success strong { font-size: 14px; font-weight: 600; }
+.tester-success p { font-size: 12px; line-height: 1.9; color: var(--app-muted); margin-top: 8px; }
+.tester-error { color: var(--app-accent); font-size: 12px; line-height: 1.8; margin-top: 16px; }
+.voice-testing { border-top: 1px solid var(--app-card-border); padding-top: 42px; }
+.voice-steps { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 35px; margin-top: 32px; }
+.voice-steps article > span { color: var(--tone); font-family: var(--font-mono); font-size: 12px; }
+.voice-steps h3 { font-size: 19px; font-weight: 500; color: var(--app-title); letter-spacing: -.025em; margin-top: 15px; }
+.voice-steps p { color: var(--app-muted); font-size: 13px; line-height: 1.9; margin-top: 12px; }
+.voice-about { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; padding-top: 46px; margin-top: 46px; border-top: 1px solid var(--app-card-border); }
+.voice-about > div > svg { color: var(--tone); margin-bottom: 16px; }
+.voice-about h2 { color: var(--app-title); font-size: 27px; font-weight: 500; letter-spacing: -.035em; }
+.voice-about p { color: var(--app-muted); font-size: 13px; line-height: 1.9; margin-top: 15px; }
+.voice-testing-note { background: var(--app-card-soft); padding: 25px; border-radius: 10px; border: 1px solid var(--app-card-border); }
+.voice-testing-note h3 { color: var(--app-title); font-size: 17px; font-weight: 500; }
+.voice-testing-note a { display: inline-flex; gap: 6px; align-items: center; color: var(--tone); font-size: 12px; margin-top: 20px; }
+@media (max-width: 900px) {
+  .voice-hero { gap: 35px; padding-block: 40px; }
+  .tester-signup { padding: 25px; }
+  .voice-copy h1 { font-size: 48px; }
+  .voice-about { gap: 30px; }
+}
+@media (max-width: 650px) {
+  .voice-hero { grid-template-columns: minmax(0,1fr); gap: 30px; padding-top: 30px; }
+  .voice-identity { margin-bottom: 25px; }
+  .voice-copy h1 { font-size: 52px; }
+  .voice-description { font-size: 14px; }
+  .voice-steps, .voice-about { grid-template-columns: minmax(0,1fr); gap: 26px; }
+  .tester-signup { padding: 25px 21px; }
+  .tester-signup h2 { font-size: 27px; }
+  .voice-about { padding-top: 30px; margin-top: 30px; }
+  .voice-page { padding-bottom: 36px; }
+}
+
 /* Focused workspaces */
 .tool-workspace { background: var(--app-bg); padding-bottom: 48px; }
 .workspace-container { max-width: 1440px; padding: 22px 40px 0; margin: auto; }

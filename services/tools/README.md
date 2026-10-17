@@ -3,7 +3,8 @@
 The static frontend stays on its existing host and uses the approved API at
 `https://tools.dhebe.com/api/tools` on VPS `200.234.47.229`. The Python service supplies actual
 Office file imports, DOCX/PPTX/XLSX exports, searchable OCR PDFs, PDF/A-2b, AES-256
-password encryption, repair, and image background removal. No database is required.
+password encryption, repair, and image background removal. Conversions need no
+database; the separate voluntary DhebeVoice tester list uses private SQLite storage.
 
 PDF to Word extracts selectable text into a real DOCX; complex layouts are not
 reconstructed. PDF to PowerPoint uses page images. Excel extracts tables where
@@ -61,3 +62,33 @@ docker network connect dhebe-tools_conversion ai-trading-dashboard-caddy-1
 Retain the tools host block when publishing a newer Caddy configuration. The
 service's internal Docker network prevents outbound connections while allowing
 the existing proxy to reach it.
+
+## DhebeVoice Volunteer Testers
+
+`POST /early-access/dhebevoice` accepts a JSON email, explicit boolean consent,
+and an empty `website` honeypot from the approved website origins. It does not
+send mail or grant Play access automatically. New and duplicate requests receive
+the same response. There is no public endpoint for reading the list.
+
+The only persisted fields are normalized email, UTC signup time, and consent
+version. The database is `/data/testers.sqlite3` in the private Compose volume
+`dhebe-tools_tester_signups`; it is not under the web root or in the repository.
+The directory is owned by UID 10001 with mode 0700; the file is created with mode
+0600. Do not publish or commit exports. Source-document cleanup is unchanged.
+
+The signup endpoint allows 30 requests per minute globally, a 1 KB JSON body,
+and at most 10,000 entries. Entries expire after 180 days and are pruned on new
+requests and hourly. Duplicate signups do not reset the original signup date.
+Back up the volume privately if needed; do not remove it during service updates.
+
+List access is through the existing authorized VPS SSH connection only. Example
+administration commands from `/opt/dhebe-tools`:
+
+```sh
+docker compose exec -T tools python -c "import sqlite3,json; c=sqlite3.connect('/data/testers.sqlite3'); print(json.dumps(c.execute('SELECT email,created_at,consent_version FROM signups ORDER BY created_at').fetchall()))"
+```
+
+For a removal request, verify that the person controls the address, then use a
+parameterized SQL DELETE in an authorized SSH session. Do not add a public export
+or removal-by-address endpoint. Testing invitations are sent manually after the
+team adds volunteers to the appropriate Google Play testing track.

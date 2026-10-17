@@ -1,12 +1,14 @@
 name: dhebe-tools
 services:
   tools:
-    image: dhebe-conversion:2026-10-audit
+    image: dhebe-conversion:2026-10-testers
     build: .
     restart: unless-stopped
     ports:
       - "127.0.0.1:8000:8000"
     read_only: true
+    volumes:
+      - tester_signups:/data
     tmpfs:
       - /tmp:size=768m,mode=1777
     mem_limit: 3g
@@ -18,6 +20,7 @@ services:
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-https://www.dhebe.com,https://dhebe.com}
       OMP_NUM_THREADS: "1"
       NUMBA_CACHE_DIR: /tmp/numba-cache
+      TESTER_DB_PATH: /data/testers.sqlite3
     networks:
       conversion:
         aliases: [dhebe-tools]
@@ -34,3 +37,5 @@ services:
 networks:
   conversion:
     internal: true
+volumes:
+  tester_signups:

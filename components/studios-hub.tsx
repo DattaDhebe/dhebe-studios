@@ -11,7 +11,7 @@ const studios: { id: string; name: string; category: string; description: string
   { id: 'calculator', name: 'Calculator Studio', category: 'Everyday math', description: 'From monthly payments to important dates. Make the numbers make sense.', href: '/calculator-studio/', icon: 'calculator', tone: 'calculator', count: '11 calculators' },
   { id: 'base64', name: 'Base64 Studio', category: 'For developers', description: 'Encode, decode, and get back to building. Text, files, images, and everything in between.', href: '/base64-converter/', icon: 'code', tone: 'code', count: '18 tools' },
   { id: 'email', name: 'Email Editor', category: 'Create & send', description: 'Turn a good idea into a great email. Build visually, preview, and export your HTML.', href: '/email-template-editor/', icon: 'mail', tone: 'email', count: 'Visual builder' },
-  { id: 'voice', name: 'DhebeVoice', category: 'Our mobile app', description: 'Give your reading a voice. Meet our Android app for listening to the text you choose.', href: '/dhebevoice/', icon: 'voice', tone: 'voice', count: 'Explore the app' },
+  { id: 'voice', name: 'DhebeVoice', category: 'Early access', description: 'Volunteer to test our Android reading companion. Leave your email and help shape the app before its wider release.', href: '/dhebevoice/#early-access', icon: 'voice', tone: 'voice', count: 'Become a tester' },
 ];
 
 const shortcuts: { label: string; note: string; href: string; icon: IconName; tone: string }[] = [
