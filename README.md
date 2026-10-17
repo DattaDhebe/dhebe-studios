@@ -1,5 +1,6 @@
-<h1 align="center">PDF Tools Hub · Dhebe Studios</h1>
-<p align="center"><strong>Everyday document and developer utilities in one web workspace.</strong><br>Next.js · React · TypeScript · Tailwind CSS</p>
+<p align="center">
+  <img src="docs/assets/project-banner.svg" alt="Dhebe Studios — Document and developer utilities, together." width="100%">
+</p>
 
 This repository has grown from Base64 utilities into the **Dhebe Studios** tools hub. Its current routes cover PDF workflows, Base64 conversions, image tools, calculators, email design and DhebeVoice product pages.
 
