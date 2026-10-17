@@ -64,7 +64,7 @@ export function PdfToolLandingPage({ tool, seoPage }: PdfToolLandingPageProps) {
       />
       <PdfToolsWorkbench initialTool={tool.id} />
 
-      <section className="mx-auto max-w-[1600px] px-4 pb-16 pt-8 xl:px-6">
+      <section className="tool-guide tone-pdf mx-auto max-w-[1240px] px-4 pb-16 pt-8 xl:px-6">
         <div className="grid gap-8">
           <div className="theme-panel rounded-[2rem] border p-6 sm:p-8">
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-purple-600">
@@ -85,7 +85,7 @@ export function PdfToolLandingPage({ tool, seoPage }: PdfToolLandingPageProps) {
                 No watermark
               </span>
               <span className="theme-accent-chip-purple rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em]">
-                Fast browser processing
+                Clear file-handling details
               </span>
             </div>
           </div>
@@ -161,12 +161,12 @@ export function PdfToolLandingPage({ tool, seoPage }: PdfToolLandingPageProps) {
             <h2 className="mt-3 text-3xl font-semibold tracking-tight theme-title">
               Frequently Asked Questions
             </h2>
-            <div className="mt-6 grid gap-4 lg:grid-cols-2">
+            <div className="guide-faqs mt-6">
               {seoPage.faqs.map((faq) => (
-                <article key={faq.question} className="theme-card-soft rounded-[1.5rem] border p-5">
-                  <h3 className="text-lg font-semibold theme-title">{faq.question}</h3>
-                  <p className="mt-3 text-sm leading-7 theme-muted">{faq.answer}</p>
-                </article>
+                <details key={faq.question}>
+                  <summary>{faq.question}</summary>
+                  <p>{faq.answer}</p>
+                </details>
               ))}
             </div>
           </section>

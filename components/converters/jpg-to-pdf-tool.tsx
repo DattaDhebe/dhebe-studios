@@ -12,9 +12,9 @@ export function JpgToPdfTool() {
 
   const handleSelect = (selected: FileList | File | null) => {
     const list = selected instanceof FileList ? Array.from(selected) : selected ? [selected] : [];
-    const valid = list.filter((f) => f.type === 'image/jpeg' || f.type === 'image/jpg' || f.name.toLowerCase().endsWith('.jpg') || f.name.toLowerCase().endsWith('.jpeg'));
-    if (valid.length === 0) {
-      setError('Please upload JPG/JPEG files only');
+    const valid = list.filter((f) => ['image/jpeg', 'image/png'].includes(f.type) || /\.(jpe?g|png)$/i.test(f.name));
+    if (valid.length === 0 || valid.length !== list.length) {
+      setError('Please upload JPG, JPEG, or PNG files only');
       return;
     }
     setFiles(valid);
@@ -29,7 +29,7 @@ export function JpgToPdfTool() {
       const pdf = await PDFDocument.create();
       for (const file of files) {
         const bytes = await file.arrayBuffer();
-        const img = await pdf.embedJpg(bytes);
+        const img = file.type === 'image/png' || /\.png$/i.test(file.name) ? await pdf.embedPng(bytes) : await pdf.embedJpg(bytes);
         const page = pdf.addPage([img.width, img.height]);
         page.drawImage(img, { x: 0, y: 0, width: img.width, height: img.height });
       }
@@ -56,9 +56,9 @@ export function JpgToPdfTool() {
         inputRef={fileInputRef}
         onSelect={handleSelect}
         multiple
-        accept="image/jpeg,.jpg,.jpeg"
+        accept="image/jpeg,image/png,.jpg,.jpeg,.png"
         title="Drop JPG files here"
-        helperText="or click to browse (select multiple JPG files)"
+        helperText="or click to browse (JPG, JPEG, or PNG)"
       />
       {files.length > 0 && (
         <div className="theme-card rounded-2xl border p-6 space-y-4">

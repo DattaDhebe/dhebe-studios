@@ -1,6 +1,8 @@
 'use client';
 
 import { useRef, useState } from 'react';
+import { BlobImage } from './blob-image';
+import { transformImage, imageFilename, loadImage } from '@/lib/image-processing';
 import { ImageDropZone } from './image-drop-zone';
 
 interface CompressedFile {
@@ -43,57 +45,19 @@ export function ImageCompressorTool() {
   };
 
   const compressImage = async (file: CompressedFile): Promise<CompressedFile> => {
-    return new Promise((resolve) => {
-      const img = new Image();
-      img.src = URL.createObjectURL(file.original);
-      
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        
-        if (!ctx) {
-          resolve({ ...file, status: 'error' });
-          return;
-        }
-
-        canvas.width = img.width;
-        canvas.height = img.height;
-        ctx.drawImage(img, 0, 0);
-
-        // Determine output format based on input
-        let type = file.original.type;
-        if (type !== 'image/jpeg' && type !== 'image/webp' && type !== 'image/png') {
-          type = 'image/jpeg';
-        }
-
-        canvas.toBlob(
-          (blob) => {
-            if (blob) {
-              resolve({
-                ...file,
-                compressed: blob,
-                compressedSize: blob.size,
-                status: 'completed'
-              });
-            } else {
-              resolve({ ...file, status: 'error' });
-            }
-          },
-          type,
-          quality / 100
-        );
-      };
-
-      img.onerror = () => {
-        resolve({ ...file, status: 'error' });
-      };
-    });
+    try {
+      const type = file.original.type === 'image/png' ? 'image/webp' : file.original.type;
+      const result = await transformImage(file.original, { type, quality: quality / 100 });
+      const blob = result.size < file.original.size ? result : file.original;
+      return { ...file, compressed: blob, compressedSize: blob.size, status: 'completed' };
+    } catch { return { ...file, status: 'error' }; }
   };
 
   const handleCompress = async () => {
     setFiles(prev => prev.map(f => ({ ...f, status: 'compressing' })));
     
-    const results = await Promise.all(files.map(f => compressImage(f)));
+    const results: CompressedFile[] = [];
+    for (const file of files) results.push(await compressImage(file));
     setFiles(results);
   };
 
@@ -102,7 +66,7 @@ export function ImageCompressorTool() {
     const url = URL.createObjectURL(file.compressed);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `compressed_${file.original.name}`;
+    a.download = imageFilename(file.original.name, file.compressed.type, 'compressed_');
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -134,7 +98,7 @@ export function ImageCompressorTool() {
               {files.length} {files.length === 1 ? 'Image' : 'Images'} Selected
             </h3>
             <button
-              onClick={handleReset}
+              disabled={files.some(f => f.status === 'compressing')} onClick={handleReset}
               className="text-sm font-medium text-rose-600 hover:text-rose-700"
             >
               Clear all
@@ -148,8 +112,8 @@ export function ImageCompressorTool() {
                 className="flex flex-col rounded-2xl border p-4 theme-card"
               >
                 <div className="relative mb-3 aspect-video w-full overflow-hidden rounded-xl bg-slate-100">
-                  <img
-                    src={URL.createObjectURL(file.original)}
+                  <BlobImage
+                    blob={file.original}
                     alt={file.original.name}
                     className="h-full w-full object-contain"
                   />
@@ -171,6 +135,7 @@ export function ImageCompressorTool() {
                       </span>
                     )}
                   </div>
+                  {file.status === 'error' && <p role="alert" className="mt-2 text-xs text-red-700">Could not process this image. Check its format, size, and settings.</p>}
                   {file.status === 'completed' && (
                     <button
                       onClick={() => downloadFile(file)}
@@ -189,7 +154,7 @@ export function ImageCompressorTool() {
               <div>
                 <p className="font-semibold theme-title">Compression Settings</p>
                 <p className="mt-1 text-sm theme-muted">
-                  Lower quality results in smaller file sizes.
+                  PNG images use WebP for compression. The original is kept when it is smaller.
                 </p>
               </div>
               <div className="flex items-center gap-4">

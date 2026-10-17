@@ -1,6 +1,8 @@
 'use client';
 
 import { useRef, useState, useEffect } from 'react';
+import { BlobImage } from './blob-image';
+import { transformImage, imageFilename, loadImage } from '@/lib/image-processing';
 import { ImageDropZone } from './image-drop-zone';
 
 interface ConvertedFile {
@@ -45,50 +47,17 @@ export function ImageFormatConverterTool({ targetFormat, label }: ImageFormatCon
   };
 
   const convertImage = async (file: ConvertedFile): Promise<ConvertedFile> => {
-    return new Promise((resolve) => {
-      const img = new Image();
-      img.src = URL.createObjectURL(file.original);
-      
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        
-        if (!ctx) {
-          resolve({ ...file, status: 'error' });
-          return;
-        }
-
-        canvas.width = img.width;
-        canvas.height = img.height;
-        ctx.drawImage(img, 0, 0);
-
-        canvas.toBlob(
-          (blob) => {
-            if (blob) {
-              resolve({
-                ...file,
-                converted: blob,
-                status: 'completed'
-              });
-            } else {
-              resolve({ ...file, status: 'error' });
-            }
-          },
-          targetFormat,
-          0.92 // High quality for conversion
-        );
-      };
-
-      img.onerror = () => {
-        resolve({ ...file, status: 'error' });
-      };
-    });
+    try {
+      const converted = await transformImage(file.original, { type: targetFormat, quality: 0.92 });
+      return { ...file, converted, status: 'completed' };
+    } catch { return { ...file, status: 'error' }; }
   };
 
   const handleConvert = async () => {
     setFiles(prev => prev.map(f => ({ ...f, status: 'converting' })));
     
-    const results = await Promise.all(files.map(f => convertImage(f)));
+    const results: ConvertedFile[] = [];
+    for (const file of files) results.push(await convertImage(file));
     setFiles(results);
   };
 
@@ -99,7 +68,7 @@ export function ImageFormatConverterTool({ targetFormat, label }: ImageFormatCon
     a.href = url;
     const extension = targetFormat.split('/')[1];
     const nameWithoutExt = file.original.name.substring(0, file.original.name.lastIndexOf('.')) || file.original.name;
-    a.download = `${nameWithoutExt}.${extension}`;
+    a.download = imageFilename(file.original.name, file.converted.type, 'converted_');
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -131,7 +100,7 @@ export function ImageFormatConverterTool({ targetFormat, label }: ImageFormatCon
               {files.length} {files.length === 1 ? 'Image' : 'Images'} Selected
             </h3>
             <button
-              onClick={handleReset}
+              disabled={files.some(f => f.status === 'converting')} onClick={handleReset}
               className="text-sm font-medium text-rose-600 hover:text-rose-700"
             >
               Clear all
@@ -145,8 +114,8 @@ export function ImageFormatConverterTool({ targetFormat, label }: ImageFormatCon
                 className="flex flex-col rounded-2xl border p-4 theme-card"
               >
                 <div className="relative mb-3 aspect-video w-full overflow-hidden rounded-xl bg-slate-100">
-                  <img
-                    src={URL.createObjectURL(file.original)}
+                  <BlobImage
+                    blob={file.original}
                     alt={file.original.name}
                     className="h-full w-full object-contain"
                   />
@@ -161,6 +130,7 @@ export function ImageFormatConverterTool({ targetFormat, label }: ImageFormatCon
                   <p className="mt-1 text-xs theme-muted">
                     Target: {label}
                   </p>
+                  {file.status === 'error' && <p role="alert" className="mt-2 text-xs text-red-700">Could not process this image. Check its format, size, and settings.</p>}
                   {file.status === 'completed' && (
                     <button
                       onClick={() => downloadFile(file)}

@@ -23,6 +23,8 @@ export function CaloriesCalculatorTool() {
       : 10 * weight + 6.25 * height - 5 * age - 161;
 
   const tdee = bmr * activity;
+  const valid = [age, weight, height, activity, tdee].every(Number.isFinite) && age >= 18 && age <= 120 && weight > 0 && height > 0 && bmr > 0;
+  const calories = (value: number) => valid && value > 0 ? `${Math.round(value)} kcal` : '-';
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">
@@ -77,13 +79,13 @@ export function CaloriesCalculatorTool() {
           <div className="sm:col-span-2">
             <CalculatorStat
               label="Maintenance (TDEE)"
-              value={`${Math.round(tdee)} kcal`}
+              value={calories(tdee)}
               tone="highlight"
             />
           </div>
-          <CalculatorStat label="Weight Loss (-500)" value={`${Math.round(tdee - 500)} kcal`} />
-          <CalculatorStat label="Weight Gain (+500)" value={`${Math.round(tdee + 500)} kcal`} />
-          <CalculatorStat label="BMR (Base)" value={`${Math.round(bmr)} kcal`} />
+          <CalculatorStat label="Weight Loss (-500)" value={calories(tdee - 500)} />
+          <CalculatorStat label="Weight Gain (+500)" value={calories(tdee + 500)} />
+          <CalculatorStat label="BMR (Base)" value={calories(bmr)} />
         </div>
         <p className="mt-6 text-xs leading-5 theme-muted-2">
           Note: These are estimates based on standard formulas. Individual metabolism can vary. Consult a nutritionist for a personalized plan.

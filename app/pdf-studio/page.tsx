@@ -10,7 +10,7 @@ import { SITE_NAME, siteRoute } from '@/lib/site';
 export const metadata: Metadata = {
   title: 'PDF Studio - Free Online PDF Tools for Merge, Split, Compress, Convert & More',
   description:
-    'Free online PDF Studio with top tools for PDF to Word, JPG to PDF, PDF to JPG, merge PDF, compress PDF, sign PDF, split PDF, and more. 100% client-side and privacy-first.',
+    'Free online PDF Studio for PDF to Word, JPG to PDF, merge, compress, sign, and split. Local PDF editing with temporary server processing for document conversions.',
   keywords: [
     'online pdf converter',
     'pdf converter online',
@@ -95,7 +95,7 @@ export default function PdfStudioPage() {
             name: 'Does PDF Studio upload my files?',
             acceptedAnswer: {
               '@type': 'Answer',
-              text: 'No. The ready tools in PDF Studio are designed to process files in the browser so your documents stay on your device.',
+              text: 'Merge, split, compress, and page editing run locally. Office conversions, PDF/A, repair, and password encryption upload the file for temporary processing and delete it afterward. Each tool explains its processing mode.',
             },
           },
           {

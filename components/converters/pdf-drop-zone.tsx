@@ -1,7 +1,8 @@
 'use client';
 
 import type { ChangeEvent, DragEvent, RefObject } from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { UiIcon } from '@/components/ui-icon';
 
 interface PdfDropZoneProps {
   inputRef: RefObject<HTMLInputElement | null>;
@@ -10,6 +11,7 @@ interface PdfDropZoneProps {
   accept?: string;
   title?: string;
   helperText?: string;
+  disabled?: boolean;
 }
 
 export function PdfDropZone({
@@ -19,9 +21,12 @@ export function PdfDropZone({
   accept = 'application/pdf',
   title = 'Drop PDF files here',
   helperText = 'or click to browse',
+  disabled = false,
 }: PdfDropZoneProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [uploadMessage, setUploadMessage] = useState<string>('');
+  const [ready, setReady] = useState(false);
+  useEffect(() => setReady(true), []);
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (multiple) {
@@ -40,6 +45,7 @@ export function PdfDropZone({
     event.preventDefault();
     event.stopPropagation();
     setIsDragging(false);
+    if (disabled || !ready) return;
 
     if (multiple) {
       const files = event.dataTransfer.files ?? null;
@@ -54,13 +60,9 @@ export function PdfDropZone({
   };
 
   return (
-    <div className="rounded-2xl border p-6 theme-card-soft">
+    <div className="upload-container">
       <label
-        className={`flex cursor-pointer items-center justify-center rounded-xl border-2 border-dashed py-12 transition ${
-          isDragging
-            ? 'border-cyan-500 bg-cyan-50'
-            : 'border-[var(--app-card-border)] hover:brightness-95'
-        }`}
+        className={`upload-zone ${isDragging ? 'is-dragging' : ''}`}
         onDrop={handleDrop}
         onDragOver={(event) => {
           event.preventDefault();
@@ -74,18 +76,23 @@ export function PdfDropZone({
         <input
           ref={inputRef}
           type="file"
+          aria-label={title}
           accept={accept}
           multiple={multiple}
+          disabled={disabled || !ready}
           onChange={handleInputChange}
-          className="hidden"
+          onClick={(event) => { event.currentTarget.value = ''; }}
+          className="sr-only"
         />
         <div className="text-center">
-          <p className="text-xl font-semibold theme-title">{title}</p>
-          <p className="text-sm theme-muted">{helperText}</p>
+          <span className="upload-icon"><UiIcon name="upload" width="22" height="22" /></span>
+          <p className="upload-title">{title}</p>
+          <p className="upload-helper">{helperText}</p>
+          <span className="upload-browse">Choose {multiple ? 'files' : 'file'}</span>
         </div>
       </label>
       {uploadMessage && (
-        <p className="mt-3 text-sm font-medium text-emerald-700">{uploadMessage}</p>
+        <p className="upload-message" aria-live="polite">{uploadMessage.replace('Upload complete:', 'Selected:')}</p>
       )}
     </div>
   );

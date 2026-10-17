@@ -73,7 +73,7 @@ export function Base64ToolLandingPage({ tool }: Base64ToolLandingPageProps) {
         }}
       />
 
-      <section className="mx-auto max-w-[1600px] px-4 pb-16 pt-8 xl:px-6">
+      <section className="tool-guide tone-code mx-auto max-w-[1240px] px-4 pb-16 pt-8 xl:px-6">
         <div className="grid gap-8">
           <section className="rounded-[2rem] border p-6 theme-panel sm:p-8">
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-orange-600">

@@ -1,0 +1,42 @@
+{
+    admin off
+    servers {
+        timeouts {
+            read_header 10s
+            read_body 15s
+            write 30s
+            idle 60s
+        }
+    }
+}
+
+trade.dhebe.com {
+    encode zstd gzip
+    # No access log: callback query strings may contain broker credentials.
+    header {
+        Strict-Transport-Security "max-age=31536000"
+        -Server
+    }
+    request_body {
+        max_size 64KB
+    }
+    reverse_proxy dashboard:8000 {
+        header_up X-Dashboard-Client {remote_host}
+    }
+}
+
+tools.dhebe.com {
+    header {
+        Cache-Control "no-store"
+        X-Content-Type-Options "nosniff"
+        Referrer-Policy "no-referrer"
+        -Server
+    }
+    request_body {
+        max_size 26MB
+    }
+    handle_path /api/tools/* {
+        reverse_proxy dhebe-tools:8000
+    }
+    respond 404
+}

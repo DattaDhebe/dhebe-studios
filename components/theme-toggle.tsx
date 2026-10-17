@@ -1,6 +1,7 @@
 'use client';
 
 import { useTheme } from '@/lib/hooks/useTheme';
+import { UiIcon } from './ui-icon';
 
 export function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
@@ -9,16 +10,12 @@ export function ThemeToggle() {
     <button
       type="button"
       onClick={toggleTheme}
+      aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+      title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
       aria-pressed={theme === 'dark'}
-      className="theme-card inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-semibold text-[var(--app-title)] shadow-lg backdrop-blur transition hover:scale-[1.01] sm:px-4 sm:py-2"
+      className="icon-button theme-toggle"
     >
-      <span
-        aria-hidden="true"
-        className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[linear-gradient(135deg,_rgba(249,115,22,0.2),_rgba(56,189,248,0.2))] px-2 text-[10px] sm:h-9 sm:w-11 sm:text-xs"
-      >
-        {theme === 'dark' ? 'SUN' : 'MOON'}
-      </span>
-      <span>{theme === 'dark' ? 'Light mode' : 'Dark mode'}</span>
+      <UiIcon name={theme === 'dark' ? 'sun' : 'moon'} />
     </button>
   );
 }

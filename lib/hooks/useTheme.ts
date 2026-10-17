@@ -1,38 +1,22 @@
 import { useEffect, useState } from 'react';
 
-export function useTheme(storageKey: string = 'app-theme') {
+export function useTheme(storageKey = 'app-theme') {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
-
   useEffect(() => {
-    const storedTheme = window.localStorage.getItem(storageKey);
-    const preferredTheme =
-      storedTheme === 'dark' || storedTheme === 'light' ? storedTheme : 'light';
-
+    let preferredTheme: 'light' | 'dark' = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+    try {
+      const stored = localStorage.getItem(storageKey);
+      if (stored === 'light' || stored === 'dark') preferredTheme = stored;
+    } catch { /* Theme switching still works when storage is unavailable. */ }
     setTheme(preferredTheme);
-    
-    // Apply theme to html element using data-theme attribute
-    // Only set data-theme for dark mode; light mode is default (no attribute needed)
-    if (preferredTheme === 'dark') {
-      document.documentElement.setAttribute('data-theme', 'dark');
-    } else {
-      document.documentElement.removeAttribute('data-theme');
-    }
+    document.documentElement.dataset.theme = preferredTheme;
   }, [storageKey]);
 
   const toggleTheme = () => {
     const nextTheme = theme === 'dark' ? 'light' : 'dark';
     setTheme(nextTheme);
-    
-    // Apply theme to html element using data-theme attribute
-    // Only set data-theme for dark mode; light mode is default (no attribute needed)
-    if (nextTheme === 'dark') {
-      document.documentElement.setAttribute('data-theme', 'dark');
-    } else {
-      document.documentElement.removeAttribute('data-theme');
-    }
-    
-    window.localStorage.setItem(storageKey, nextTheme);
+    document.documentElement.dataset.theme = nextTheme;
+    try { localStorage.setItem(storageKey, nextTheme); } catch { /* Storage can be blocked by the browser. */ }
   };
-
   return { theme, toggleTheme };
 }

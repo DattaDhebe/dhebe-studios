@@ -1,79 +1,33 @@
+'use client';
+
 import Link from 'next/link';
-import { BrandLogo } from '@/components/brand-logo';
-import { ThemeToggle } from '@/components/theme-toggle';
+import { usePathname } from 'next/navigation';
+import { useRef, useState } from 'react';
+import { BrandLogo } from './brand-logo';
+import { ThemeToggle } from './theme-toggle';
+import { UiIcon } from './ui-icon';
+
+const links = [
+  { href: '/pdf-studio/', label: 'PDF tools', matches: ['pdf', '/merge-', '/split-', '/sign-', '/word-', '/jpg-', '/compress-'] },
+  { href: '/image-studio/', label: 'Image tools', matches: ['/image-'] },
+  { href: '/calculator-studio/', label: 'Calculators', matches: ['calculator'] },
+  { href: '/base64-converter/', label: 'Base64', matches: ['base64'] },
+  { href: '/email-template-editor/', label: 'Email editor', matches: ['/email-'] },
+];
 
 export function Header() {
+  const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+  const menuButton = useRef<HTMLButtonElement>(null);
+  const activeHref = pathname.includes('base64') ? '/base64-converter/' : links.find(link => link.matches.some(match => pathname.includes(match)))?.href;
   return (
-    <header className="sticky top-0 z-40 border-b border-[var(--app-panel-border)] bg-[var(--app-panel)] backdrop-blur" role="banner">      
-      <div className="mx-auto flex h-20 max-w-[1600px] items-center justify-between gap-3 px-3 sm:gap-6 sm:px-4">
-        <div className="flex items-center gap-3">
-          <Link href="/" className="flex items-center gap-3 transition hover:opacity-80">
-            <BrandLogo eager />
-          </Link>
-        </div>
-
-        <nav aria-label="Primary" className="hidden flex-1 sm:block">
-          <ul className="flex items-center justify-center gap-4 text-sm">
-            <li>
-              <Link href="/base64-converter/" className="hover:underline" prefetch={false}>Base64 Converter</Link>
-            </li>
-            <li>
-              <Link href="/pdf-studio/" className="hover:underline" prefetch={false}>PDF Studio</Link>
-            </li>
-            <li>
-              <Link href="/image-studio/" className="hover:underline" prefetch={false}>Image Studio</Link>
-            </li>
-            <li>
-              <Link href="/calculator-studio/" className="hover:underline" prefetch={false}>Calculator Studio</Link>
-            </li>
-            <li>
-              <Link href="/email-template-editor/" className="hover:underline" prefetch={false}>Email Editor</Link>
-            </li>
-            <li>
-              <Link href="/support/" className="hover:underline" prefetch={false}>Support</Link>
-            </li>
-          </ul>
-        </nav>
-
-        <div className="flex items-center gap-3">
-          <ThemeToggle />
-        </div>
+    <header className="site-header">
+      <div className="header-container">
+        <Link href="/" aria-label="DHEBE Studios home" className="brand-link" onClick={() => setOpen(false)}><BrandLogo eager /></Link>
+        <nav aria-label="Primary" className="desktop-nav">{links.map(link => <Link key={link.href} href={link.href} prefetch={false} aria-current={activeHref === link.href ? 'page' : undefined}>{link.label}</Link>)}</nav>
+        <div className="header-actions"><Link href="/support/" className="header-support">Help center</Link><ThemeToggle /><button ref={menuButton} className="icon-button mobile-menu-toggle" type="button" aria-label={open ? 'Close navigation' : 'Open navigation'} aria-expanded={open} aria-controls="mobile-navigation" onClick={() => setOpen(!open)}><UiIcon name={open ? 'close' : 'menu'} /></button></div>
       </div>
-
-      <nav aria-label="Mobile Primary" className="border-t border-[var(--app-panel-border)] px-3 py-2 sm:hidden">
-        <ul className="flex gap-2 overflow-x-auto pb-1 text-xs whitespace-nowrap">
-          <li>
-            <Link href="/base64-converter/" className="theme-card block rounded-full border px-3 py-1.5" prefetch={false}>
-              Base64
-            </Link>
-          </li>
-          <li>
-            <Link href="/pdf-studio/" className="theme-card block rounded-full border px-3 py-1.5" prefetch={false}>
-              PDF
-            </Link>
-          </li>
-          <li>
-            <Link href="/image-studio/" className="theme-card block rounded-full border px-3 py-1.5" prefetch={false}>
-              Images
-            </Link>
-          </li>
-          <li>
-            <Link href="/calculator-studio/" className="theme-card block rounded-full border px-3 py-1.5" prefetch={false}>
-              Calculators
-            </Link>
-          </li>
-          <li>
-            <Link href="/email-template-editor/" className="theme-card block rounded-full border px-3 py-1.5" prefetch={false}>
-              Email
-            </Link>
-          </li>
-          <li>
-            <Link href="/support/" className="theme-card block rounded-full border px-3 py-1.5" prefetch={false}>
-              Support
-            </Link>
-          </li>
-        </ul>
-      </nav>
+      {open && <nav id="mobile-navigation" className="mobile-nav" aria-label="Mobile Primary" onKeyDown={event => { if (event.key === 'Escape') { setOpen(false); menuButton.current?.focus(); } }}>{links.map(link => <Link key={link.href} href={link.href} onClick={() => setOpen(false)}>{link.label}<UiIcon name="arrow" width="17" height="17" /></Link>)}<Link href="/support/" onClick={() => setOpen(false)}>Help center<UiIcon name="arrow" width="17" height="17" /></Link></nav>}
     </header>
   );
 }

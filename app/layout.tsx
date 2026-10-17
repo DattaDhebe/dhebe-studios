@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     template: `%s | ${SITE_NAME}`,
   },
   description:
-    'Professional tools suite featuring a Base64 Converter for encoding and decoding, PDF Studio for document workflows, Calculator Studio for high-demand web calculators, and a drag-and-drop Email Template Editor. 100% private, fast, and free.',
+    'Professional tools suite featuring a Base64 Converter for encoding and decoding, PDF Studio for document workflows, Calculator Studio for high-demand web calculators, and a drag-and-drop Email Template Editor. Fast, free tools with clear file-handling information.',
   applicationName: SITE_NAME,
   keywords: [
     'base64 converter',
@@ -45,14 +45,14 @@ export const metadata: Metadata = {
     siteName: SITE_NAME,
     title: `${SITE_NAME} - Professional Tools Suite`,
     description:
-      'Free online tools for Base64 encoding/decoding, PDF manipulation, calculators, and email template design. 100% private, client-side processing.',
+      'Free online tools for Base64, PDF, calculators, and email design. Local editing with temporary server processing for document conversions.',
     locale: 'en_US',
   },
   twitter: {
     card: 'summary_large_image',
     title: `${SITE_NAME} - Professional Tools Suite`,
     description:
-      'Free online Base64, PDF, calculator, and email tools. No uploads, no tracking, 100% private processing.',
+      'Free online Base64, PDF, calculator, and email tools with local editing and temporary document conversion.',
     creator: '@dhebestudios',
   },
   robots: {
@@ -169,34 +169,11 @@ export default function RootLayout({
   `;
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
-        <style dangerouslySetInnerHTML={{ __html: `
-          :root {
-            --app-bg: #fffaf5;
-            --app-text: #020617;
-            --app-title: #020617;
-          }
-          [data-theme='dark'] {
-            --app-bg: #020617;
-            --app-text: #e2e8f0;
-            --app-title: #f8fafc;
-          }
-          body {
-            margin: 0;
-            padding: 0;
-            background-color: var(--app-bg);
-            color: var(--app-text);
-            font-family: system-ui, -apple-system, sans-serif;
-            min-height: 100vh;
-          }
-          .theme-title { color: var(--app-title); }
-          h1 {
-            font-weight: 700;
-            letter-spacing: -0.025em;
-            margin: 0;
-          }
-        `}} />
+        <link rel="preload" href="/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/space-grotesk-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <script id="theme-init" dangerouslySetInnerHTML={{ __html: "try{if(localStorage.getItem('app-theme')==='dark')document.documentElement.dataset.theme='dark'}catch(e){}" }} />
         {process.env.NODE_ENV === 'production' ? (
           <script
             id="analytics-loader"
@@ -212,8 +189,9 @@ export default function RootLayout({
         />
 
         <div className="min-h-screen flex flex-col">
+          <a href="#main-content" className="skip-link">Skip to content</a>
           <Header />
-          <main className="flex-1">{children}</main>
+          <main id="main-content" tabIndex={-1} className="flex-1 outline-none">{children}</main>
           <Footer />
         </div>
       </body>

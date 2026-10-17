@@ -29,7 +29,7 @@ export const imageTools: ImageTool[] = [
     description: 'Remove image background.',
     longDescription:
       'Automatically detect and remove backgrounds from photos to create clean, transparent PNG outputs.',
-    status: 'soon',
+    status: 'ready',
   },
   {
     id: 'jpg-to-png',

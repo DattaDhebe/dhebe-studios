@@ -1,6 +1,8 @@
 'use client';
 
 import { useRef, useState } from 'react';
+import { BlobImage } from './blob-image';
+import { transformImage, imageFilename, loadImage } from '@/lib/image-processing';
 import { ImageDropZone } from './image-drop-zone';
 
 interface ResizedFile {
@@ -28,13 +30,11 @@ export function ImageResizerTool() {
     }
 
     if (newFiles.length > 0) {
-      const img = new Image();
-      img.src = URL.createObjectURL(newFiles[0]);
-      img.onload = () => {
-        setOriginalDimensions({ w: img.width, h: img.height });
-        setWidth(img.width);
-        setHeight(img.height);
-      };
+      void loadImage(newFiles[0]).then(img => {
+        setOriginalDimensions({ w: img.naturalWidth, h: img.naturalHeight });
+        setWidth(img.naturalWidth);
+        setHeight(img.naturalHeight);
+      }).catch(() => setOriginalDimensions(null));
     }
 
     const wrappedFiles: ResizedFile[] = newFiles.map(file => ({
@@ -63,49 +63,16 @@ export function ImageResizerTool() {
   };
 
   const resizeImage = async (file: ResizedFile): Promise<ResizedFile> => {
-    return new Promise((resolve) => {
-      const img = new Image();
-      img.src = URL.createObjectURL(file.original);
-      
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        
-        if (!ctx) {
-          resolve({ ...file, status: 'error' });
-          return;
-        }
-
-        canvas.width = width || img.width;
-        canvas.height = height || img.height;
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-        canvas.toBlob(
-          (blob) => {
-            if (blob) {
-              resolve({
-                ...file,
-                resized: blob,
-                status: 'completed'
-              });
-            } else {
-              resolve({ ...file, status: 'error' });
-            }
-          },
-          file.original.type,
-          0.9
-        );
-      };
-
-      img.onerror = () => {
-        resolve({ ...file, status: 'error' });
-      };
-    });
+    try {
+      const resized = await transformImage(file.original, { width, height, maintainAspectRatio });
+      return { ...file, resized, status: 'completed' };
+    } catch { return { ...file, status: 'error' }; }
   };
 
   const handleResize = async () => {
     setFiles(prev => prev.map(f => ({ ...f, status: 'resizing' })));
-    const results = await Promise.all(files.map(f => resizeImage(f)));
+    const results: ResizedFile[] = [];
+    for (const file of files) results.push(await resizeImage(file));
     setFiles(results);
   };
 
@@ -114,7 +81,7 @@ export function ImageResizerTool() {
     const url = URL.createObjectURL(file.resized);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `resized_${file.original.name}`;
+    a.download = imageFilename(file.original.name, file.resized.type, 'resized_');
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -143,7 +110,7 @@ export function ImageResizerTool() {
             <h3 className="text-lg font-semibold theme-title">
               {files.length} {files.length === 1 ? 'Image' : 'Images'} Selected
             </h3>
-            <button onClick={handleReset} className="text-sm font-medium text-rose-600 hover:text-rose-700">
+            <button disabled={files.some(f => f.status === 'resizing')} onClick={handleReset} className="text-sm font-medium text-rose-600 hover:text-rose-700">
               Clear all
             </button>
           </div>
@@ -152,7 +119,7 @@ export function ImageResizerTool() {
             {files.map((file, index) => (
               <div key={`${file.original.name}-${index}`} className="flex flex-col rounded-2xl border p-4 theme-card">
                 <div className="relative mb-3 aspect-video w-full overflow-hidden rounded-xl bg-slate-100">
-                  <img src={URL.createObjectURL(file.original)} alt={file.original.name} className="h-full w-full object-contain" />
+                  <BlobImage blob={file.original} alt={file.original.name} className="h-full w-full object-contain" />
                   {file.status === 'resizing' && (
                     <div className="absolute inset-0 flex items-center justify-center bg-white/60 backdrop-blur-sm">
                       <div className="h-6 w-6 animate-spin rounded-full border-2 border-rose-600 border-t-transparent"></div>
@@ -161,6 +128,7 @@ export function ImageResizerTool() {
                 </div>
                 <div className="min-w-0 flex-1 text-center">
                   <p className="truncate text-sm font-semibold theme-title">{file.original.name}</p>
+                  {file.status === 'error' && <p role="alert" className="mt-2 text-xs text-red-700">Could not process this image. Check its format, size, and settings.</p>}
                   {file.status === 'completed' && (
                     <button onClick={() => downloadFile(file)} className="mt-3 w-full rounded-xl bg-rose-100 py-2 text-xs font-bold text-rose-700 transition hover:bg-rose-200">
                       Download Resized
@@ -209,7 +177,7 @@ export function ImageResizerTool() {
               <div className="flex flex-col justify-end">
                 <button
                   onClick={handleResize}
-                  disabled={files.some(f => f.status === 'resizing') || !width || !height}
+                  disabled={files.some(f => f.status === 'resizing') || width <= 0 || height <= 0}
                   className="w-full rounded-2xl bg-slate-950 px-5 py-4 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-50 dark:bg-rose-600 dark:hover:bg-rose-700"
                 >
                   {files.some(f => f.status === 'resizing') ? 'Resizing...' : 'Apply Resizing'}

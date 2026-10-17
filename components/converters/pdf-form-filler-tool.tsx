@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import { PDFDocument } from 'pdf-lib';
+import { PDFDocument, PDFTextField, PDFCheckBox, PDFRadioGroup, PDFDropdown, PDFOptionList } from 'pdf-lib';
 import { PdfDropZone } from '@/components/converters/pdf-drop-zone';
 
 interface FormFieldModel {
@@ -29,7 +29,7 @@ export function PdfFormFillerTool() {
       const form = pdfDoc.getForm();
       const detectedFields = form.getFields().map((field) => ({
         name: field.getName(),
-        type: field.constructor.name,
+        type: field instanceof PDFTextField ? 'TextField' : field instanceof PDFCheckBox ? 'CheckBox' : field instanceof PDFRadioGroup ? 'RadioGroup' : field instanceof PDFDropdown ? 'Dropdown' : field instanceof PDFOptionList ? 'OptionList' : 'ReadOnly',
       }));
 
       setFile(selectedFile);
@@ -70,23 +70,22 @@ export function PdfFormFillerTool() {
       for (const field of form.getFields()) {
         const name = field.getName();
         const value = formData[name];
-        if (!value) continue;
+        if (value === undefined) continue;
 
-        const type = field.constructor.name;
-        if (type === 'PDFTextField') {
+        if (field instanceof PDFTextField) {
           form.getTextField(name).setText(value);
-        } else if (type === 'PDFCheckBox') {
+        } else if (field instanceof PDFCheckBox) {
           const normalized = value.toLowerCase();
           if (['true', 'yes', '1', 'checked'].includes(normalized)) {
             form.getCheckBox(name).check();
           } else {
             form.getCheckBox(name).uncheck();
           }
-        } else if (type === 'PDFRadioGroup') {
+        } else if (field instanceof PDFRadioGroup) {
           form.getRadioGroup(name).select(value);
-        } else if (type === 'PDFDropdown') {
+        } else if (field instanceof PDFDropdown) {
           form.getDropdown(name).select(value);
-        } else if (type === 'PDFOptionList') {
+        } else if (field instanceof PDFOptionList) {
           form.getOptionList(name).select(value);
         }
       }

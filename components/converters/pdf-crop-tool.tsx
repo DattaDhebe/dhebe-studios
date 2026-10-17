@@ -27,7 +27,7 @@ export function PdfCropTool() {
     }
 
     const cropValue = Number.parseFloat(marginPercent);
-    if (Number.isNaN(cropValue) || cropValue < 0 || cropValue >= 45) {
+    if (!Number.isFinite(cropValue) || cropValue < 0 || cropValue > 45) {
       setError('Enter a margin percentage between 0 and 45.');
       return;
     }
@@ -39,10 +39,10 @@ export function PdfCropTool() {
       const pdfDoc = await PDFDocument.load(await file.arrayBuffer());
 
       for (const page of pdfDoc.getPages()) {
-        const { width, height } = page.getSize();
+        const { x, y, width, height } = page.getCropBox();
         const marginX = (width * cropValue) / 100;
         const marginY = (height * cropValue) / 100;
-        page.setCropBox(marginX, marginY, width - marginX * 2, height - marginY * 2);
+        page.setCropBox(x + marginX, y + marginY, width - marginX * 2, height - marginY * 2);
       }
 
       const bytes = await pdfDoc.save();
@@ -93,6 +93,7 @@ export function PdfCropTool() {
             <p className="mt-2 text-xs theme-muted">
               A small value trims outer whitespace while preserving most of the page.
             </p>
+            <p className="mt-2 text-xs theme-muted">Cropping hides content outside the page boundary; it does not permanently redact it.</p>
           </div>
 
           <button

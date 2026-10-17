@@ -6,7 +6,7 @@ export interface PdfTool {
   status: 'ready' | 'soon';
 }
 
-export const pdfTools: PdfTool[] = [
+const toolDefinitions: PdfTool[] = [
   {
     id: 'pdf-to-word',
     label: 'PDF to WORD',
@@ -232,6 +232,9 @@ export const pdfTools: PdfTool[] = [
     status: 'ready',
   },
 ];
+
+const serviceTools = new Set(['word-to-pdf', 'powerpoint-to-pdf', 'excel-to-pdf', 'html-to-pdf', 'pdf-to-powerpoint', 'pdf-to-excel', 'pdf-to-pdfa', 'repair']);
+export const pdfTools: PdfTool[] = toolDefinitions.map(tool => serviceTools.has(tool.id) ? { ...tool, status: 'ready', longDescription: 'Upload your document for conversion. Temporary files are deleted after the result is prepared.' } : tool);
 
 export function getPdfToolById(id: string): PdfTool | undefined {
   return pdfTools.find((tool) => tool.id === id);

@@ -15,7 +15,7 @@ export function CircleCalculatorTool() {
   const [area, setArea] = useState<string>('');
 
   const calculateFromRadius = (r: number) => {
-    if (isNaN(r) || r <= 0) {
+    if (!Number.isFinite(r) || r <= 0) {
       setDiameter('');
       setCircumference('');
       setArea('');
@@ -27,7 +27,7 @@ export function CircleCalculatorTool() {
   };
 
   const calculateFromDiameter = (d: number) => {
-    if (isNaN(d) || d <= 0) {
+    if (!Number.isFinite(d) || d <= 0) {
       setRadius('');
       setCircumference('');
       setArea('');
@@ -40,7 +40,7 @@ export function CircleCalculatorTool() {
   };
 
   const calculateFromCircumference = (c: number) => {
-    if (isNaN(c) || c <= 0) {
+    if (!Number.isFinite(c) || c <= 0) {
       setRadius('');
       setDiameter('');
       setArea('');
@@ -53,7 +53,7 @@ export function CircleCalculatorTool() {
   };
 
   const calculateFromArea = (a: number) => {
-    if (isNaN(a) || a <= 0) {
+    if (!Number.isFinite(a) || a <= 0) {
       setRadius('');
       setDiameter('');
       setCircumference('');

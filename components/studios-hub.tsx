@@ -1,314 +1,59 @@
+'use client';
+
 import Link from 'next/link';
+import { useDeferredValue, useEffect, useState } from 'react';
+import type { DirectoryTool } from '@/lib/tool-directory';
+import { UiIcon, type IconName } from './ui-icon';
 
-const studios = [
-  {
-    id: 'email',
-    category: 'Marketing Tools',
-    name: 'Email Template Editor',
-    description:
-      'Create professional responsive HTML emails with drag-and-drop editing, live preview, and export-ready code.',
-    href: '/email-template-editor/',
-    accent: 'bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-400',
-    dot: 'bg-sky-500',
-    features: ['Drag and drop builder', 'Responsive preview', 'HTML export'],
-    cta: 'Open Email Editor',
-    initials: 'EM',
-  },
-  {
-    id: 'pdf',
-    category: 'Document Tools',
-    name: 'PDF Studio',
-    description:
-      'Powerful PDF tools for compression, merging, splitting, conversion, and document cleanup.',
-    href: '/pdf-studio/',
-    accent: 'bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-400',
-    dot: 'bg-purple-500',
-    features: ['Merge and split', 'Compress and convert', 'Page extraction'],
-    cta: 'Open PDF Studio',
-    initials: 'PD',
-  },
-  {
-    id: 'calculator',
-    category: 'Utility Tools',
-    name: 'Calculator Studio',
-    description:
-      'Popular everyday and finance calculators for age, BMI, EMI, SIP, GST, and percentage workflows.',
-    href: '/calculator-studio/',
-    accent: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-400',
-    dot: 'bg-emerald-500',
-    features: ['Health and age', 'Finance math', 'Percentage tools'],
-    cta: 'Open Calculators',
-    initials: 'CA',
-  },
-  {
-    id: 'base64',
-    category: 'Developer Tools',
-    name: 'Base64 Converter',
-    description:
-      'Encode and decode text, images, URLs, PDF, files, HTML, CSS, audio, and more using Base64.',
-    href: '/base64-converter/',
-    accent: 'bg-orange-100 text-orange-800 dark:bg-orange-950 dark:text-orange-400',
-    dot: 'bg-orange-500',
-    features: ['Text encoding', 'Image conversion', 'File utilities'],
-    cta: 'Open Converter',
-    initials: 'B6',
-  },
-  {
-    id: 'image',
-    category: 'Creative Tools',
-    name: 'Image Studio',
-    description:
-      'Professional image tools for compression, resizing, background removal, and format conversion.',
-    href: '/image-studio/',
-    accent: 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-400',
-    dot: 'bg-rose-500',
-    features: ['Compress and resize', 'Background removal', 'Format conversion'],
-    cta: 'Open Img Studio',
-    initials: 'IM',
-  },
-  {
-    id: 'dhebevoice',
-    category: 'Mobile Apps',
-    name: 'DhebeVoice',
-    description:
-      'Android text reader app for listening to typed, pasted, shared, and imported text with a public privacy policy ready for Google Play.',
-    href: '/dhebevoice/',
-    accent: 'bg-cyan-100 text-cyan-800 dark:bg-cyan-950 dark:text-cyan-400',
-    dot: 'bg-cyan-500',
-    features: ['Text to speech reading', 'Local text and file import', 'Play policy ready'],
-    cta: 'View App Details',
-    initials: 'DV',
-  },
-] as const;
+const studios: { id: string; name: string; category: string; description: string; href: string; icon: IconName; tone: string; count: string }[] = [
+  { id: 'pdf', name: 'PDF Studio', category: 'Documents', description: 'Smaller files. Neater pages. Convert, combine, and get your documents ready to go.', href: '/pdf-studio/', icon: 'pdf', tone: 'pdf', count: '28 tools' },
+  { id: 'image', name: 'Image Studio', category: 'Images', description: 'Give every image the right size, format, and finishing touch. No heavy software needed.', href: '/image-studio/', icon: 'image', tone: 'image', count: '7 tools' },
+  { id: 'calculator', name: 'Calculator Studio', category: 'Everyday math', description: 'From monthly payments to important dates. Make the numbers make sense.', href: '/calculator-studio/', icon: 'calculator', tone: 'calculator', count: '11 calculators' },
+  { id: 'base64', name: 'Base64 Studio', category: 'For developers', description: 'Encode, decode, and get back to building. Text, files, images, and everything in between.', href: '/base64-converter/', icon: 'code', tone: 'code', count: '18 tools' },
+  { id: 'email', name: 'Email Editor', category: 'Create & send', description: 'Turn a good idea into a great email. Build visually, preview, and export your HTML.', href: '/email-template-editor/', icon: 'mail', tone: 'email', count: 'Visual builder' },
+  { id: 'voice', name: 'DhebeVoice', category: 'Our mobile app', description: 'Give your reading a voice. Meet our Android app for listening to the text you choose.', href: '/dhebevoice/', icon: 'voice', tone: 'voice', count: 'Explore the app' },
+];
 
-const featuredPages = [
-  { href: '/tools/text-to-base64/', label: 'Text to Base64' },
-  { href: '/tools/base64-to-url/', label: 'Base64 to URL' },
-  { href: '/pdf-to-word/', label: 'PDF to Word' },
-  { href: '/compress-pdf/', label: 'Compress PDF' },
-  { href: '/age-calculator/', label: 'Age Calculator' },
-  { href: '/emi-calculator/', label: 'EMI Calculator' },
-  { href: '/tools/circle/', label: 'Circle Calculator' },
-  { href: '/image-tools/image-compressor/', label: 'Image Compressor' },
-  { href: '/image-tools/background-remover/', label: 'Background Remover' },
-  { href: '/email-template-editor/', label: 'Email Template Editor' },
-  { href: '/dhebevoice/privacy-policy/', label: 'DhebeVoice Privacy Policy' },
-  { href: '/support/', label: 'Support Center' },
-] as const;
+const shortcuts: { label: string; note: string; href: string; icon: IconName; tone: string }[] = [
+  { label: 'Compress PDF', note: 'Make room for the important stuff', href: '/compress-pdf/', icon: 'pdf', tone: 'pdf' },
+  { label: 'Remove background', note: 'A clean cut, without the effort', href: '/image-tools/background-remover/', icon: 'image', tone: 'image' },
+  { label: 'Text to Base64', note: 'A quick encode, then back to it', href: '/tools/text-to-base64/', icon: 'code', tone: 'code' },
+];
 
-export function StudiosHub() {
-  const featuredStudio = studios[0];
-
+export function StudiosHub({ tools }: { tools: DirectoryTool[] }) {
+  const [query, setQuery] = useState('');
+  const [category, setCategory] = useState('All studios');
+  const deferredQuery = useDeferredValue(query.trim().toLowerCase());
+  useEffect(() => { const initialQuery = new URLSearchParams(window.location.search).get('q'); if (initialQuery) setQuery(initialQuery); }, []);
+  const results = deferredQuery ? tools.filter(tool => (tool.label + ' ' + tool.description + ' ' + tool.category).toLowerCase().includes(deferredQuery)) : [];
+  const visibleStudios = category === 'All studios' ? studios : studios.filter(studio => studio.category === category);
   return (
-    <main className="theme-page-home min-h-screen text-[var(--app-text)] transition-colors duration-200">
-      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="mb-10 rounded-[2.25rem] border p-6 theme-panel sm:p-8">
-          <div className="grid gap-8 xl:grid-cols-[minmax(0,1.05fr)_minmax(19rem,0.95fr)] xl:items-center">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-sky-800 dark:text-sky-400">
-                Studio Directory
-              </p>
-              <h1 className="mt-3 text-4xl font-bold tracking-tight theme-title sm:text-5xl">
-                Access every studio from one
-                <span className="block bg-gradient-to-r from-slate-950 via-sky-700 to-violet-700 bg-clip-text text-transparent dark:from-sky-300 dark:via-violet-300 dark:to-emerald-300">
-                  cleaner workspace
-                </span>
-              </h1>
-              <p className="mt-4 max-w-3xl text-lg leading-8 theme-muted">
-                Every studio entry now follows the same visual pattern, so it is easier to scan, compare, and jump into the right tool without hunting for the main action.
-              </p>
-
-              <div className="mt-6 flex flex-wrap gap-3">
-                <Link
-                  href={featuredStudio.href}
-                  className="inline-flex items-center rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:opacity-90 dark:bg-sky-500 dark:text-slate-950"
-                  prefetch={false}
-                >
-                  Open Email Editor
-                </Link>
-                <Link
-                  href="#all-studios"
-                  className="inline-flex items-center rounded-full border border-[var(--app-card-border)] px-5 py-3 text-sm font-semibold theme-title transition hover:bg-white/70"
-                  prefetch={false}
-                >
-                  Browse all studios
-                </Link>
-              </div>
-
-              <div className="mt-6 flex flex-wrap items-center gap-4 text-sm theme-muted">
-                <div className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-emerald-500"></span>
-                  100% private
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-sky-500"></span>
-                  Browser-based
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-violet-500"></span>
-                  No sign-up required
-                </div>
-              </div>
-            </div>
-
-            <div className="rounded-[1.9rem] border bg-[var(--app-card)] p-6 shadow-sm">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.24em] text-sky-800 dark:text-sky-400">
-                    Featured Workspace
-                  </p>
-                  <h2 className="mt-3 text-2xl font-bold theme-title">{featuredStudio.name}</h2>
-                </div>
-                <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">
-                  Live
-                </span>
-              </div>
-
-              <p className="mt-4 text-sm leading-7 theme-muted">{featuredStudio.description}</p>
-
-              <div className="mt-5 grid gap-3 sm:grid-cols-3">
-                {featuredStudio.features.map((feature) => (
-                  <div key={feature} className="rounded-[1.1rem] border p-4 theme-card-soft">
-                    <p className="text-sm font-semibold theme-title">{feature}</p>
-                  </div>
-                ))}
-              </div>
-
-              <Link
-                href={featuredStudio.href}
-                className="mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-slate-950 px-5 py-4 text-sm font-semibold text-white transition hover:opacity-90"
-              >
-                Open the live editor
-              </Link>
-            </div>
+    <div className="home-page">
+      <section className="home-hero content-container">
+        <div className="hero-copy reveal">
+          <p className="eyebrow"><span className="status-dot" />A simpler way to get things done</p>
+          <h1>Your everyday<br /><span>shortcut.</span></h1>
+          <p className="hero-description">The little tasks shouldn't take all day. Convert a file, polish an image, run the numbers. Find your tool and keep moving.</p>
+          <div className="home-search-wrap">
+            <label className="home-search"><UiIcon name="search" width="22" height="22" /><input aria-label="Search all tools" placeholder="What do you need to do?" value={query} onChange={event => setQuery(event.target.value)} onKeyDown={event => { if (event.key === 'Escape') setQuery(''); }} />{query ? <button type="button" aria-label="Clear tool search" onClick={() => setQuery('')}><UiIcon name="close" width="18" height="18" /></button> : <span className="search-hint">Find a tool</span>}</label>
+            {deferredQuery && <div className="home-search-results" role="region" aria-label="Tool search results"><p className="search-result-count" role="status">{results.length} {results.length === 1 ? 'tool' : 'tools'} found{results.length > 12 ? ' / showing first 12' : ''}</p>{results.slice(0, 12).map(tool => <Link key={tool.href} href={tool.href}><div><strong>{tool.label}</strong><span>{tool.category}</span></div><UiIcon name="arrow" width="17" height="17" /></Link>)}{results.length === 0 && <div className="home-search-empty">Try "PDF", "resize", or "calculator".</div>}</div>}
           </div>
+          <div className="hero-popular"><span>Popular:</span><Link href="/compress-pdf/">Compress PDF</Link><Link href="/pdf-to-word/">PDF to Word</Link><Link href="/image-tools/image-resizer/">Resize image</Link></div>
+          <div className="hero-assurances"><span><UiIcon name="check" width="15" height="15" />Free to use</span><span><UiIcon name="check" width="15" height="15" />No sign-up</span><span><UiIcon name="check" width="15" height="15" />Made to be simple</span></div>
         </div>
-
-        <div id="all-studios" className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] theme-muted-2">All studios</p>
-            <h2 className="mt-2 text-2xl font-bold theme-title">Choose a workspace</h2>
-          </div>
-          <p className="max-w-xl text-sm leading-6 theme-muted">
-            Each card uses the same layout, status badge, feature list, and call-to-action so the whole home page feels more consistent and user friendly.
-          </p>
-        </div>
-
-        <div className="mb-16 grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-          {studios.map((studio) => (
-            <Link
-              key={studio.id}
-              href={studio.href}
-              className="group flex h-full min-h-[25rem] flex-col rounded-[1.9rem] border p-6 theme-card transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
-              prefetch={false}
-            >
-              <div className="flex items-start justify-between gap-4">
-                <div
-                  className={`inline-flex h-12 w-12 items-center justify-center rounded-2xl text-sm font-bold ${studio.accent}`}
-                >
-                  {studio.initials}
-                </div>
-                <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">
-                  Live
-                </span>
-              </div>
-
-              <div className="mt-5">
-                <p className="text-xs font-semibold uppercase tracking-[0.24em] theme-muted-2">
-                  {studio.category}
-                </p>
-                <h3 className="mt-3 text-2xl font-bold leading-tight theme-title">{studio.name}</h3>
-                <p className="mt-4 text-sm leading-7 theme-muted">{studio.description}</p>
-              </div>
-
-              <div className="mt-6 space-y-3">
-                {studio.features.map((feature) => (
-                  <div key={feature} className="flex items-center gap-3 text-sm theme-muted">
-                    <span className={`h-2.5 w-2.5 rounded-full ${studio.dot}`}></span>
-                    <span>{feature}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-auto pt-8">
-                <div className="flex items-center justify-between rounded-[1.2rem] border px-4 py-3 transition group-hover:bg-slate-950 group-hover:text-white">
-                  <span className="text-sm font-semibold">{studio.cta}</span>
-                  <span className="text-lg" aria-hidden="true">
-                    -&gt;
-                  </span>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-
-        <section className="mb-16 rounded-[2rem] border p-6 theme-panel sm:p-8">
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan-600">
-                Popular Pages
-              </p>
-              <h3 className="mt-2 text-2xl font-bold theme-title">Direct links to real tool pages</h3>
-            </div>
-            <p className="max-w-2xl text-sm leading-6 theme-muted">
-              These links point straight to canonical tool pages, which makes the homepage more useful for visitors and gives search engines cleaner crawl paths into your most important URLs.
-            </p>
-          </div>
-
-          <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-            {featuredPages.map((page) => (
-              <Link
-                key={page.href}
-                href={page.href}
-                className="theme-card-soft rounded-[1.4rem] border px-4 py-4 text-sm font-semibold theme-title transition hover:-translate-y-1 hover:border-cyan-300"
-                prefetch={false}
-              >
-                {page.label}
-              </Link>
-            ))}
-          </div>
-        </section>
-
-        <div className="mb-16 rounded-2xl border p-12 theme-panel">
-          <h3 className="mb-8 text-center text-2xl font-bold theme-title">Why Choose DHEBE Studios?</h3>
-          <div className="grid gap-8 md:grid-cols-3">
-            <div className="text-center">
-              <div className="mx-auto mb-2 inline-flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">
-                <span className="text-lg">S</span>
-              </div>
-              <h4 className="mb-2 font-semibold theme-title">100% Private</h4>
-              <p className="text-sm theme-muted">
-                All processing happens in your browser. Your files never leave your device.
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="mx-auto mb-2 inline-flex h-10 w-10 items-center justify-center rounded-full bg-cyan-100 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-400">
-                <span className="text-lg">Z</span>
-              </div>
-              <h4 className="mb-2 font-semibold theme-title">Lightning Fast</h4>
-              <p className="text-sm theme-muted">No server delays. Process files instantly on your own device.</p>
-            </div>
-            <div className="text-center">
-              <div className="mx-auto mb-2 inline-flex h-10 w-10 items-center justify-center rounded-full bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">
-                <span className="text-lg">*</span>
-              </div>
-              <h4 className="mb-2 font-semibold theme-title">Always Free</h4>
-              <p className="text-sm theme-muted">
-                No subscriptions, no ads, no limits. Use all tools completely free.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="border-t border-[var(--app-card-border)] pt-16 text-center">
-          <p className="mb-6 theme-muted">
-            More studios are on the way. We will add any contact or subscription options once they are ready.
-          </p>
-          <p className="text-sm theme-muted-2">
-            For now, every available studio remains free to use with no sign-up required.
-          </p>
+        <div className="hero-shelf reveal">
+          <div className="shelf-caption"><span>LESS FRICTION. MORE FLOW.</span><span aria-hidden="true">01 / 03</span></div>
+          <div className="shelf-art" aria-hidden="true"><div className="art-orbit orbit-one" /><div className="art-orbit orbit-two" /><div className="art-file art-file-back"><UiIcon name="image" width="44" height="44" /></div><div className="art-file art-file-front"><UiIcon name="pdf" width="36" height="36" /><div /><div /><div /></div><span className="art-check"><UiIcon name="check" width="24" height="24" /></span><span className="art-spark spark-one">+</span><span className="art-spark spark-two">+</span></div>
+          <div className="shortcut-list"><p>A good place to start</p>{shortcuts.map(shortcut => <Link key={shortcut.href} href={shortcut.href} className={'shortcut-item tone-' + shortcut.tone}><span className="shortcut-icon"><UiIcon name={shortcut.icon} /></span><span><strong>{shortcut.label}</strong><small>{shortcut.note}</small></span><UiIcon name="arrow" width="18" height="18" /></Link>)}</div>
         </div>
       </section>
-    </main>
+      <section id="all-studios" className="studio-section content-container">
+        <div className="section-heading"><div><p className="eyebrow">THE RIGHT TOOL, RIGHT HERE</p><h2>A toolkit for your kind of day.</h2></div><p>Less searching. More doing.<br />Choose a studio and make it happen.</p></div>
+        <div className="category-tabs" aria-label="Filter studios">{['All studios', 'Documents', 'Images', 'Everyday math', 'For developers', 'Create & send'].map(item => <button key={item} type="button" aria-pressed={category === item} onClick={() => setCategory(item)}>{item}</button>)}</div>
+        <div className="studio-grid">{visibleStudios.map((studio, index) => <Link key={studio.id} href={studio.href} className={'studio-card tone-' + studio.tone} prefetch={false}><div className="studio-card-top"><span className="studio-icon"><UiIcon name={studio.icon} width="25" height="25" /></span><span className="card-index">{String(index + 1).padStart(2, '0')}</span></div><p className="studio-category">{studio.category}</p><h3>{studio.name}</h3><p className="studio-description">{studio.description}</p><div className="studio-card-bottom"><span>{studio.count}</span><span className="card-arrow"><UiIcon name="arrow" width="19" height="19" /></span></div></Link>)}</div>
+      </section>
+      <section className="trust-section content-container"><div className="trust-intro"><p className="eyebrow">BUILT AROUND YOU</p><h2>Useful tools.<br />Nothing in the way.</h2></div><div className="trust-item"><UiIcon name="shield" /><h3>Your files, handled with care.</h3><p>Most tools run on your device. Server conversions are clearly marked, with source files deleted after processing.</p></div><div className="trust-item"><UiIcon name="bolt" /><h3>Open it. Use it. Carry on.</h3><p>No installs or accounts to get started. Just practical tools that fit into the way you already work.</p></div></section>
+      <section className="home-help content-container"><div><p className="eyebrow">A LITTLE GUIDANCE GOES A LONG WAY</p><h2>Not sure where to start?</h2><p>Our help center can point you in the right direction.</p></div><Link href="/support/" className="button-primary">Visit the help center <UiIcon name="arrow" width="18" height="18" /></Link></section>
+    </div>
   );
 }

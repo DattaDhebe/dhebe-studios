@@ -71,7 +71,7 @@ export function base64ToAscii(input: string): string {
     }
   }
 
-  return String.fromCharCode(...bytes);
+  return new TextDecoder('utf-8').decode(bytes);
 }
 
 export function base64ToHex(input: string): string {
@@ -94,12 +94,16 @@ function normalizeBase64Payload(input: string): string {
     throw new Error('Add a Base64 value before converting.');
   }
 
-  if (!/^[A-Za-z0-9+/=]+$/.test(sanitized)) {
+  if (!/^[A-Za-z0-9+/]+={0,2}$/.test(sanitized)) {
     throw new Error('The input contains characters that are not valid Base64.');
   }
 
   if (sanitized.length % 4 === 1) {
     throw new Error('The Base64 input appears to be incomplete.');
+  }
+
+  if (sanitized.includes('=') && sanitized.length % 4 !== 0) {
+    throw new Error('The Base64 padding is invalid.');
   }
 
   return sanitized.padEnd(sanitized.length + ((4 - (sanitized.length % 4 || 4)) % 4), '=');

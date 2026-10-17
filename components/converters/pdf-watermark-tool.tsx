@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { PDFDocument, rgb, degrees } from 'pdf-lib';
+import { PDFDocument, StandardFonts, rgb, degrees } from 'pdf-lib';
 import { PdfDropZone } from '@/components/converters/pdf-drop-zone';
 
 export function PdfWatermarkTool() {
@@ -32,24 +32,25 @@ export function PdfWatermarkTool() {
       const pdfDoc = await PDFDocument.load(arrayBuffer);
       const pages = pdfDoc.getPages();
 
-      const fontSize = 60;
-      const textWidth = watermarkText.length * (fontSize * 0.5);
-      const textHeight = fontSize;
+      const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
       for (const page of pages) {
-        const { width, height } = page.getSize();
-        
-        // Calculate position (center, diagonal)
-        const x = (width - textWidth) / 2;
-        const y = (height - textHeight) / 2;
+        const box = page.getCropBox();
+        const fontSize = Math.min(60, Math.min(box.width, box.height) * 0.8 / Math.max(font.widthOfTextAtSize(watermarkText, 1), 1));
+        const textWidth = font.widthOfTextAtSize(watermarkText, fontSize);
+        const textHeight = font.heightAtSize(fontSize);
+        const diagonal = Math.SQRT1_2;
+        const x = box.x + box.width / 2 - (textWidth - textHeight) * diagonal / 2;
+        const y = box.y + box.height / 2 - (textWidth + textHeight) * diagonal / 2;
 
         page.drawText(watermarkText, {
           x,
           y,
           size: fontSize,
+          font,
           color: rgb(0, 0, 0),
           opacity,
-          rotate: degrees(-45),
+          rotate: degrees(45),
         });
       }
 

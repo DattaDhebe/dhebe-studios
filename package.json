@@ -4,22 +4,27 @@
   "private": true,
   "description": "A modern web application for converting files and images to base64 format",
   "scripts": {
+    "predev": "node scripts/sync-pdfjs-assets.mjs",
     "dev": "next dev",
+    "prebuild": "node scripts/sync-pdfjs-assets.mjs",
     "build": "next build",
     "postbuild": "node scripts/fix-static-rsc-aliases.mjs",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint app components lib scripts",
+    "test": "node --test tests/*.test.mjs",
+    "test:browser": "playwright test"
   },
   "dependencies": {
+    "fflate": "^0.8.3",
     "next": "^16.2.3",
     "pdf-lib": "^1.17.1",
-    "pdfjs-dist": "^5.6.205",
+    "pdfjs-dist": "^6.4.299",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "tesseract.js": "^7.0.0"
   },
   "devDependencies": {
-    "@next/eslint-plugin-next": "^16.2.3",
+    "@playwright/test": "^1.64.1",
     "@tailwindcss/postcss": "^4.2.2",
     "@types/node": "^25.6.0",
     "@types/react": "^19.2.14",
@@ -27,6 +32,7 @@
     "eslint": "^10.2.0",
     "postcss": "^8.5.9",
     "tailwindcss": "^4.2.2",
-    "typescript": "^6.0.2"
+    "typescript": "^6.0.2",
+    "typescript-eslint": "^8.71.2"
   }
 }

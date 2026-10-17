@@ -28,6 +28,8 @@ export function Base64BinaryDecoder({
   previewLabel,
   renderPreview,
 }: Base64BinaryDecoderProps) {
+  const [ready, setReady] = useState(false);
+  useEffect(() => setReady(true), []);
   const [source, setSource] = useState('');
   const [blobUrl, setBlobUrl] = useState('');
   const [mimeType, setMimeType] = useState(defaultMimeType);
@@ -46,6 +48,8 @@ export function Base64BinaryDecoder({
   const handleDecode = () => {
     if (!source.trim()) {
       setError('Add a Base64 value before decoding.');
+      setBytes(null);
+      setBlobUrl('');
       return;
     }
 
@@ -53,6 +57,9 @@ export function Base64BinaryDecoder({
       const parsed = parseBase64Input(source);
       const nextBytes = base64ToBytes(source);
       const nextMimeType = parsed.mimeType || defaultMimeType;
+      if (renderPreview && (defaultMimeType === 'application/pdf' ? nextMimeType !== 'application/pdf' : !nextMimeType.startsWith(defaultMimeType.split('/')[0] + '/'))) {
+        throw new Error('The data URL type does not match this decoder. Use Base64 to File for other file types.');
+      }
       const nextBlobUrl = bytesToBlobUrl(nextBytes, nextMimeType);
 
       if (blobUrl) {
@@ -95,7 +102,8 @@ export function Base64BinaryDecoder({
       return;
     }
 
-    const extension = mimeType.split('/')[1]?.split(';')[0] || 'bin';
+    const known: Record<string, string> = { 'application/octet-stream': 'bin', 'image/jpeg': 'jpg', 'image/svg+xml': 'svg', 'audio/mpeg': 'mp3', 'application/pdf': 'pdf' };
+    const extension = known[mimeType] ?? mimeType.split('/')[1]?.split(';')[0].replace(/[^a-z0-9]/gi, '') ?? 'bin';
     const link = document.createElement('a');
     link.href = blobUrl;
     link.download = `${downloadName}.${extension}`;
@@ -114,6 +122,7 @@ export function Base64BinaryDecoder({
           </div>
 
           <textarea
+            disabled={!ready}
             value={source}
             onChange={(event) => setSource(event.target.value)}
             placeholder={inputPlaceholder}
@@ -126,6 +135,7 @@ export function Base64BinaryDecoder({
             </div>
             <button
               type="button"
+              disabled={!ready}
               onClick={handleDecode}
               className="rounded-2xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
             >

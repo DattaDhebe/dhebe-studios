@@ -56,7 +56,7 @@ export function CalculatorLandingPage({ tool }: CalculatorLandingPageProps) {
       />
       <CalculatorToolsWorkbench initialTool={tool.id} />
 
-      <section className="mx-auto max-w-[1600px] px-4 pb-16 pt-8 xl:px-6">
+      <section className="tool-guide tone-calculator mx-auto max-w-[1240px] px-4 pb-16 pt-8 xl:px-6">
         <div className="grid gap-8">
           <div className="theme-panel rounded-[2rem] border p-6 sm:p-8">
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-emerald-600">

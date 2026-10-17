@@ -79,7 +79,8 @@ export function Base64CategoryLandingPage({ view }: Base64CategoryLandingPagePro
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
-      <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(249,115,22,0.16),_transparent_28%),radial-gradient(circle_at_bottom_right,_rgba(14,165,233,0.12),_transparent_30%),linear-gradient(180deg,_#fffaf5_0%,_#fff8ef_42%,_#fffcf8_100%)] px-4 py-6 text-[var(--app-text)] transition-colors duration-200 xl:px-6">
+      <Base64Workbench initialTool={view === 'all' ? undefined : initialTool} />
+      <section className="tool-guide tone-code mx-auto max-w-[1240px] px-4 pb-16 pt-8">
         <div className="mx-auto max-w-[1600px] space-y-8">
           <section className="rounded-[2rem] border p-6 theme-panel sm:p-8">
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-orange-600">
@@ -91,16 +92,6 @@ export function Base64CategoryLandingPage({ view }: Base64CategoryLandingPagePro
             <p className="mt-4 max-w-4xl text-sm leading-7 theme-muted sm:text-base">
               {page.intro}
             </p>
-            <div className="mt-6 flex flex-wrap gap-2">
-              {page.highlights.map((keyword) => (
-                <span
-                  key={keyword}
-                  className="rounded-full border border-orange-200 bg-orange-50 px-3 py-1 text-xs font-semibold text-orange-700 sm:text-sm"
-                >
-                  {keyword}
-                </span>
-              ))}
-            </div>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link
                 href="/base64-converter/"
@@ -116,8 +107,6 @@ export function Base64CategoryLandingPage({ view }: Base64CategoryLandingPagePro
               </Link>
             </div>
           </section>
-
-          <Base64Workbench initialTool={view === 'all' ? undefined : initialTool} />
 
           <section className="grid gap-8 xl:grid-cols-[minmax(0,1.35fr)_minmax(18rem,0.85fr)]">
             <div className="grid gap-6">
@@ -180,7 +169,7 @@ export function Base64CategoryLandingPage({ view }: Base64CategoryLandingPagePro
             </div>
           </section>
         </div>
-      </main>
+      </section>
     </>
   );
 }

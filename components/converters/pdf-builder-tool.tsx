@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react';
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 import { PdfDropZone } from '@/components/converters/pdf-drop-zone';
+import { ServerRequiredTool } from './server-required-tool';
 
 type PdfBuilderMode =
   | 'scan-to-pdf'
@@ -421,6 +422,7 @@ export function PdfBuilderTool({ mode }: PdfBuilderToolProps) {
 
   return (
     <div className="space-y-6">
+      {['word-to-pdf', 'powerpoint-to-pdf', 'excel-to-pdf', 'html-to-pdf'].includes(mode) ? <ServerRequiredTool /> : <>
       {mode === 'convert-to-pdf' && (
         <div className="theme-card rounded-2xl border p-4">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] theme-muted-2">
@@ -504,6 +506,7 @@ export function PdfBuilderTool({ mode }: PdfBuilderToolProps) {
           <p className="text-sm font-semibold text-red-900">{error}</p>
         </div>
       )}
+      </>}
     </div>
   );
 }

@@ -1,0 +1,20 @@
+# Add this block to the existing Caddy configuration after explicit deployment
+# approval. Join Caddy to the tools service's isolated Docker network first.
+tools.dhebe.com {
+    header {
+        Cache-Control "no-store"
+        X-Content-Type-Options "nosniff"
+        Referrer-Policy "no-referrer"
+    }
+    request_body {
+        max_size 26MB
+    }
+    handle_path /api/tools/* {
+        reverse_proxy dhebe-tools:8000 {
+            transport http {
+                response_header_timeout 300s
+            }
+        }
+    }
+    respond 404
+}

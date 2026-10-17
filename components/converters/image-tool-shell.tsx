@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
+import { BlobImage } from './blob-image';
 import { ImageDropZone } from './image-drop-zone';
 
 interface ImageToolShellProps {
@@ -60,8 +61,8 @@ export function ImageToolShell({ title, helperText }: ImageToolShellProps) {
                 className="flex flex-col rounded-2xl border p-4 theme-card"
               >
                 <div className="mb-3 aspect-video w-full overflow-hidden rounded-xl bg-slate-100">
-                  <img
-                    src={URL.createObjectURL(file)}
+                  <BlobImage
+                    blob={file}
                     alt={file.name}
                     className="h-full w-full object-contain"
                   />

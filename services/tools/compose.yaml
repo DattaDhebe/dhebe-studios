@@ -1,0 +1,36 @@
+name: dhebe-tools
+services:
+  tools:
+    image: dhebe-conversion:2026-10-audit
+    build: .
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8000:8000"
+    read_only: true
+    tmpfs:
+      - /tmp:size=768m,mode=1777
+    mem_limit: 3g
+    cpus: 1.5
+    pids_limit: 256
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    environment:
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-https://www.dhebe.com,https://dhebe.com}
+      OMP_NUM_THREADS: "1"
+      NUMBA_CACHE_DIR: /tmp/numba-cache
+    networks:
+      conversion:
+        aliases: [dhebe-tools]
+    logging:
+      driver: json-file
+      options:
+        max-size: 5m
+        max-file: "2"
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+networks:
+  conversion:
+    internal: true

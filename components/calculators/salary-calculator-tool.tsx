@@ -15,9 +15,10 @@ export function SalaryCalculatorTool() {
 
   const taxAmount = (gross * taxRate) / 100;
   const netSalary = gross - taxAmount - deductions;
+  const valid = [gross, taxRate, deductions].every(Number.isFinite) && gross >= 0 && taxRate >= 0 && taxRate <= 100 && deductions >= 0 && netSalary >= 0;
 
   const fmt = (val: number) =>
-    new Intl.NumberFormat('en-IN', {
+    !valid ? '-' : new Intl.NumberFormat('en-IN', {
       style: 'currency',
       currency: 'INR',
       maximumFractionDigits: 0,

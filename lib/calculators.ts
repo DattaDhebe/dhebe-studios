@@ -188,7 +188,7 @@ export function calculateAge(dateOfBirthValue: string, asOfValue: string): AgeCa
 }
 
 export function calculateBmiMetric(weightKg: number, heightCm: number): BmiCalculationResult | null {
-  if (weightKg <= 0 || heightCm <= 0) {
+  if (![weightKg, heightCm].every(Number.isFinite) || weightKg <= 0 || heightCm <= 0) {
     return null;
   }
 
@@ -204,7 +204,7 @@ export function calculateBmiMetric(weightKg: number, heightCm: number): BmiCalcu
 }
 
 export function calculateBmiImperial(weightLb: number, totalInches: number): BmiCalculationResult | null {
-  if (weightLb <= 0 || totalInches <= 0) {
+  if (![weightLb, totalInches].every(Number.isFinite) || weightLb <= 0 || totalInches <= 0) {
     return null;
   }
 
@@ -264,7 +264,7 @@ export function calculateEmi(
   annualInterestRate: number,
   tenureMonths: number,
 ): EmiCalculationResult | null {
-  if (principal <= 0 || annualInterestRate < 0 || tenureMonths <= 0) {
+  if (![principal, annualInterestRate, tenureMonths].every(Number.isFinite) || principal <= 0 || annualInterestRate < 0 || !Number.isInteger(tenureMonths) || tenureMonths <= 0) {
     return null;
   }
 
@@ -279,8 +279,8 @@ export function calculateEmi(
     };
   }
 
-  const growthFactor = Math.pow(1 + monthlyRate, tenureMonths);
-  const emi = (principal * monthlyRate * growthFactor) / (growthFactor - 1);
+  const denominator = -Math.expm1(-tenureMonths * Math.log1p(monthlyRate));
+  const emi = (principal * monthlyRate) / denominator;
   const totalPayment = emi * tenureMonths;
 
   return {
@@ -295,7 +295,7 @@ export function calculateSip(
   annualReturnRate: number,
   tenureMonths: number,
 ): SipCalculationResult | null {
-  if (monthlyInvestment <= 0 || annualReturnRate < 0 || tenureMonths <= 0) {
+  if (![monthlyInvestment, annualReturnRate, tenureMonths].every(Number.isFinite) || monthlyInvestment <= 0 || annualReturnRate < 0 || !Number.isInteger(tenureMonths) || tenureMonths <= 0) {
     return null;
   }
 
@@ -310,8 +310,9 @@ export function calculateSip(
     };
   }
 
-  const growthFactor = Math.pow(1 + monthlyRate, tenureMonths);
-  const maturityValue = monthlyInvestment * (((growthFactor - 1) / monthlyRate) * (1 + monthlyRate));
+  const growth = Math.expm1(tenureMonths * Math.log1p(monthlyRate));
+  const maturityValue = monthlyInvestment * ((growth / monthlyRate) * (1 + monthlyRate));
+  if (!Number.isFinite(maturityValue)) return null;
 
   return {
     maturityValue,
@@ -321,7 +322,7 @@ export function calculateSip(
 }
 
 export function calculateGstFromBase(baseAmount: number, gstRate: number): GstCalculationResult | null {
-  if (baseAmount < 0 || gstRate < 0) {
+  if (![baseAmount, gstRate].every(Number.isFinite) || baseAmount < 0 || gstRate < 0) {
     return null;
   }
 
@@ -337,7 +338,7 @@ export function calculateGstFromBase(baseAmount: number, gstRate: number): GstCa
 }
 
 export function calculateGstFromGross(grossAmount: number, gstRate: number): GstCalculationResult | null {
-  if (grossAmount < 0 || gstRate < 0) {
+  if (![grossAmount, gstRate].every(Number.isFinite) || grossAmount < 0 || gstRate < 0) {
     return null;
   }
 

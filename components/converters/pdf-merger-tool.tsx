@@ -18,7 +18,7 @@ export function PdfMergerTool() {
   const handleFileSelect = (newFiles: FileList) => {
     const newSelectedFiles = Array.from(newFiles).map((file, index) => ({
       file,
-      order: files.length + index,
+      order: Math.max(-1, ...files.map(item => item.order)) + 1 + index,
     }));
 
     for (const { file } of newSelectedFiles) {

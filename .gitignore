@@ -26,6 +26,10 @@ yarn-error.log*
 # Local env files
 .env*.local
 
+# Trading bot runtime data
+/data/
+/trading_bot/data/
+
 # Vercel
 .vercel
 
@@ -35,3 +39,10 @@ yarn-error.log*
 *.swp
 *.swo
 *~
+
+# Generated PDF.js assets and test reports
+/public/pdfjs/
+/playwright-report/
+/test-results/
+/services/tools/__pycache__/
+/services/tools/tests/__pycache__/

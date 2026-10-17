@@ -19,6 +19,7 @@ export function PregnancyCalculatorTool() {
   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
   const weeks = Math.floor(diffDays / 7);
   const days = diffDays % 7;
+  const valid = Boolean(lastPeriod) && Number.isFinite(diffDays) && diffDays >= 0;
 
   const formatDate = (date: Date) =>
     date.toLocaleDateString('en-IN', {
@@ -37,6 +38,7 @@ export function PregnancyCalculatorTool() {
           <CalculatorField label="LMP Date">
             <CalculatorDateInput
               type="date"
+              max={new Date().toLocaleDateString('en-CA')}
               value={lastPeriod}
               onChange={(e) => setLastPeriod(e.target.value)}
             />
@@ -47,10 +49,10 @@ export function PregnancyCalculatorTool() {
       <CalculatorSection title="Estimates" description="Your calculated due date and current progress.">
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="sm:col-span-2">
-            <CalculatorStat label="Estimated Due Date" value={formatDate(edd)} tone="highlight" />
+            <CalculatorStat label="Estimated Due Date" value={valid ? formatDate(edd) : 'Choose a valid past date'} tone="highlight" />
           </div>
-          <CalculatorStat label="Weeks Pregnant" value={`${weeks}`} />
-          <CalculatorStat label="Remaining Days" value={`${280 - diffDays}`} />
+          <CalculatorStat label="Weeks Pregnant" value={valid ? `${weeks} weeks, ${days} days` : '-'} />
+          <CalculatorStat label="Remaining Days" value={valid ? `${Math.max(0, 280 - diffDays)}` : '-'} />
         </div>
         <p className="mt-6 text-xs leading-5 theme-muted-2">
           Note: This is an estimation. Most babies are born between 37 and 42 weeks. Please consult with your doctor for medical advice.

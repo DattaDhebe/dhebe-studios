@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ConversionOutput } from '@/components/converters/conversion-output';
 import { formatTextSize } from '@/lib/base64';
 
@@ -27,6 +27,8 @@ export function Base64SourceDecoder({
   actionLabel = 'Decode Base64',
   transform,
 }: Base64SourceDecoderProps) {
+  const [ready, setReady] = useState(false);
+  useEffect(() => setReady(true), []);
   const [source, setSource] = useState('');
   const [decoded, setDecoded] = useState('');
   const [copied, setCopied] = useState(false);
@@ -88,6 +90,7 @@ export function Base64SourceDecoder({
           </div>
 
           <textarea
+            disabled={!ready}
             value={source}
             onChange={(event) => setSource(event.target.value)}
             placeholder={inputPlaceholder}
@@ -100,6 +103,7 @@ export function Base64SourceDecoder({
             </div>
             <button
               type="button"
+              disabled={!ready}
               onClick={handleDecode}
               className="rounded-2xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
             >

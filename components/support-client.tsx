@@ -72,7 +72,7 @@ export function SupportClient({ structuredData }: SupportClientProps) {
               Privacy First
             </p>
             <h2 className="mt-3 text-3xl font-semibold tracking-tight theme-privacy-title">
-              Your files stay in your browser session.
+              Local tools keep files on your device. Server conversions delete temporary files after processing.
             </h2>
             <p className="mt-4 max-w-4xl text-sm leading-7 theme-privacy-text sm:text-base">
               DHEBE tools are designed for browser-based processing. For most workflows, data is handled locally on your device without server-side file retention.

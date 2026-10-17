@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { StudiosHub } from '@/components/studios-hub';
+import { toolDirectory } from '@/lib/tool-directory';
 import { BreadcrumbSchema } from '@/components/breadcrumb-schema';
 import { SITE_NAME, SUPPORT_EMAIL, siteRoute } from '@/lib/site';
 
@@ -33,7 +34,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: `${SITE_NAME} - Professional Tools Suite`,
-    description: 'Free online tools plus DhebeVoice app information. No uploads, no tracking.',
+    description: 'Free online tools plus DhebeVoice app information. Local editing and temporary document conversion.',
   },
 };
 
@@ -81,7 +82,7 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
-      <StudiosHub />
+      <StudiosHub tools={toolDirectory} />
     </>
   );
 }

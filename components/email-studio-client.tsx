@@ -306,6 +306,8 @@ export function EmailStudioClient() {
   const [dropIndex, setDropIndex] = useState<number | null>(null);
   const [commandQuery, setCommandQuery] = useState('');
   const [isBooting, setIsBooting] = useState(true);
+  const [storageReady, setStorageReady] = useState(false);
+  const [saved, setSaved] = useState(false);
   const [statusMessage, setStatusMessage] = useState('Start from a polished template, then drag blocks into the layout and export clean HTML.');
 
   const activeBlock = editor.blocks.find((block) => block.id === editor.activeId) ?? null;
@@ -323,20 +325,35 @@ export function EmailStudioClient() {
     : BLOCK_LIBRARY;
 
   useEffect(() => {
-    const timer = window.setTimeout(() => setIsBooting(false), 650);
-    return () => window.clearTimeout(timer);
+    try {
+      const stored = localStorage.getItem('dhebe-email-editor');
+      if (stored) {
+        const value = JSON.parse(stored);
+        const validTheme = value?.theme && Object.keys(INITIAL.theme).every(key => typeof value.theme[key] === 'string');
+        const validBlocks = Array.isArray(value?.blocks) && value.blocks.length < 500 && value.blocks.every((block: EmailBlock) =>
+          block && Object.keys(INITIAL.blocks[0]).every(key => typeof block[key as keyof EmailBlock] === 'string') &&
+          BLOCK_LIBRARY.some(entry => entry.type === block.type) && ['left', 'center'].includes(block.align));
+        if (validTheme && validBlocks && typeof value.activeId === 'string' && typeof value.selectedPresetId === 'string') setEditor(value);
+      }
+    } catch { setStatusMessage('Saved design could not be restored. You can start a new design.'); }
+    setStorageReady(true);
+    setIsBooting(false);
   }, []);
 
+  useEffect(() => {
+    if (!storageReady) return;
+    try {
+      localStorage.setItem('dhebe-email-editor', JSON.stringify(editor));
+      setSaved(true);
+    } catch { setSaved(false); }
+  }, [editor, storageReady]);
+
   const commitState = (message: string, updater: (current: EditorState) => EditorState) => {
-    setEditor((current) => {
-      const next = updater(current);
-      if (serializeEditor(current) === serializeEditor(next)) {
-        return current;
-      }
-      setHistory((prev) => [...prev.slice(-39), cloneEditorState(current)]);
-      setFuture([]);
-      return next;
-    });
+    const next = updater(editor);
+    if (serializeEditor(editor) === serializeEditor(next)) return;
+    setHistory(previous => [...previous.slice(-39), cloneEditorState(editor)]);
+    setFuture([]);
+    setEditor(next);
     setStatusMessage(message);
   };
 
@@ -502,7 +519,7 @@ export function EmailStudioClient() {
                 Campaign workspace
               </span>
               <span className="rounded-full border border-emerald-300/30 bg-emerald-400/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-emerald-200">
-                Saved locally
+                {saved ? 'Saved on this device' : 'Unsaved changes'}
               </span>
             </div>
 
@@ -536,14 +553,14 @@ export function EmailStudioClient() {
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.28em] text-sky-600">Email Builder</p>
-                  <h2 className="mt-3 text-2xl font-semibold tracking-tight theme-title">One clear left rail</h2>
+                  <h2 className="mt-3 text-2xl font-semibold tracking-tight theme-title">Make it your own</h2>
                 </div>
                 <span className="rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-sky-700">
                   Live
                 </span>
               </div>
               <p className="mt-3 text-sm leading-7 theme-muted">
-                Templates, blocks, brand controls, and campaign settings now live in one focused rail.
+                Start with a template, add your content, and fine-tune your brand.
               </p>
 
               <div className="mt-5 grid gap-2">
@@ -677,14 +694,14 @@ export function EmailStudioClient() {
             <div className="mt-5 rounded-[1.8rem] border p-4 theme-card-soft">
               <p className="text-xs font-semibold uppercase tracking-[0.22em] text-violet-600">Workflow note</p>
               <p className="mt-3 text-sm leading-7 theme-muted">
-                This shell is rebuilt from the product patterns you shared: one header, one left rail, and one obvious editor stage in the center.
+                Keep your design on this device, preview it at different sizes, and export the HTML when it is ready.
               </p>
             </div>
           </aside>
 
-          <div className="min-w-0 bg-[radial-gradient(circle_at_top_left,_rgba(59,130,246,0.08),_transparent_24%),radial-gradient(circle_at_bottom_right,_rgba(168,85,247,0.08),_transparent_28%),linear-gradient(180deg,_rgba(248,250,252,0.96)_0%,_rgba(255,255,255,0.96)_100%)] p-4 sm:p-5">
-            <div className="rounded-[1.9rem] border-2 border-slate-200/80 bg-white p-5 shadow-[0_24px_80px_rgba(15,23,42,0.08)]">
-              <div className="mb-5 rounded-[1.6rem] bg-slate-950 px-5 py-5 text-white">
+          <div className="email-editor-stage min-w-0 p-4 sm:p-5">
+            <div className="email-stage-frame border p-5 theme-card">
+              <div className="email-campaign-header mb-5 px-5 py-5 text-white">
                 <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
@@ -767,7 +784,10 @@ export function EmailStudioClient() {
                   <DropZone active={dropIndex === 0} onDragOver={() => setDropIndex(0)} onDrop={() => handleDrop(0)} />
                   {editor.blocks.map((block, index) => (
                     <Fragment key={block.id}>
-                      <button
+                      <div
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); setEditor(current => ({ ...current, activeId: block.id })); } }}
                         draggable
                         onDragStart={() => setDragPayload({ kind: 'existing', blockId: block.id })}
                         onDragEnd={() => {
@@ -794,7 +814,7 @@ export function EmailStudioClient() {
                             <button onClick={(event) => { event.stopPropagation(); removeBlock(block.id); }} className="rounded-full border border-rose-200 px-3 py-1 text-xs font-semibold text-rose-700 transition hover:bg-rose-50">Remove</button>
                           </div>
                         </div>
-                      </button>
+                      </div>
                       <DropZone active={dropIndex === index + 1} onDragOver={() => setDropIndex(index + 1)} onDrop={() => handleDrop(index + 1)} />
                     </Fragment>
                   ))}
@@ -931,7 +951,7 @@ export function EmailStudioClient() {
 
                   <div className="rounded-[1.4rem] border bg-white p-3">
                     <div className={previewDevice === 'mobile' ? 'mx-auto w-[375px] max-w-full' : 'w-full'}>
-                      <iframe title="Email template preview" srcDoc={html} className="h-[42rem] w-full rounded-[1rem] border bg-white" />
+                      <iframe title="Email template preview" sandbox="" referrerPolicy="no-referrer" srcDoc={html} className="h-[42rem] w-full rounded-[1rem] border bg-white" />
                     </div>
                   </div>
                 </div>

@@ -1,6 +1,10 @@
 export function parsePageSelection(input: string, totalPages: number): number[] {
   const trimmed = input.trim();
 
+  if (!Number.isInteger(totalPages) || totalPages < 1) {
+    throw new Error('The document has no selectable pages.');
+  }
+
   if (!trimmed) {
     throw new Error('Enter at least one page number or range.');
   }
@@ -8,10 +12,12 @@ export function parsePageSelection(input: string, totalPages: number): number[] 
   const pages = new Set<number>();
   const segments = trimmed
     .split(',')
-    .map((segment) => segment.trim())
-    .filter(Boolean);
+    .map((segment) => segment.trim());
 
   for (const segment of segments) {
+    if (!/^\d+(?:\s*-\s*\d+)?$/.test(segment)) {
+      throw new Error(`Invalid page selection: "${segment}".`);
+    }
     if (segment.includes('-')) {
       const [rawStart, rawEnd] = segment.split('-').map((value) => value.trim());
       const start = Number.parseInt(rawStart, 10);

@@ -2,6 +2,7 @@
 
 import type { ChangeEvent, DragEvent, RefObject } from 'react';
 import { useState } from 'react';
+import { UiIcon } from '@/components/ui-icon';
 
 interface ImageDropZoneProps {
   inputRef: RefObject<HTMLInputElement | null>;
@@ -23,16 +24,24 @@ export function ImageDropZone({
   const [isDragging, setIsDragging] = useState(false);
   const [uploadMessage, setUploadMessage] = useState<string>('');
 
+  const select = (selection: FileList | File | null) => {
+    const files = selection instanceof FileList ? Array.from(selection) : selection ? [selection] : [];
+    const valid = files.every(file => /\.(jpe?g|png|webp)$/i.test(file.name) || ['image/jpeg', 'image/png', 'image/webp'].includes(file.type));
+    if (!valid) { setUploadMessage('Choose JPG, PNG, or WebP images.'); return false; }
+    onSelect(selection);
+    return true;
+  };
+
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (multiple) {
       const files = event.target.files;
-      onSelect(files ?? null);
+      if (!select(files ?? null)) return;
       setUploadMessage(files && files.length > 0 ? `${files.length} file(s) selected successfully.` : '');
       return;
     }
 
     const file = event.target.files?.[0] ?? null;
-    onSelect(file);
+    if (!select(file)) return;
     setUploadMessage(file ? `Upload complete: ${file.name}` : '');
   };
 
@@ -43,24 +52,20 @@ export function ImageDropZone({
 
     if (multiple) {
       const files = event.dataTransfer.files ?? null;
-      onSelect(files);
+      if (!select(files)) return;
       setUploadMessage(files && files.length > 0 ? `${files.length} file(s) dropped successfully.` : '');
       return;
     }
 
     const file = event.dataTransfer.files?.[0] ?? null;
-    onSelect(file);
+    if (!select(file)) return;
     setUploadMessage(file ? `Upload complete: ${file.name}` : '');
   };
 
   return (
-    <div className="rounded-2xl border p-6 theme-card-soft">
+    <div className="upload-container">
       <label
-        className={`flex cursor-pointer items-center justify-center rounded-xl border-2 border-dashed py-12 transition ${
-          isDragging
-            ? 'border-rose-500 bg-rose-50'
-            : 'border-[var(--app-card-border)] hover:brightness-95'
-        }`}
+        className={`upload-zone ${isDragging ? 'is-dragging' : ''}`}
         onDrop={handleDrop}
         onDragOver={(event) => {
           event.preventDefault();
@@ -74,34 +79,22 @@ export function ImageDropZone({
         <input
           ref={inputRef}
           type="file"
+          aria-label={title}
           accept={accept}
           multiple={multiple}
           onChange={handleInputChange}
-          className="hidden"
+          onClick={event => { event.currentTarget.value = ''; }}
+          className="sr-only"
         />
         <div className="text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-rose-100 text-rose-600">
-            <svg
-              aria-hidden="true"
-              viewBox="0 0 24 24"
-              fill="none"
-              className="h-8 w-8"
-              stroke="currentColor"
-              strokeWidth="1.5"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 16V7m0 0-3 3m3-3 3 3M5 17.5A3.5 3.5 0 0 1 8.5 14H9a4 4 0 0 1 7.74-1.2A3.5 3.5 0 1 1 18.5 20H8.5A3.5 3.5 0 0 1 5 16.5v1Z"
-              />
-            </svg>
-          </div>
-          <p className="text-xl font-semibold theme-title">{title}</p>
-          <p className="mt-2 text-sm theme-muted">{helperText}</p>
+          <span className="upload-icon"><UiIcon name="image" width="22" height="22" /></span>
+          <p className="upload-title">{title}</p>
+          <p className="upload-helper">{helperText}</p>
+          <span className="upload-browse">Choose {multiple ? 'images' : 'image'}</span>
         </div>
       </label>
       {uploadMessage && (
-        <p className="mt-3 text-sm font-medium text-emerald-600 dark:text-emerald-400">{uploadMessage}</p>
+        <p className="upload-message" aria-live="polite">{uploadMessage.replace('Upload complete:', 'Selected:')}</p>
       )}
     </div>
   );

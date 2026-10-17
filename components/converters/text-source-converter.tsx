@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ConversionOutput } from '@/components/converters/conversion-output';
 import { formatTextSize } from '@/lib/base64';
 
@@ -25,6 +25,8 @@ export function TextSourceConverter({
   downloadName,
   transform,
 }: TextSourceConverterProps) {
+  const [ready, setReady] = useState(false);
+  useEffect(() => setReady(true), []);
   const [source, setSource] = useState('');
   const [base64, setBase64] = useState('');
   const [copied, setCopied] = useState(false);
@@ -88,6 +90,7 @@ export function TextSourceConverter({
           </div>
 
           <textarea
+            disabled={!ready}
             value={source}
             onChange={(event) => setSource(event.target.value)}
             placeholder={inputPlaceholder}
@@ -100,6 +103,7 @@ export function TextSourceConverter({
             </div>
             <button
               type="button"
+              disabled={!ready}
               onClick={handleConvert}
               className="rounded-2xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
             >

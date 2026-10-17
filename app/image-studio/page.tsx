@@ -10,7 +10,7 @@ import { SITE_NAME, siteRoute } from '@/lib/site';
 export const metadata: Metadata = {
   title: 'Image Studio - Free Online Image Tools for Compress, Resize, Crop & Convert',
   description:
-    'Free online Image Studio with top tools for image compression, resizing, background removal, JPG to PNG, PNG to JPG, WebP conversion, and cropping. 100% client-side and privacy-first.',
+    'Free Image Studio for compression, resizing, cropping, and format conversion on your device, with temporary server processing for background removal.',
   keywords: [
     'online image editor',
     'image compressor online',
@@ -77,7 +77,7 @@ export default function ImageStudioPage() {
             name: 'Does Image Studio upload my photos?',
             acceptedAnswer: {
               '@type': 'Answer',
-              text: 'No. All image processing is handled locally in your browser. Your images never leave your device.',
+              text: 'Compression, resizing, cropping, and format conversion run locally. Background removal uploads the selected image for temporary processing and deletes it afterward.',
             },
           },
           {
