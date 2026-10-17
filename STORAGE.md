@@ -24,22 +24,29 @@ directories from appearing in future website commits.
   VPS `200.234.47.229`. Source files are deleted after conversion; prepared
   results wait in memory for at most five minutes, then expire or are removed
   after download. Conversion documents must not be archived on Premium hosting.
-- DhebeVoice voluntary tester signups currently persist in the private VPS
-  volume `dhebe-tools_tester_signups`, `/data/testers.sqlite3`. Only email, UTC
-  creation time, and consent version are stored, with 180-day expiry. See
-  `services/tools/README.md` for administration. Invitations remain manual.
+- New DhebeVoice voluntary tester signups persist on Premium hosting, in
+  `domains/dhebe.com/private/dhebevoice-signups/testers.sqlite3`, outside
+  `public_html`. The frontend uses `/api/dhebevoice-signup.php`; cached clients
+  using the old VPS URL are proxied to the same PHP endpoint. Only email, UTC
+  creation time, and consent version persist, with 180-day expiry and daily
+  pruning. See `services/shared-hosting/README.md`. Invitations remain manual.
+- The legacy VPS volume `dhebe-tools_tester_signups` remains for rollback. One
+  existing record awaits explicit owner-approved reconciliation; no old record
+  has been deleted. Include that copy when administering the tester list until
+  the migration is verified.
 - The four shared-hosting MySQL databases belong to existing applications;
   their combined usage was approximately 31 MB, each with a reported 3 GB cap.
   Do not delete or repurpose them for this website without a migration plan.
 
 ## Shared-hosting rollout requirements
 
-Moving tester signup storage to a same-origin PHP endpoint is website work and
-must be implemented, tested, documented, and committed here. Keep persistent
+Tester signup's same-origin PHP endpoint is website work and is implemented,
+tested, documented, and committed here. Keep persistent
 data outside `public_html`, verify private file permissions and HTTP denial,
 preserve consent/expiry/deduplication, and reconcile existing entries before
 cutover. Do not silently split the authoritative list between two systems.
-This note records ownership and the audit, not a completed signup migration.
+New signups use Premium; the single existing legacy record is a separate pending
+consent migration. No bulk conversion-file retention was enabled.
 
 Trading history/report storage must be implemented and documented in the
 trading repository, not here. It must not introduce trading databases, broker

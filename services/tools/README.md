@@ -63,7 +63,16 @@ Retain the tools host block when publishing a newer Caddy configuration. The
 service's internal Docker network prevents outbound connections while allowing
 the existing proxy to reach it.
 
-## DhebeVoice Volunteer Testers
+## DhebeVoice Volunteer Testers: Legacy VPS Storage
+
+The production website now uses the same-origin Premium-hosting endpoint
+`https://www.dhebe.com/api/dhebevoice-signup.php`. See
+`services/shared-hosting/README.md` and the repository's `STORAGE.md`.
+The Caddy compatibility route forwards the old public signup URL to that same
+private list, including CORS handling for previously cached website clients.
+The Python implementation and existing volume below are retained for rollback;
+they are not the destination for new public signups. Do not delete an existing
+consent record until its approved migration has been verified.
 
 `POST /early-access/dhebevoice` accepts a JSON email, explicit boolean consent,
 and an empty `website` honeypot from the approved website origins. It does not
@@ -81,7 +90,7 @@ and at most 10,000 entries. Entries expire after 180 days and are pruned on new
 requests and hourly. Duplicate signups do not reset the original signup date.
 Back up the volume privately if needed; do not remove it during service updates.
 
-List access is through the existing authorized VPS SSH connection only. Example
+Legacy-list access is through the existing authorized VPS SSH connection only. Example
 administration commands from `/opt/dhebe-tools`:
 
 ```sh

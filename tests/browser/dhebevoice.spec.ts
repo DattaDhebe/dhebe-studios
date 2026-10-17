@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const endpoint = '**/early-access/dhebevoice';
+const endpoint = '**/api/dhebevoice-signup.php';
 
 test('DhebeVoice homepage card invites volunteer testers', async ({ page }) => {
   await page.goto('/');

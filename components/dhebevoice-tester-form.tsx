@@ -4,7 +4,7 @@ import { useEffect, useState, type FormEvent } from 'react';
 import { SUPPORT_EMAIL } from '@/lib/site';
 import { UiIcon } from './ui-icon';
 
-const signupUrl = `${(process.env.NEXT_PUBLIC_TOOL_API_URL ?? 'https://tools.dhebe.com/api/tools').replace(/\/$/, '')}/early-access/dhebevoice`;
+const signupUrl = '/api/dhebevoice-signup.php';
 
 export function DhebeVoiceTesterForm() {
   const [state, setState] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');

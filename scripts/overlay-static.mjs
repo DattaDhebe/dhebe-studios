@@ -29,10 +29,10 @@ export async function uploadBatch({ root, files, url, auth_key, rest_auth_key, c
       try {
         const content = await readFile(absolute);
         const destination = url.replace(/\/$/, '') + '/' + file.relative.split('/').map(encodeURIComponent).join('/') + '?override=true';
-        const created = await fetch(destination, { method: 'POST', redirect: 'manual', headers: { ...headers, 'Upload-Length': String(content.length), 'Upload-Offset': '0' } });
+        const created = await fetch(destination, { method: 'POST', redirect: 'manual', signal: AbortSignal.timeout(30000), headers: { ...headers, 'Upload-Length': String(content.length), 'Upload-Offset': '0' } });
         if (created.status !== 201) throw new Error('Create returned ' + created.status);
         // Hostinger's Location omits /rest; the documented PATCH uses the original URL.
-        const uploaded = await fetch(destination, { method: 'PATCH', redirect: 'manual', headers: { ...headers, 'Content-Type': 'application/offset+octet-stream', 'Upload-Offset': '0' }, body: content });
+        const uploaded = await fetch(destination, { method: 'PATCH', redirect: 'manual', signal: AbortSignal.timeout(30000), headers: { ...headers, 'Content-Type': 'application/offset+octet-stream', 'Upload-Offset': '0' }, body: content });
         if (uploaded.status !== 204 || Number(uploaded.headers.get('upload-offset')) !== content.length) throw new Error('Upload returned ' + uploaded.status);
       } catch (error) {
         failures.push({ relative: file.relative, error: error instanceof Error ? error.message : 'Upload failed' });
