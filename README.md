@@ -120,9 +120,13 @@ Trading code, trading storage, and shared trading-proxy configuration belong in
 the separate `F:\ai_projects\ai-trading` repository, not this one. Preserve the
 existing `/trade/`, `/api/`, and other hosted applications during deployment.
 
-The homepage AI Trading feature and footer open `https://trade.dhebe.com/` in a
-new tab with `noopener noreferrer`. Public copy describes research, screening,
-decision history, simulated trades, and system health only. It does not expose
+The header's AI Trading shortcut scrolls to the homepage section in the current
+tab, including when opened from a tool page. The homepage feature and footer
+open `https://trade.dhebe.com/` in a new tab with `noopener noreferrer`.
+Public copy explains background screening, automatic/manual paper modes,
+decision history, simulated portfolio review, and system health. It clearly
+states that investment deposits, real orders, and trained prediction models are
+not enabled and does not promise passive income. It does not expose
 account data, offer public registration, or claim live orders or profitable AI
 predictions. The app remains sign-in-required; its code and operations stay in
 the separate trading repository.

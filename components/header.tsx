@@ -13,6 +13,7 @@ const links = [
   { href: '/calculator-studio/', label: 'Calculators', matches: ['calculator'] },
   { href: '/base64-converter/', label: 'Base64', matches: ['base64'] },
   { href: '/email-template-editor/', label: 'Email editor', matches: ['/email-'] },
+  { href: '/#ai-trading', label: 'AI Trading', matches: [] },
 ];
 
 export function Header() {
