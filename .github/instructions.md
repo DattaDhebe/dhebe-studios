@@ -1,167 +1,52 @@
-# Base64 Converter - Project Instructions
+# Dhebe Studios Project Guide
 
-A modern web application for converting files and images to base64 format.
+## Repository scope
 
-## Project Setup Checklist
+This repository owns the Dhebe Studios website, browser tools, conversion
+service, and optional DhebeVoice tester signup. Its GitHub repository is
+`DattaDhebe/dhebe-studios`; the older Base64 repository is separate.
 
-- [x] Verify that the copilot-instructions.md file in the .github directory is created.
-- [x] Clarify Project Requirements - Next.js with TypeScript, Tailwind CSS
-- [x] Scaffold the Project
-- [x] Customize the Project with base64 conversion functionality
-- [x] Install Required Dependencies  
-- [x] Compile the Project - Build successful without errors
-- [x] Create and Run Task - Development tasks added to .vscode/tasks.json
-- [ ] Launch the Project 
-- [x] Ensure Documentation is Complete
+Trading implementation, storage, and the canonical shared VPS Caddyfile belong
+to `F:\ai_projects\ai-trading`. Do not add `trade/` or `trading_bot/` here.
+See `STORAGE.md` for ownership and private data locations.
 
-## Technology Stack
-- **Framework**: Next.js 16.2.3 (App Router with Turbopack)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS v4 with @tailwindcss/postcss
-- **Package Manager**: npm
-- **Node.js**: v24.14.1
-- **Build Tool**: Turbopack (default in Next.js 16)
+## Runtime and commands
 
-## Project Purpose & Features
-Build a web application that allows users to convert files and images to base64 format:
+Use Node.js 24 and npm 11 or newer. Install with `npm ci`; do not remove the
+lockfile as a troubleshooting shortcut.
 
-### Core Features
-- ✅ File upload and automatic conversion
-- ✅ Base64 output with text area display
-- ✅ Copy-to-clipboard functionality
-- ✅ Download base64 output as text file
-- ✅ Support for multiple file types
-- ✅ Responsive design with Tailwind CSS
-- ✅ Modern gradient UI with file preview
-
-### Project Structure
-```
-base64-convertor/
-├── app/
-│   ├── layout.tsx              # Root layout
-│   ├── page.tsx                # Main application
-│   └── globals.css             # Global styles
-├── components/                 # Reusable components
-├── public/                     # Static assets
-├── .vscode/
-│   └── tasks.json             # Development tasks
-├── .github/
-│   └── copilot-instructions.md # This file
-├── next.config.js             # Next.js configuration
-├── tsconfig.json              # TypeScript configuration
-├── tailwind.config.ts         # Tailwind CSS configuration
-├── postcss.config.js          # PostCSS configuration
-├── .eslintrc.json             # ESLint configuration
-├── package.json               # Dependencies
-├── README.md                  # Project documentation
-└── .gitignore                 # Git ignore rules
-```
-
-## Development Commands
-
-### Run Development Server
 ```bash
 npm run dev
-```
-Starts Next.js development server at http://localhost:3000
-
-### Production Build
-```bash
+npm run lint
+npm test
 npm run build
-```
-Creates optimized production build in `.next` directory
-
-### Start Production Server
-```bash
 npm start
 ```
-Runs production build
 
-### Run Linter
-```bash
-npm run lint
-```
-Check code quality with ESLint
+`npm run build` creates the static export in `out/`. `npm start` previews it on
+loopback; it does not run `next start`. Read `AGENTS.md` and the relevant
+installed Next.js guides before changing framework code.
 
-## Available VS Code Tasks
-- **npm: dev** (default build task) - Starts development server
-- **npm: build** - Creates production build
-- **npm: start** - Runs production server
-- **npm: lint** - Runs ESLint
+## Implementation map
 
-Press Ctrl+Shift+B to run the default development task.
+- `app/` owns routes and global styles.
+- `components/` owns studios and tool interfaces.
+- `lib/` owns registries, processing helpers, and the server conversion client.
+- `services/tools/` owns isolated server conversions.
+- `services/shared-hosting/` owns PHP tester signup and maintenance.
+- `scripts/` owns preview, PDF.js synchronization, and deployment helpers.
+- `tests/` owns unit, browser, and opt-in live checks.
 
-## Key Implementation Details
+## Verification and safety
 
-### Page Component (app/page.tsx)
-- **Client Component**: Uses 'use client' directive for browser APIs
-- **FileReader API**: Converts files to base64 using FileReader
-- **State Management**: React hooks for file, base64 output, and loading states
-- **Features**:
-  - Drag and drop support
-  - Real-time conversion
-  - Copy to clipboard
-  - Download output file
-  - File size display
+Build before browser tests, then run `npx playwright install chromium` and
+`npm run test:browser`. Normal CI uses generated fixtures and mocked service
+requests; production signup tests require explicit disposable-fixture cleanup.
 
-### Styling
-- Built with **Tailwind CSS v4** using the new @import syntax
-- Gradient backgrounds and modern design
-- Responsive grid layout (mobile and desktop)
-- Smooth scroll behavior
-- Gradient button effects
+Keep server-processing disclosures, required tester consent, retention, and
+error handling intact. Preserve version-matched PDF.js workers and assets.
+Never commit documents, tester lists, credentials, database exports, or trading
+data. Publish static files by overlay and preserve unrelated hosted applications.
 
-### Build Configuration
-- **Turbopack enabled** for faster builds
-- **TypeScript strict mode** enabled
-- **Absolute imports** support with @/* alias
-- **ESLint** for code quality
-- **Tailwind CSS v4** with @tailwindcss/postcss
-
-## Dependencies
-
-### Production
-- next@16.2.3
-- react@19.2.5
-- react-dom@19.2.5
-
-### Development
-- TypeScript@6.0.2
-- Tailwind CSS@4.2.2
-- @tailwindcss/postcss
-- PostCSS@8.5.9
-- Autoprefixer@10.4.27
-- ESLint@10.2.0
-- @next/eslint-plugin-next@16.2.3
-- @types/node@25.6.0
-- @types/react@19.2.14
-
-## Setup Notes
-
-- Node.js location: F:\apps\node
-- Project folder: c:\Users\DELL\web_applications\Base64Convertor
-- All npm commands include PATH setup for Node.js location
-- Development server runs on http://localhost:3000
-- Production build outputs to .next directory
-
-## Next Steps to Run
-
-1. Start development server: `npm run dev`
-2. Open browser to http://localhost:3000
-3. Upload any file to convert to base64
-4. Copy output or download as text file
-
-## Troubleshooting
-
-If npm commands don't work:
-1. Ensure Node.js is installed at F:\apps\node
-2. Add to PATH: `$env:Path += ";F:\apps\node"`
-3. Restart terminal if PATH was updated
-
-## Browser Support
-- Chrome/Edge 90+
-- Firefox 88+
-- Safari 14+
-
-## License
-MIT License
+The project has a custom personal-use/commercial license. Do not describe it as
+MIT or alter `LICENSE` without the owner's explicit direction.

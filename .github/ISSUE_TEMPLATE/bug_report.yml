@@ -1,0 +1,41 @@
+name: Bug report
+description: Report a reproducible problem with a Dhebe Studios tool.
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: "Use synthetic examples only. Do not attach personal documents, tester addresses, credentials, databases, or trading data. Report security issues privately using SECURITY.md."
+  - type: input
+    id: tool
+    attributes:
+      label: Tool or page
+      description: Include the tool name and URL or local route.
+      placeholder: "/pdf-tools/rotate-pdf/"
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Describe the steps using a generated or redacted example.
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected and actual behavior
+      description: Include the visible error message, if any.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Browser and device
+      placeholder: "Chrome, Windows 11, desktop; or Safari, iPhone"
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Screenshots or additional context
+      description: Remove personal information and secrets before attaching anything.

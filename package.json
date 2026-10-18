@@ -1,15 +1,31 @@
 {
-  "name": "base64-convertor",
+  "name": "dhebe-studios",
   "version": "1.0.0",
   "private": true,
-  "description": "A modern web application for converting files and images to base64 format",
+  "description": "Browser-first PDF, image, Base64, calculator, and email tools from Dhebe Studios.",
+  "homepage": "https://www.dhebe.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DattaDhebe/dhebe-studios.git"
+  },
+  "bugs": {
+    "url": "https://github.com/DattaDhebe/dhebe-studios/issues"
+  },
+  "author": "Datta Dhebe (https://github.com/DattaDhebe)",
+  "license": "SEE LICENSE IN LICENSE",
+  "engines": {
+    "node": ">=24.0.0",
+    "npm": ">=11.0.0"
+  },
+  "keywords": ["pdf-tools", "image-tools", "base64", "calculators", "email-builder", "nextjs", "typescript"],
   "scripts": {
     "predev": "node scripts/sync-pdfjs-assets.mjs",
     "dev": "next dev",
     "prebuild": "node scripts/sync-pdfjs-assets.mjs",
     "build": "next build",
     "postbuild": "node scripts/fix-static-rsc-aliases.mjs",
-    "start": "next start",
+    "start": "node scripts/serve-static.mjs",
+    "preview": "node scripts/serve-static.mjs",
     "lint": "eslint app components lib scripts",
     "test": "node --test tests/*.test.mjs",
     "test:browser": "playwright test"
