@@ -102,14 +102,14 @@ export function buildBase64CategoryMetadata(view: Base64CategoryView): Metadata 
     alternates: {
       canonical: siteRoute(page.path),
     },
-    openGraph: {
+    openGraph: { images: ['/social-preview.png'],
       title: page.seoTitle,
       description: page.metaDescription,
       url: siteRoute(page.path),
       type: 'website',
       siteName: SITE_NAME,
     },
-    twitter: {
+    twitter: { images: ['/social-preview.png'],
       card: 'summary_large_image',
       title: page.seoTitle,
       description: page.metaDescription,

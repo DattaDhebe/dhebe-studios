@@ -17,13 +17,21 @@
     "node": ">=24.0.0",
     "npm": ">=11.0.0"
   },
-  "keywords": ["pdf-tools", "image-tools", "base64", "calculators", "email-builder", "nextjs", "typescript"],
+  "keywords": [
+    "pdf-tools",
+    "image-tools",
+    "base64",
+    "calculators",
+    "email-builder",
+    "nextjs",
+    "typescript"
+  ],
   "scripts": {
     "predev": "node scripts/sync-pdfjs-assets.mjs",
     "dev": "next dev",
     "prebuild": "node scripts/sync-pdfjs-assets.mjs",
     "build": "next build",
-    "postbuild": "node scripts/fix-static-rsc-aliases.mjs",
+    "postbuild": "node scripts/fix-static-rsc-aliases.mjs && node scripts/audit-static-site.mjs",
     "start": "node scripts/serve-static.mjs",
     "preview": "node scripts/serve-static.mjs",
     "lint": "eslint app components lib scripts",
@@ -35,6 +43,7 @@
     "next": "^16.2.3",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^6.4.299",
+    "qrcode": "1.5.4",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "tesseract.js": "^7.0.0"
@@ -43,9 +52,11 @@
     "@playwright/test": "^1.64.1",
     "@tailwindcss/postcss": "^4.2.2",
     "@types/node": "^25.6.0",
+    "@types/qrcode": "^1.5.6",
     "@types/react": "^19.2.14",
     "autoprefixer": "^10.4.27",
     "eslint": "^10.2.0",
+    "jsqr": "^1.4.0",
     "postcss": "^8.5.9",
     "tailwindcss": "^4.2.2",
     "typescript": "^6.0.2",

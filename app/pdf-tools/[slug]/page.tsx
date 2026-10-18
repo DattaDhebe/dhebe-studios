@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import Script from 'next/script';
 import { LegacyRedirectPage } from '@/components/legacy-redirect-page';
 import { PdfToolsWorkbench } from '@/components/pdf-tools-workbench';
 import { BreadcrumbSchema } from '@/components/breadcrumb-schema';
@@ -89,7 +88,7 @@ export default async function PdfToolPage({ params }: PdfToolPageProps) {
           { name: tool.label, item: targetPath },
         ]}
       />
-      <Script
+      <script
         id={`pdf-tool-structured-data-${tool.slug}`}
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}

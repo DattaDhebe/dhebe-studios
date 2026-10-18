@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import Script from 'next/script';
 import { calculatorToolPages } from '@/lib/calculator-tool-pages';
 import { SITE_NAME, siteRoute } from '@/lib/site';
 
@@ -20,7 +19,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: siteRoute('/calculator-tools'),
   },
-  openGraph: {
+  openGraph: { images: ['/social-preview.png'],
     title: 'Calculator Tools Directory | DHEBE',
     description:
       'Open dedicated pages for age, BMI, percentage, EMI, SIP, and GST calculators.',
@@ -63,7 +62,7 @@ export default function CalculatorToolsDirectoryPage() {
 
   return (
     <main className="theme-page-calculator min-h-screen px-4 py-10 text-[var(--app-text)]">
-      <Script
+      <script
         id="calculator-tools-directory-structured-data"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}

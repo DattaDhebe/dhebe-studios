@@ -1,3 +1,5 @@
+import { trackDownload } from './analytics';
+
 export function downloadBlob(blob: Blob, filename: string) {
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement('a');
@@ -5,6 +7,7 @@ export function downloadBlob(blob: Blob, filename: string) {
   anchor.download = filename;
   document.body.appendChild(anchor);
   anchor.click();
+  trackDownload(blob.type);
   anchor.remove();
   window.setTimeout(() => URL.revokeObjectURL(url), 30_000);
 }

@@ -5,9 +5,9 @@ import { BreadcrumbSchema } from '@/components/breadcrumb-schema';
 import { SITE_NAME, SUPPORT_EMAIL, siteRoute } from '@/lib/site';
 
 export const metadata: Metadata = {
-  title: `${SITE_NAME} - Free Online Tools, Studios & Mobile Apps`,
+  title: { absolute: `Free Online PDF, Image & Base64 Tools | ${SITE_NAME}` },
   description:
-    'Professional tools suite featuring a Base64 Converter, PDF Studio, Calculator Studio, Email Template Editor, and DhebeVoice app pages. Encode, decode, compress, merge, calculate, design, and access privacy-first product information.',
+    'Compress and convert PDFs, resize images, generate QR codes, count words, encode Base64 and use everyday calculators. Free online tools, no account needed.',
   keywords: [
     'dhebe studios',
     'free online tools',
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: siteRoute('/'),
   },
-  openGraph: {
+  openGraph: { images: ['/social-preview.png'],
     title: `${SITE_NAME} - Professional Tools Suite`,
     description:
       'Free online tools for Base64 encoding, PDF workflows, calculators, email design, and DhebeVoice app information with public privacy-policy access.',
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     type: 'website',
     siteName: SITE_NAME,
   },
-  twitter: {
+  twitter: { images: ['/social-preview.png'],
     card: 'summary_large_image',
     title: `${SITE_NAME} - Professional Tools Suite`,
     description: 'Free online tools plus DhebeVoice app information. Local editing and temporary document conversion.',

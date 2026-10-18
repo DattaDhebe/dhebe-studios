@@ -26,6 +26,9 @@ locally; conversions that need a server are clearly labeled before upload.
 | Calculators | Work with dates, percentages, loans, tax, and other calculations | [Calculator Studio](https://www.dhebe.com/calculator-studio/) |
 | Email | Design reusable email layouts, preview, undo edits, and export HTML | [Email Studio](https://www.dhebe.com/email-studio/) |
 | DhebeVoice | Learn about the Android reader and volunteer for early testing | [DhebeVoice](https://www.dhebe.com/dhebevoice/) |
+| Image upload limits | Reduce an image below a chosen KB limit with a preview | [Image Size Reducer](https://www.dhebe.com/image-size-reducer/) |
+| QR codes | Generate static codes and download PNG or SVG | [QR Code Generator](https://www.dhebe.com/qr-code-generator/) |
+| Text | Count words, characters, paragraphs, and estimated reading time | [Word Counter](https://www.dhebe.com/word-counter/) |
 
 Shared workspaces include searchable tool navigation, mobile layouts, keyboard
 focus support, and light/dark themes. See the [studio guide](STUDIOS_HUB_README.md)
@@ -54,7 +57,7 @@ Open `http://localhost:3000`.
 | `npm run dev` | Start the development server |
 | `npm run lint` | Check application and script code |
 | `npm test` | Run shared-library and static-preview tests |
-| `npm run build` | Type-check and generate the static website in `out/` |
+| `npm run build` | Type-check, export to `out/`, audit canonical pages and links, and generate reviewed hosting rules |
 | `npm start` or `npm run preview` | Preview the built export at `http://127.0.0.1:3000` |
 | `npm run test:browser` | Run Playwright against the built export |
 
@@ -69,6 +72,11 @@ npm run test:browser
 The local preview serves the frontend only. Server conversions and PHP tester
 signup need their separate services; browser regressions mock these requests.
 See [contributing](CONTRIBUTING.md) for the full test workflow.
+
+Google Analytics is optional and off until visitors opt in. Browser privacy signals
+override consent; the footer allows withdrawal. Local previews never send analytics.
+See the [indexing and analytics guide](SEO_ANALYTICS_README.md) and
+[feature research notes](docs/FEATURE_RESEARCH.md) for configuration and limitations.
 
 ## Processing and privacy
 

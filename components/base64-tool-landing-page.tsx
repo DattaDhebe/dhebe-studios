@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Script from 'next/script';
 import { Base64Workbench } from '@/components/base64-workbench';
 import { BreadcrumbSchema } from '@/components/breadcrumb-schema';
 import {
@@ -61,7 +60,7 @@ export function Base64ToolLandingPage({ tool }: Base64ToolLandingPageProps) {
           { name: tool.label, item: tool.path },
         ]}
       />
-      <Script
+      <script
         id={`base64-tool-structured-data-${tool.slug}`}
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
@@ -79,9 +78,9 @@ export function Base64ToolLandingPage({ tool }: Base64ToolLandingPageProps) {
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-orange-600">
               Free Base64 Tool
             </p>
-            <h1 className="mt-3 text-3xl font-semibold tracking-tight theme-title sm:text-4xl">
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight theme-title sm:text-4xl">
               {heading}
-            </h1>
+            </h2>
             <p className="mt-3 max-w-4xl text-sm leading-7 theme-muted sm:text-base">
               {tool.intro}
             </p>

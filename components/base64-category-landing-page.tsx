@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Script from 'next/script';
 import { Base64Workbench } from '@/components/base64-workbench';
 import { BreadcrumbSchema } from '@/components/breadcrumb-schema';
 import {
@@ -74,7 +73,7 @@ export function Base64CategoryLandingPage({ view }: Base64CategoryLandingPagePro
           },
         ]}
       />
-      <Script
+      <script
         id={`base64-category-structured-data-${view}`}
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
@@ -86,9 +85,9 @@ export function Base64CategoryLandingPage({ view }: Base64CategoryLandingPagePro
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-orange-600">
               Free Base64 Tools
             </p>
-            <h1 className="mt-3 text-4xl font-semibold tracking-tight theme-title sm:text-5xl">
+            <h2 className="mt-3 text-4xl font-semibold tracking-tight theme-title sm:text-5xl">
               {page.seoTitle}
-            </h1>
+            </h2>
             <p className="mt-4 max-w-4xl text-sm leading-7 theme-muted sm:text-base">
               {page.intro}
             </p>

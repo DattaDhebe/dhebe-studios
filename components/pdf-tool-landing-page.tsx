@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Script from 'next/script';
 import { PdfToolsWorkbench } from '@/components/pdf-tools-workbench';
 import { BreadcrumbSchema } from '@/components/breadcrumb-schema';
 import type { PdfSeoPage } from '@/lib/pdf-seo-pages';
@@ -57,7 +56,7 @@ export function PdfToolLandingPage({ tool, seoPage }: PdfToolLandingPageProps) {
           { name: tool.label, item: getPdfToolPath(tool) },
         ]}
       />
-      <Script
+      <script
         id={`pdf-tool-structured-data-${tool.id}`}
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
@@ -70,9 +69,9 @@ export function PdfToolLandingPage({ tool, seoPage }: PdfToolLandingPageProps) {
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-purple-600">
               Free Online PDF Tool
             </p>
-            <h1 className="mt-3 text-3xl font-semibold tracking-tight theme-title sm:text-4xl">
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight theme-title sm:text-4xl">
               {heading}
-            </h1>
+            </h2>
             <p className="mt-3 max-w-3xl text-sm leading-7 theme-muted sm:text-base">
               {seoPage.intro}
             </p>

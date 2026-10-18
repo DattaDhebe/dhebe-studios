@@ -19,14 +19,14 @@ export const metadata: Metadata = {
   alternates: {
     canonical: DHEBEVOICE_PRIVACY_POLICY_URL,
   },
-  openGraph: {
+  openGraph: { images: ['/social-preview.png'],
     title: `DhebeVoice Privacy Policy | ${SITE_NAME}`,
     description:
       'Public privacy policy page for the DhebeVoice Android app hosted on DHEBE Studios.',
     url: DHEBEVOICE_PRIVACY_POLICY_URL,
     type: 'article',
   },
-  twitter: {
+  twitter: { images: ['/social-preview.png'],
     card: 'summary',
     title: `DhebeVoice Privacy Policy | ${SITE_NAME}`,
     description: 'Public privacy policy page for the DhebeVoice Android app.',

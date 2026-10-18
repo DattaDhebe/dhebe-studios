@@ -773,14 +773,14 @@ export function buildCalculatorToolMetadata(tool: CalculatorToolPageEntry): Meta
     alternates: {
       canonical: siteRoute(tool.path),
     },
-    openGraph: {
+    openGraph: { images: ['/social-preview.png'],
       title: `${tool.seoTitle} | Calculator Studio`,
       description: tool.metaDescription,
       url: siteRoute(tool.path),
       type: 'website',
       siteName: SITE_NAME,
     },
-    twitter: {
+    twitter: { images: ['/social-preview.png'],
       card: 'summary_large_image',
       title: `${tool.seoTitle} | Calculator Studio`,
       description: tool.metaDescription,

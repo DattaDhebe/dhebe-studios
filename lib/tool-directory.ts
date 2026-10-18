@@ -3,6 +3,7 @@ import { imageToolPages, getImageToolPath } from './image-tools-pages';
 import { calculatorToolPages } from './calculator-tool-pages';
 import { converterOptions } from './converters';
 import { decoderOptions } from './decoders';
+import { utilityTools } from './utility-tools';
 
 export interface DirectoryTool {
   label: string;
@@ -13,6 +14,7 @@ export interface DirectoryTool {
 
 // Build the small client search index on the server, not from full page copy.
 export const toolDirectory: DirectoryTool[] = [
+  ...Object.values(utilityTools).map(tool => ({ label: tool.label, description: tool.description, href: tool.path, category: tool.category })),
   ...pdfToolPages.map(tool => ({ label: tool.label, description: tool.description, href: getPdfToolPath(tool), category: 'PDF' })),
   ...imageToolPages.map(tool => ({ label: tool.label, description: tool.description, href: getImageToolPath(tool), category: 'Images' })),
   ...calculatorToolPages.map(tool => ({ label: tool.label, description: tool.description, href: tool.path, category: 'Calculators' })),

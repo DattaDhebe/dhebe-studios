@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import { ImageToolsWorkbench } from '@/components/image-tools-workbench';
 import { BreadcrumbSchema } from '@/components/breadcrumb-schema';
 import Link from 'next/link';
-import Script from 'next/script';
 import { getImageToolPath, imageToolPages } from '@/lib/image-tools-pages';
 import { imageTools } from '@/lib/image-tools';
 import { SITE_NAME, siteRoute } from '@/lib/site';
@@ -26,7 +25,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: siteRoute('/image-studio'),
   },
-  openGraph: {
+  openGraph: { images: ['/social-preview.png'],
     title: 'Image Studio - Free Online Image Tools | DHEBE',
     description:
       'Use Image Studio for high-quality image compression, resizing, background removal, and format conversion directly in your browser.',
@@ -34,7 +33,7 @@ export const metadata: Metadata = {
     type: 'website',
     siteName: SITE_NAME,
   },
-  twitter: {
+  twitter: { images: ['/social-preview.png'],
     card: 'summary_large_image',
     title: 'Image Studio - Free Online Image Tools',
     description:
@@ -61,35 +60,6 @@ export default function ImageStudioPage() {
         },
         featureList: imageTools.map((tool) => tool.label),
       },
-      {
-        '@type': 'FAQPage',
-        mainEntity: [
-          {
-            '@type': 'Question',
-            name: 'What can I do with Image Studio?',
-            acceptedAnswer: {
-              '@type': 'Answer',
-              text: 'Image Studio provides tools to compress, resize, crop, and convert images (JPG, PNG, WebP), plus an automatic background remover.',
-            },
-          },
-          {
-            '@type': 'Question',
-            name: 'Does Image Studio upload my photos?',
-            acceptedAnswer: {
-              '@type': 'Answer',
-              text: 'Compression, resizing, cropping, and format conversion run locally. Background removal uploads the selected image for temporary processing and deletes it afterward.',
-            },
-          },
-          {
-            '@type': 'Question',
-            name: 'Are the image tools free to use?',
-            acceptedAnswer: {
-              '@type': 'Answer',
-              text: 'Yes, all tools in Image Studio are completely free with no registration required.',
-            },
-          },
-        ],
-      },
     ],
   };
 
@@ -101,7 +71,7 @@ export default function ImageStudioPage() {
           { name: 'Image Studio', item: '/image-studio/' },
         ]}
       />
-      <Script
+      <script
         id="image-studio-structured-data"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}

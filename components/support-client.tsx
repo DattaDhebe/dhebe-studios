@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import Script from 'next/script';
 
 interface SupportClientProps {
   structuredData: any;
@@ -10,7 +9,7 @@ interface SupportClientProps {
 export function SupportClient({ structuredData }: SupportClientProps) {
   return (
     <>
-      <Script
+      <script
         id="support-structured-data"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}

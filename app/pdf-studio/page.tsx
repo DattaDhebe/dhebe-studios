@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import { PdfToolsWorkbench } from '@/components/pdf-tools-workbench';
 import { BreadcrumbSchema } from '@/components/breadcrumb-schema';
 import Link from 'next/link';
-import Script from 'next/script';
 import { getPdfToolPath, pdfToolPages } from '@/lib/pdf-tools-pages';
 import { pdfTools } from '@/lib/pdf-tools';
 import { SITE_NAME, siteRoute } from '@/lib/site';
@@ -44,7 +43,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: siteRoute('/pdf-studio'),
   },
-  openGraph: {
+  openGraph: { images: ['/social-preview.png'],
     title: 'PDF Studio - Free Online PDF Tools | DHEBE',
     description:
       'Use PDF Studio for PDF to Word, JPG to PDF, PDF to JPG, merge PDF, compress PDF, sign PDF, and other high-demand browser-based workflows.',
@@ -52,7 +51,7 @@ export const metadata: Metadata = {
     type: 'website',
     siteName: SITE_NAME,
   },
-  twitter: {
+  twitter: { images: ['/social-preview.png'],
     card: 'summary_large_image',
     title: 'PDF Studio - Free Online PDF Tools',
     description:
@@ -79,35 +78,6 @@ export default function PdfStudioPage() {
         },
         featureList: pdfTools.map((tool) => tool.label),
       },
-      {
-        '@type': 'FAQPage',
-        mainEntity: [
-          {
-            '@type': 'Question',
-            name: 'What can I do with PDF Studio?',
-            acceptedAnswer: {
-              '@type': 'Answer',
-              text: 'PDF Studio includes ready tools for merge, split, compress, rotate, and page removal, plus dedicated landing pages for additional popular PDF workflows such as PDF to Word, sign, protect, organize, edit, and OCR.',
-            },
-          },
-          {
-            '@type': 'Question',
-            name: 'Does PDF Studio upload my files?',
-            acceptedAnswer: {
-              '@type': 'Answer',
-              text: 'Merge, split, compress, and page editing run locally. Office conversions, PDF/A, repair, and password encryption upload the file for temporary processing and delete it afterward. Each tool explains its processing mode.',
-            },
-          },
-          {
-            '@type': 'Question',
-            name: 'Why does PDF Studio have dedicated tool pages?',
-            acceptedAnswer: {
-              '@type': 'Answer',
-              text: 'Each tool page gives users a direct link to a specific PDF workflow, making it faster to open the exact tool they need.',
-            },
-          },
-        ],
-      },
     ],
   };
 
@@ -119,7 +89,7 @@ export default function PdfStudioPage() {
           { name: 'PDF Studio', item: '/pdf-studio/' },
         ]}
       />
-      <Script
+      <script
         id="pdf-studio-structured-data"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}

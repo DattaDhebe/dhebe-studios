@@ -17,14 +17,14 @@ export const metadata: Metadata = {
       follow: true,
     },
   },
-  openGraph: {
+  openGraph: { images: ['/social-preview.png'],
     title: `Email Studio Redirect | ${SITE_NAME}`,
     description: 'This legacy email editor route now redirects to the current Email Template Editor page.',
     url: siteRoute(emailTemplateEditorPath),
     type: 'website',
     siteName: SITE_NAME,
   },
-  twitter: {
+  twitter: { images: ['/social-preview.png'],
     card: 'summary',
     title: `Email Studio Redirect | ${SITE_NAME}`,
     description: 'This legacy email editor route now redirects to the current Email Template Editor page.',

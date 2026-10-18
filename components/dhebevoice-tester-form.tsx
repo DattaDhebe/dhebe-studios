@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from 'react';
 import { SUPPORT_EMAIL } from '@/lib/site';
+import { trackTesterSignup } from '@/lib/analytics';
 import { UiIcon } from './ui-icon';
 
 const signupUrl = '/api/dhebevoice-signup.php';
@@ -30,6 +31,7 @@ export function DhebeVoiceTesterForm() {
       if (!response.ok) throw new Error(typeof data?.detail === 'string' ? data.detail : 'We could not save your request. Please try again.');
       if (data?.request_received !== true) throw new Error('Your request could not be confirmed. Please try again.');
       setState('success');
+      trackTesterSignup();
       form.reset();
     } catch (error) {
       setState('error');

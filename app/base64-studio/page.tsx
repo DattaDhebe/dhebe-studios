@@ -16,14 +16,14 @@ export const metadata: Metadata = {
       follow: true,
     },
   },
-  openGraph: {
+  openGraph: { images: ['/social-preview.png'],
     title: `Base64 Studio Redirect | ${SITE_NAME}`,
     description: 'This legacy Base64 Studio route now redirects to the current Base64 Converter page.',
     url: siteRoute('/base64-converter/'),
     type: 'website',
     siteName: SITE_NAME,
   },
-  twitter: {
+  twitter: { images: ['/social-preview.png'],
     card: 'summary',
     title: `Base64 Studio Redirect | ${SITE_NAME}`,
     description: 'This legacy Base64 Studio route now redirects to the current Base64 Converter page.',

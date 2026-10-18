@@ -614,14 +614,14 @@ export function buildPdfToolMetadata(tool: PdfToolPageEntry): Metadata {
       alternates: {
         canonical: siteRoute(getPdfToolPath(tool)),
       },
-      openGraph: {
+      openGraph: { images: ['/social-preview.png'],
         title: `${seoPage.seoTitle} | PDF Studio`,
         description: seoPage.metaDescription,
         url: siteRoute(getPdfToolPath(tool)),
         type: 'website',
         siteName: SITE_NAME,
       },
-      twitter: {
+      twitter: { images: ['/social-preview.png'],
         card: 'summary_large_image',
         title: `${seoPage.seoTitle} | PDF Studio`,
         description: seoPage.metaDescription,
@@ -650,14 +650,14 @@ export function buildPdfToolMetadata(tool: PdfToolPageEntry): Metadata {
     alternates: {
       canonical: siteRoute(getPdfToolPath(tool)),
     },
-    openGraph: {
+    openGraph: { images: ['/social-preview.png'],
       title: `${title} | PDF Studio`,
       description: tool.description,
       url: siteRoute(getPdfToolPath(tool)),
       type: 'website',
       siteName: SITE_NAME,
     },
-    twitter: {
+    twitter: { images: ['/social-preview.png'],
       card: 'summary_large_image',
       title: `${title} | PDF Studio`,
       description: tool.description,

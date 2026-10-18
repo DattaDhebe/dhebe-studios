@@ -1,488 +1,68 @@
-# DHEBE Studios - SEO & Analytics Configuration
+# Search Visibility and Analytics
 
-## 🎯 Overview
+## Production Setup
 
-DHEBE Studios implements comprehensive SEO and analytics strategies across all studios and pages to ensure maximum visibility and user engagement.
+- Canonical host: `https://www.dhebe.com`.
+- GA4 measurement ID: `G-D9BJ344ZDV`; property `532896909`, web stream `14368203624`.
+- Public sitemap: [sitemap.xml](https://www.dhebe.com/sitemap.xml).
+- Search Console URL-prefix property: `https://www.dhebe.com/`.
+- Search visibility is not guaranteed: a sitemap helps discovery, while Google decides indexing and ranking.
 
----
+## Analytics and Privacy
 
-## 📊 Analytics Configuration
+Implementation: [components/analytics.tsx](components/analytics.tsx) and [lib/analytics.ts](lib/analytics.ts).
+Google Analytics loads only on the production host after an explicit opt-in.
+The browser choice is stored under `dhebe-analytics-consent-v1`.
+Do Not Track and Global Privacy Control override opt-in. Local previews never transmit analytics.
+Visitors can withdraw through the footer's Cookie preferences button; this disables future events and clears GA cookies.
+No advertising personalization or Google signals are enabled by this tag.
 
-### Google Analytics (GA4)
+Events are one `page_view` per canonical pathname navigation, `tool_select` for workspace selections,
+`tool_download` for downloads using the shared helper (format only), and `tester_signup` after a confirmed signup.
+Not all legacy download controls use the shared helper; these events are not a complete count of every export.
+Never add email addresses, filenames, file contents, tool inputs, search terms, query strings, or URL fragments.
+The website notice is at [/privacy/](https://www.dhebe.com/privacy/). The Android app has a separate policy.
 
-**Tracking ID:** `G-D9BJ344ZDV`
+In GA4 Admin > Data streams > dhebe > Enhanced measurement, disable history-based page views,
+site search, form interactions, outbound clicks, video engagement, scrolls and automatic file downloads.
+Manual sanitized page views avoid double-counting. Automatic measurement must not reintroduce user input.
+These enhanced-measurement switches were saved in the signed-in production stream on October 18, 2026.
+Page-load measurement remains enabled in GA4, while the tag uses `send_page_view: false` and emits manual views.
 
-**Implementation:**
-```typescript
-// app/layout.tsx
-<Script
-  src="https://www.googletagmanager.com/gtag/js?id=G-D9BJ344ZDV"
-  strategy="afterInteractive"
-/>
-<Script id="google-analytics" strategy="afterInteractive">
-  {`
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-D9BJ344ZDV');
-  `}
-</Script>
+## Indexing and Hosting
+
+`app/sitemap.ts` lists only canonical, public, indexable pages. Its fixed last-modified date reflects
+published content, not build time. Update that date for substantive content releases.
+Legacy aliases stay out of the sitemap and point to their replacements.
+Hostinger's generated `out/.htaccess` provides permanent redirects for those aliases and the canonical host,
+plus long-lived caching only for content-hashed Next static assets. It must not replace existing server rules
+without review. The build rejects malformed canonical URLs, missing headings, broken internal links, invalid JSON-LD,
+missing social images, and noindex URLs in the sitemap.
+
+Search Console snapshot on October 18, 2026: 35 indexed, 82 excluded (16 noindex aliases,
+13 redirects, 2 malformed 404 addresses, 35 crawled-not-indexed, 16 discovered-not-indexed).
+Do not remove intentional noindex tags or turn malformed paths into duplicate homepages.
+After deployment, resubmit the sitemap and inspect representative canonical URLs.
+Google may take time to recrawl and is not required to index every page.
+
+## October 18 Release Verification
+
+- Published 957 static assets, route-data files, pages, and indexing/configuration files without upload failures.
+- Confirmed the root `.htaccess` was absent before installing the generated rules; unrelated hosted applications and APIs were not replaced.
+- Verified HTTPS apex-to-www and legacy-alias 301 responses, correct 404 responses for malformed addresses, and immutable caching for hashed assets.
+- Confirmed live HTML, sitemap and robots files match the release build. Hostinger re-encodes the PNG preview without changing its 1200 x 630 pixels.
+- Resubmitted the sitemap in Search Console: Success, last read October 18, 2026, 82 discovered pages. Discovered does not mean indexed.
+- Verification: 24 unit tests, 130 local browser checks (4 opt-in live-service checks skipped), 12 final focused browser checks, and 38 live-site browser checks passed.
+- Browser tests used synthetic documents and mocked tester submissions; no real tester record was added, read, or migrated.
+
+## Verification
+
+```sh
+npm run lint
+npm test
+npm run build
+npm run test:browser
 ```
 
-**Metrics Tracked:**
-- Page views and sessions
-- User demographics and interests
-- Device and browser data
-- Traffic sources
-- Conversion events
-- Tool usage patterns
-
----
-
-## 🔍 SEO Structure
-
-### 1. Global SEO Configuration (app/layout.tsx)
-
-**Title Template:** `%s | DHEBE Studios`
-- Automatically appends studio name to each page
-
-**Keywords (Global):**
-- base64 converter
-- base64 encoder
-- pdf compressor
-- pdf merger
-- pdf splitter
-- online tools
-- free tools
-- dhebe studios
-
-**Meta Tags:**
-- Robots: index, follow
-- Referrer: origin-when-cross-origin
-- Category: technology
-- Creator: DHEBE
-- Publisher: DHEBE Studios
-
-### 2. OpenGraph Tags (All Pages)
-
-**Configured for:**
-- Facebook sharing
-- LinkedIn sharing
-- Discord embeds
-- Twitter enriched cards
-
-**Sample:**
-```typescript
-openGraph: {
-  type: 'website',
-  url: 'https://www.dhebe.com/base64-studio',
-  siteName: 'DHEBE Studios',
-  title: 'Base64 Studio - Free Online Encoder & Decoder',
-  description: '...',
-  locale: 'en_US',
-}
-```
-
-### 3. Twitter Card Tags (All Pages)
-
-**Card Type:** `summary_large_image`
-
-**Includes:**
-- Custom title
-- Description
-- Creator handle: `@dhebestudios`
-
----
-
-## 📄 Page-Specific SEO
-
-### Home Page (/)
-
-**Title:** DHEBE Studios - Free Online Tools for Base64, PDF & Email
-**Description:** Professional tools suite featuring Base64 Studio, PDF Studio, and Email Template Studio...
-
-**Keywords:**
-- dhebe studios
-- free online tools
-- base64 tools
-- pdf tools
-- email templates
-
-**Structured Data:**
-- WebSite (with SearchAction)
-- Organization (with ContactPoint)
-
-**Canonical:** https://www.dhebe.com
-
----
-
-### Base64 Studio (/base64-studio)
-
-**Title:** Base64 Studio - Free Online Base64 Encoder & Decoder
-**Description:** Free online Base64 converter with 18+ tools...
-
-**Keywords:**
-- base64 encoder
-- base64 decoder
-- base64 converter
-- image to base64
-- base64 to image
-- text to base64
-- pdf to base64
-
-**Structured Data:**
-- WebSite (with SearchAction)
-- SoftwareApplication (18+ features)
-- FAQPage (3 common questions)
-- BreadcrumbList
-
-**Canonical:** https://www.dhebe.com/base64-studio
-
----
-
-### PDF Studio (/pdf-studio)
-
-**Title:** PDF Studio - Free Online PDF Compressor, Merger & Splitter
-**Description:** Free online PDF tools for compression, merging, and page extraction...
-
-**Keywords:**
-- pdf compressor
-- pdf merger
-- pdf splitter
-- compress pdf
-- merge pdf
-- split pdf
-- online pdf tools
-- reduce pdf size
-
-**Structured Data:**
-- WebApplication
-- SoftwareApplication (3 features)
-- BreadcrumbList
-
-**Canonical:** https://www.dhebe.com/pdf-studio
-
----
-
-### Email Template Studio (/email-studio)
-
-**Title:** Email Template Studio - Coming Soon | DHEBE
-**Description:** Professional email template builder with drag-and-drop editor...
-
-**Keywords:**
-- email templates
-- email builder
-- responsive emails
-- email designer
-- html email
-
-**Structured Data:**
-- WebApplication
-- BreadcrumbList
-
-**Canonical:** https://www.dhebe.com/email-studio
-
----
-
-## 🏗️ Structured Data (JSON-LD)
-
-### WebSite Schema
-```json
-{
-  "@type": "WebSite",
-  "name": "DHEBE Studios",
-  "url": "https://www.dhebe.com",
-  "potentialAction": {
-    "@type": "SearchAction",
-    "target": "https://www.dhebe.com/?q={search_term_string}",
-    "query-input": "required name=search_term_string"
-  }
-}
-```
-
-### SoftwareApplication Schema
-```json
-{
-  "@type": "SoftwareApplication",
-  "name": "Base64 Studio",
-  "applicationCategory": "DeveloperApplication",
-  "operatingSystem": "Web",
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "USD"
-  },
-  "featureList": ["Text to Base64", "Image to Base64", ...]
-}
-```
-
-### Organization Schema
-```json
-{
-  "@type": "Organization",
-  "name": "DHEBE Studios",
-  "url": "https://www.dhebe.com",
-  "email": "support@dhebe.com",
-  "contactPoint": {
-    "@type": "ContactPoint",
-    "contactType": "customer support",
-    "email": "support@dhebe.com"
-  }
-}
-```
-
-### FAQPage Schema
-```json
-{
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "What is Base64 Studio used for?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "..."
-      }
-    }
-  ]
-}
-```
-
-### BreadcrumbList Schema
-```json
-{
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https://www.dhebe.com"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "Base64 Studio",
-      "item": "https://www.dhebe.com/base64-studio"
-    }
-  ]
-}
-```
-
----
-
-## 🤖 robots.txt Configuration
-
-```
-User-agent: *
-Allow: /
-Disallow: /api/
-Disallow: /.next/
-
-Sitemap: https://www.dhebe.com/sitemap.xml
-```
-
----
-
-## 📋 Sitemap Integration
-
-**File:** `app/sitemap.ts`
-
-**Includes:**
-- / (home)
-- /base64-studio
-- /pdf-studio
-- /email-studio
-- /support
-- /tools/[all-slugs]
-
-**Priority:**
-- Home: 1.0
-- Studios: 0.9
-- Individual tools: 0.8
-
-**Change Frequency:** weekly
-
----
-
-## 🔐 Security Headers
-
-**Recommended additions to Next.js config:**
-```javascript
-// next.config.js
-headers: [
-  {
-    source: '/:path*',
-    headers: [
-      { key: 'X-Content-Type-Options', value: 'nosniff' },
-      { key: 'X-Frame-Options', value: 'DENY' },
-      { key: 'X-XSS-Protection', value: '1; mode=block' },
-      { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-    ],
-  },
-]
-```
-
----
-
-## 📱 Mobile & Responsive Design
-
-**Meta Tags:**
-```html
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="apple-mobile-web-app-capable" content="true" />
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<meta name="apple-mobile-web-app-title" content="DHEBE Studios" />
-```
-
-**Responsive Breakpoints:**
-- Mobile: < 640px
-- Tablet: 640px - 1024px
-- Desktop: > 1024px
-
----
-
-## 🎨 Brand Colors & Theming
-
-**Theme Variables:**
-- Orange: #ea580c (Base64 Studio)
-- Purple: #a855f7 (PDF Studio)
-- Cyan: #06b6d4 (Email Studio)
-
-**Dark Mode Support:**
-- Automatic via `data-theme` attribute
-- localStorage persistence
-
----
-
-## 📈 Performance Metrics (Core Web Vitals)
-
-**Targets:**
-- LCP (Largest Contentful Paint): < 2.5s
-- FID (First Input Delay): < 100ms
-- CLS (Cumulative Layout Shift): < 0.1
-
-**Optimization:**
-- Static page generation
-- Image optimization
-- CSS minification
-- JavaScript code splitting
-
----
-
-## 🔗 Canonical URLs
-
-**All pages have explicit canonical URLs:**
-
-| Page | Canonical |
-|------|-----------|
-| Home | https://www.dhebe.com |
-| Base64 Studio | https://www.dhebe.com/base64-studio |
-| PDF Studio | https://www.dhebe.com/pdf-studio |
-| Email Studio | https://www.dhebe.com/email-studio |
-| Base64 Tools | https://www.dhebe.com/tools/[slug] |
-
----
-
-## 📝 Meta Descriptions
-
-**Character Limits:** 150-160 characters
-
-**Best Practices:**
-- ✅ Unique for each page
-- ✅ Include primary keyword
-- ✅ Include call-to-action
-- ✅ Descriptive and accurate
-
----
-
-## 🔍 Search Console Integration
-
-**Setup Steps:**
-1. Add property: https://www.dhebe.com
-2. Verify ownership via DNS TXT record
-3. Submit sitemap: https://www.dhebe.com/sitemap.xml
-4. Monitor crawl errors
-5. Check mobile usability
-
-**Monitoring:**
-- Impressions and clicks
-- Average position
-- Click-through rate (CTR)
-- Core Web Vitals
-
----
-
-## 🌐 International SEO (Future)
-
-**Prepared for multilingual support:**
-- hreflang tags ready
-- Language-specific routes
-- Translated metadata
-
----
-
-## ✅ SEO Audit Checklist
-
-- [x] Title tags (all pages)
-- [x] Meta descriptions (all pages)
-- [x] Keywords (all pages)
-- [x] H1 tags (single per page)
-- [x] Alt text (images)
-- [x] OpenGraph tags
-- [x] Twitter cards
-- [x] Canonical URLs
-- [x] Structured data (JSON-LD)
-- [x] robots.txt
-- [x] sitemap.xml
-- [x] Mobile responsive
-- [x] Fast loading (Core Web Vitals)
-- [x] Google Analytics
-- [x] Internal linking
-- [x] Breadcrumbs
-
----
-
-## 🚀 Deployment Checklist
-
-Before deploying to production:
-
-1. **Google Search Console**
-   - [ ] Verify ownership
-   - [ ] Submit sitemap
-   - [ ] Check coverage
-
-2. **Google Analytics**
-   - [ ] Verify tracking code
-   - [ ] Check data collection
-   - [ ] Set up goals/conversions
-
-3. **Performance**
-   - [ ] Test Core Web Vitals
-   - [ ] Verify images optimized
-   - [ ] Check loading speed
-
-4. **Security**
-   - [ ] SSL/HTTPS enabled
-   - [ ] Security headers configured
-   - [ ] No mixed content
-
-5. **Functionality**
-   - [ ] All links working
-   - [ ] Forms working
-   - [ ] Analytics events firing
-
----
-
-## 📞 Support & Resources
-
-- **Google Search Console:** https://search.google.com/search-console
-- **Google Analytics:** https://analytics.google.com
-- **Lighthouse:** Chrome DevTools > Lighthouse
-- **PageSpeed Insights:** https://pagespeed.web.dev
-
----
-
-**Last Updated:** April 14, 2026
-**Version:** 1.0.0
-**Status:** ✅ Production Ready
+The postbuild audit checks every exported canonical page. Browser analytics tests intercept Google requests;
+they never send real visitor information or create tester records.

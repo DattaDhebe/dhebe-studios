@@ -3,6 +3,7 @@
 import { useDeferredValue, useId, useState, type ReactNode } from 'react';
 import Link from 'next/link';
 import { UiIcon, type IconName } from './ui-icon';
+import { trackToolSelection } from '@/lib/analytics';
 
 interface WorkspaceOption {
   id: string;
@@ -49,7 +50,7 @@ export function ToolWorkspace({ studio, studioHref, icon, tone, title, descripti
               <nav aria-label={`${studio} tools`} className="tool-nav">
                 {filteredGroups.map(group => group.options.length > 0 && <div className="tool-nav-group" key={group.label}>
                   <p className="tool-group-label">{group.label}</p>
-                  {group.options.map(option => <button type="button" key={option.id} aria-label={`Open ${option.label}`} aria-current={activeId === option.id ? 'page' : undefined} className={`tool-nav-item ${activeId === option.id ? 'is-active' : ''}`} onClick={() => { onSelect(option.id); setExpanded(false); }}><span>{option.label}</span>{activeId === option.id && <UiIcon name="arrow" width="16" height="16" />}</button>)}
+                  {group.options.map(option => <button type="button" key={option.id} aria-label={`Open ${option.label}`} aria-current={activeId === option.id ? 'page' : undefined} className={`tool-nav-item ${activeId === option.id ? 'is-active' : ''}`} onClick={() => { trackToolSelection(option.id, tone); onSelect(option.id); setExpanded(false); }}><span>{option.label}</span>{activeId === option.id && <UiIcon name="arrow" width="16" height="16" />}</button>)}
                 </div>)}
                 {resultCount === 0 && <div className="tool-empty"><p>No matching tools.</p><button type="button" onClick={() => setQuery('')}>Clear search</button></div>}
               </nav>
@@ -59,7 +60,7 @@ export function ToolWorkspace({ studio, studioHref, icon, tone, title, descripti
           <section className="workspace-main" aria-label={title}>
             <div className="workspace-heading">
               <div className="workspace-eyebrow"><span>{studio}</span><span className="processing-badge"><span />{serverProcessing ? 'Temporary server processing' : 'Runs on your device'}</span></div>
-              <h2>{title}</h2><p>{description}</p>
+              <h1>{title}</h1><p>{description}</p>
             </div>
             <div className="workspace-canvas">
               <div className="workspace-canvas-bar"><span><UiIcon name={icon} width="16" height="16" />Your workspace</span><span>No account needed <UiIcon name="check" width="15" height="15" /></span></div>

@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Script from 'next/script';
 import { EmailStudioClient } from '@/components/email-studio-client';
 import { BreadcrumbSchema } from '@/components/breadcrumb-schema';
 import {
@@ -53,7 +52,7 @@ export function EmailTemplateLandingPage() {
           { name: 'Email Template Editor', item: emailTemplateEditorPath },
         ]}
       />
-      <Script
+      <script
         id="email-template-editor-structured-data"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}

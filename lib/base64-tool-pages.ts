@@ -276,14 +276,14 @@ export function buildBase64ToolMetadata(tool: Base64ToolPageEntry): Metadata {
     alternates: {
       canonical: siteRoute(tool.path),
     },
-    openGraph: {
+    openGraph: { images: ['/social-preview.png'],
       title: tool.seoTitle,
       description: tool.metaDescription,
       url: siteRoute(tool.path),
       type: 'website',
       siteName: SITE_NAME,
     },
-    twitter: {
+    twitter: { images: ['/social-preview.png'],
       card: 'summary_large_image',
       title: tool.seoTitle,
       description: tool.metaDescription,

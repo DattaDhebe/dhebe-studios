@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import Script from 'next/script';
 import { CalculatorToolsWorkbench } from '@/components/calculator-tools-workbench';
 import { BreadcrumbSchema } from '@/components/breadcrumb-schema';
 import { calculatorToolPages } from '@/lib/calculator-tool-pages';
@@ -32,7 +31,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: siteRoute('/calculator-studio'),
   },
-  openGraph: {
+  openGraph: { images: ['/social-preview.png'],
     title: 'Calculator Studio - Free Online Calculators | DHEBE',
     description:
       'Use DHEBE Calculator Studio for popular health, finance, tax, and percentage calculations with instant browser-based results.',
@@ -40,7 +39,7 @@ export const metadata: Metadata = {
     type: 'website',
     siteName: SITE_NAME,
   },
-  twitter: {
+  twitter: { images: ['/social-preview.png'],
     card: 'summary_large_image',
     title: 'Calculator Studio - Free Online Calculators',
     description:
@@ -67,35 +66,6 @@ export default function CalculatorStudioPage() {
         },
         featureList: calculatorTools.map((tool) => tool.label),
       },
-      {
-        '@type': 'FAQPage',
-        mainEntity: [
-          {
-            '@type': 'Question',
-            name: 'Which calculators are available in Calculator Studio?',
-            acceptedAnswer: {
-              '@type': 'Answer',
-              text: 'Calculator Studio currently includes Age, BMI, Percentage, EMI, SIP, and GST calculators.',
-            },
-          },
-          {
-            '@type': 'Question',
-            name: 'Does Calculator Studio store my inputs?',
-            acceptedAnswer: {
-              '@type': 'Answer',
-              text: 'No. Calculator Studio runs entirely in the browser so your numbers stay on your device.',
-            },
-          },
-          {
-            '@type': 'Question',
-            name: 'Can I open a specific calculator directly?',
-            acceptedAnswer: {
-              '@type': 'Answer',
-              text: 'Yes. Every calculator also has a dedicated page so users can land directly on the tool they searched for.',
-            },
-          },
-        ],
-      },
     ],
   };
 
@@ -107,7 +77,7 @@ export default function CalculatorStudioPage() {
           { name: 'Calculator Studio', item: '/calculator-studio/' },
         ]}
       />
-      <Script
+      <script
         id="calculator-studio-structured-data"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}

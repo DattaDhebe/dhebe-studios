@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Script from 'next/script';
 import { CalculatorToolsWorkbench } from '@/components/calculator-tools-workbench';
 import { BreadcrumbSchema } from '@/components/breadcrumb-schema';
 import type { CalculatorToolPageEntry } from '@/lib/calculator-tool-pages';
@@ -49,7 +48,7 @@ export function CalculatorLandingPage({ tool }: CalculatorLandingPageProps) {
           { name: tool.label, item: tool.path },
         ]}
       />
-      <Script
+      <script
         id={`calculator-tool-structured-data-${tool.slug}`}
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
@@ -62,9 +61,9 @@ export function CalculatorLandingPage({ tool }: CalculatorLandingPageProps) {
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-emerald-600">
               Tool Overview
             </p>
-            <h1 className="mt-3 text-3xl font-semibold tracking-tight theme-title sm:text-4xl">
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight theme-title sm:text-4xl">
               {tool.seoTitle}
-            </h1>
+            </h2>
             <p className="mt-3 max-w-3xl text-sm leading-7 theme-muted sm:text-base">
               {tool.metaDescription}
             </p>

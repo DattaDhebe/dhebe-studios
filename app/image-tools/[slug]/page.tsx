@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import Script from 'next/script';
 import { LegacyRedirectPage } from '@/components/legacy-redirect-page';
 import { ImageToolsWorkbench } from '@/components/image-tools-workbench';
 import { BreadcrumbSchema } from '@/components/breadcrumb-schema';
@@ -46,14 +45,14 @@ export async function generateMetadata({ params }: ImageToolPageProps): Promise<
     alternates: {
       canonical: siteRoute(targetPath),
     },
-    openGraph: {
+    openGraph: { images: ['/social-preview.png'],
       title: `${tool.label} | Image Studio`,
       description: tool.description,
       url: siteRoute(targetPath),
       type: 'website',
       siteName: SITE_NAME,
     },
-    twitter: {
+    twitter: { images: ['/social-preview.png'],
       card: 'summary_large_image',
       title: `${tool.label} | Image Studio`,
       description: tool.description,
@@ -104,7 +103,7 @@ export default async function ImageToolPage({ params }: ImageToolPageProps) {
           { name: tool.label, item: targetPath },
         ]}
       />
-      <Script
+      <script
         id={`image-tool-structured-data-${tool.slug}`}
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}

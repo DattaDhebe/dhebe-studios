@@ -14,14 +14,14 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://www.dhebe.com/tools/circle/',
   },
-  openGraph: {
+  openGraph: { images: ['/social-preview.png'],
     title: 'Circle Calculator - Area, Circumference & Diameter | DHEBE',
     description: 'Free circle calculator to calculate area, circumference, diameter, and radius online.',
     url: 'https://www.dhebe.com/tools/circle/',
     type: 'website',
     siteName: SITE_NAME,
   },
-  twitter: {
+  twitter: { images: ['/social-preview.png'],
     card: 'summary_large_image',
     title: 'Circle Calculator - Area, Circumference & Diameter',
     description: 'Free circle calculator to calculate area, circumference, diameter, and radius online.',

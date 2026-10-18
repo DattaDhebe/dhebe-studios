@@ -15,14 +15,14 @@ export const metadata: Metadata = {
   alternates: {
     canonical: siteRoute(emailTemplateEditorPath),
   },
-  openGraph: {
+  openGraph: { images: ['/social-preview.png'],
     title: emailTemplateEditorSeoTitle,
     description: emailTemplateEditorMetaDescription,
     url: siteRoute(emailTemplateEditorPath),
     type: 'website',
     siteName: SITE_NAME,
   },
-  twitter: {
+  twitter: { images: ['/social-preview.png'],
     card: 'summary_large_image',
     title: emailTemplateEditorSeoTitle,
     description: emailTemplateEditorMetaDescription,

@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { PdfToolsWorkbench } from '@/components/pdf-tools-workbench';
 import Link from 'next/link';
-import Script from 'next/script';
 import { getPdfToolPath, pdfToolPages } from '@/lib/pdf-tools-pages';
 import { SITE_NAME, siteRoute } from '@/lib/site';
 
@@ -32,7 +31,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: siteRoute('/pdf-tools'),
   },
-  openGraph: {
+  openGraph: { images: ['/social-preview.png'],
     title: 'Free Online PDF Tools - Merge, Compress & Convert PDF | DHEBE',
     description:
       'Use free online PDF tools to merge, compress, split, sign, and convert PDF files with browser-based workflows.',
@@ -40,7 +39,7 @@ export const metadata: Metadata = {
     type: 'website',
     siteName: SITE_NAME,
   },
-  twitter: {
+  twitter: { images: ['/social-preview.png'],
     title: 'Free Online PDF Tools - Merge, Compress & Convert PDF',
     description:
       'Fast, simple online PDF tools for merge, compress, split, sign, and conversion workflows.',
@@ -106,7 +105,7 @@ export default function PdfToolsPage() {
 
   return (
     <>
-      <Script
+      <script
         id="pdf-tools-structured-data"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
@@ -119,11 +118,11 @@ export default function PdfToolsPage() {
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-purple-800 dark:text-purple-400">
               Online PDF Tools
             </p>
-            <h1 className="mt-3 text-3xl font-semibold tracking-tight theme-title sm:text-4xl">
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight theme-title sm:text-4xl">
               Free Online PDF Tools - Merge, Compress &amp; Convert PDF
-            </h1>
+            </h2>
             <p className="mt-3 max-w-3xl text-sm leading-7 theme-muted sm:text-base">
-              Use free online PDF tools to merge, compress, split, sign, and convert PDF files. The most searched workflows like PDF to Word, JPG to PDF, PDF to JPG, merge PDF, and compress PDF are available in one fast browser-based workspace.
+              Merge, compress, split, sign, and convert PDF files. Open the workflow you need below, including PDF to Word, JPG to PDF, and PDF to JPG. Each tool explains whether it processes files locally or temporarily on our server.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <span className="theme-accent-chip-purple rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em]">

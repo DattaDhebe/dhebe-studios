@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: siteRoute('/support'),
   },
-  openGraph: {
+  openGraph: { images: ['/social-preview.png'],
     title: `Support | ${SITE_NAME}`,
     description:
       'Support and help page for Base64, PDF, calculator, email, and DhebeVoice products, including usage guides, privacy, and contact information.',

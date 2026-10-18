@@ -5,100 +5,27 @@ import { base64ToolPages, getBase64ToolPath } from '@/lib/base64-tool-pages';
 import { base64CategoryPages } from '@/lib/base64-category-pages';
 import { getImageToolPath, imageToolPages } from '@/lib/image-tools-pages';
 import { siteRoute } from '@/lib/site';
+import { utilityTools } from '@/lib/utility-tools';
 
 export const dynamic = 'force-static';
 
+// Update only when published content changes, not on every rebuild.
+const CONTENT_UPDATED = '2026-10-18';
+
 export default function sitemap(): MetadataRoute.Sitemap {
-  return [
-    {
-      url: siteRoute('/'),
-      lastModified: new Date('2026-05-03'),
-      changeFrequency: 'weekly',
-      priority: 1,
-    },
-    {
-      url: siteRoute('/support'),
-      lastModified: new Date('2026-05-03'),
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
-    {
-      url: siteRoute('/dhebevoice'),
-      lastModified: new Date('2026-05-13'),
-      changeFrequency: 'monthly',
-      priority: 0.78,
-    },
-    {
-      url: siteRoute('/dhebevoice/privacy-policy/'),
-      lastModified: new Date('2026-05-13'),
-      changeFrequency: 'monthly',
-      priority: 0.72,
-    },
-    {
-      url: siteRoute('/image-studio'),
-      lastModified: new Date('2026-05-03'),
-      changeFrequency: 'weekly',
-      priority: 0.95,
-    },
-    {
-      url: siteRoute('/pdf-studio'),
-      lastModified: new Date('2026-05-03'),
-      changeFrequency: 'weekly',
-      priority: 0.95,
-    },
-    {
-      url: siteRoute('/calculator-studio'),
-      lastModified: new Date('2026-05-03'),
-      changeFrequency: 'weekly',
-      priority: 0.92,
-    },
-    {
-      url: siteRoute('/email-template-editor'),
-      lastModified: new Date('2026-05-03'),
-      changeFrequency: 'weekly',
-      priority: 0.88,
-    },
-    {
-      url: siteRoute('/pdf-tools'),
-      lastModified: new Date('2026-05-03'),
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
-    {
-      url: siteRoute('/calculator-tools'),
-      lastModified: new Date('2026-05-03'),
-      changeFrequency: 'weekly',
-      priority: 0.88,
-    },
-    ...Object.values(base64CategoryPages).map((page) => ({
-      url: siteRoute(page.path),
-      lastModified: new Date('2026-05-03'),
-      changeFrequency: 'weekly' as const,
-      priority: page.view === 'all' ? 0.92 : 0.82,
-    })),
-    ...pdfToolPages.map((tool) => ({
-      url: siteRoute(getPdfToolPath(tool)),
-      lastModified: new Date('2026-05-03'),
-      changeFrequency: 'weekly' as const,
-      priority: 0.85,
-    })),
-    ...imageToolPages.map((tool) => ({
-      url: siteRoute(getImageToolPath(tool)),
-      lastModified: new Date('2026-05-03'),
-      changeFrequency: 'weekly' as const,
-      priority: 0.85,
-    })),
-    ...calculatorToolPages.map((tool) => ({
-      url: siteRoute(tool.path),
-      lastModified: new Date('2026-05-03'),
-      changeFrequency: 'weekly' as const,
-      priority: 0.84,
-    })),
-    ...base64ToolPages.map((tool) => ({
-      url: siteRoute(getBase64ToolPath(tool)),
-      lastModified: new Date('2026-05-03'),
-      changeFrequency: 'weekly' as const,
-      priority: 0.8,
-    })),
+  const paths = [
+    '/', '/support/', '/privacy/', '/dhebevoice/', '/dhebevoice/privacy-policy/',
+    '/image-studio/', '/pdf-studio/', '/calculator-studio/',
+    '/email-template-editor/', '/pdf-tools/', '/calculator-tools/',
+    ...Object.values(base64CategoryPages).map(page => page.path),
+    ...pdfToolPages.map(getPdfToolPath),
+    ...imageToolPages.map(getImageToolPath),
+    ...calculatorToolPages.map(tool => tool.path),
+    ...base64ToolPages.map(getBase64ToolPath),
+    ...Object.values(utilityTools).map(tool => tool.path),
   ];
+  return [...new Set(paths.map(path => siteRoute(path)))].map(url => ({
+    url,
+    lastModified: new Date(CONTENT_UPDATED),
+  }));
 }
