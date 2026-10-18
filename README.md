@@ -29,6 +29,7 @@ locally; conversions that need a server are clearly labeled before upload.
 | Image upload limits | Reduce an image below a chosen KB limit with a preview | [Image Size Reducer](https://www.dhebe.com/image-size-reducer/) |
 | QR codes | Generate static codes and download PNG or SVG | [QR Code Generator](https://www.dhebe.com/qr-code-generator/) |
 | Text | Count words, characters, paragraphs, and estimated reading time | [Word Counter](https://www.dhebe.com/word-counter/) |
+| AI Trading | Open the separate private research and paper-trading dashboard | [AI Trading](https://trade.dhebe.com/) |
 
 Shared workspaces include searchable tool navigation, mobile layouts, keyboard
 focus support, and light/dark themes. See the [studio guide](STUDIOS_HUB_README.md)
@@ -118,6 +119,13 @@ Next.js + React + TypeScript
 Trading code, trading storage, and shared trading-proxy configuration belong in
 the separate `F:\ai_projects\ai-trading` repository, not this one. Preserve the
 existing `/trade/`, `/api/`, and other hosted applications during deployment.
+
+The homepage AI Trading feature and footer open `https://trade.dhebe.com/` in a
+new tab with `noopener noreferrer`. Public copy describes research, screening,
+decision history, simulated trades, and system health only. It does not expose
+account data, offer public registration, or claim live orders or profitable AI
+predictions. The app remains sign-in-required; its code and operations stay in
+the separate trading repository.
 
 ## Documentation and support
 

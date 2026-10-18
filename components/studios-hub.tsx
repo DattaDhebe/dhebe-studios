@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useDeferredValue, useEffect, useState } from 'react';
+import { useDeferredValue, useEffect, useState, type ReactNode } from 'react';
 import type { DirectoryTool } from '@/lib/tool-directory';
 import { UiIcon, type IconName } from './ui-icon';
 import { utilityTools } from '@/lib/utility-tools';
@@ -21,7 +21,7 @@ const shortcuts: { label: string; note: string; href: string; icon: IconName; to
   { label: 'Text to Base64', note: 'A quick encode, then back to it', href: '/tools/text-to-base64/', icon: 'code', tone: 'code' },
 ];
 
-export function StudiosHub({ tools }: { tools: DirectoryTool[] }) {
+export function StudiosHub({ tools, featuredApp }: { tools: DirectoryTool[]; featuredApp?: ReactNode }) {
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('All studios');
   const deferredQuery = useDeferredValue(query.trim().toLowerCase());
@@ -54,6 +54,7 @@ export function StudiosHub({ tools }: { tools: DirectoryTool[] }) {
         <div className="studio-grid">{visibleStudios.map((studio, index) => <Link key={studio.id} href={studio.href} className={'studio-card tone-' + studio.tone} prefetch={false}><div className="studio-card-top"><span className="studio-icon"><UiIcon name={studio.icon} width="25" height="25" /></span><span className="card-index">{String(index + 1).padStart(2, '0')}</span></div><p className="studio-category">{studio.category}</p><h3>{studio.name}</h3><p className="studio-description">{studio.description}</p><div className="studio-card-bottom"><span>{studio.count}</span><span className="card-arrow"><UiIcon name="arrow" width="19" height="19" /></span></div></Link>)}</div>
       </section>
       <section className="content-container new-tools-section"><div className="section-heading"><div><p className="eyebrow">THREE MORE SHORTCUTS</p><h2>Small tasks. Sorted.</h2></div><p>A photo that fits. A link you can scan.<br />A draft that stays on track.</p></div><div className="new-tools-grid">{Object.values(utilityTools).map((tool, index) => <Link key={tool.path} href={tool.path} prefetch={false}><span className="eyebrow">0{index + 1} / {tool.category}</span><h3>{tool.label}</h3><p>{tool.description}</p><span className="new-tool-link">Open the tool <UiIcon name="arrow" width="18" height="18" /></span></Link>)}</div></section>
+      {featuredApp}
       <section className="trust-section content-container"><div className="trust-intro"><p className="eyebrow">BUILT AROUND YOU</p><h2>Useful tools.<br />Nothing in the way.</h2></div><div className="trust-item"><UiIcon name="shield" /><h3>Your files, handled with care.</h3><p>Most tools run on your device. Server conversions are clearly marked, with source files deleted after processing.</p></div><div className="trust-item"><UiIcon name="bolt" /><h3>Open it. Use it. Carry on.</h3><p>No installs or accounts to get started. Just practical tools that fit into the way you already work.</p></div></section>
       <section className="home-help content-container"><div><p className="eyebrow">A LITTLE GUIDANCE GOES A LONG WAY</p><h2>Not sure where to start?</h2><p>Our help center can point you in the right direction.</p></div><Link href="/support/" className="button-primary">Visit the help center <UiIcon name="arrow" width="18" height="18" /></Link></section>
     </div>

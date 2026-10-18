@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { StudiosHub } from '@/components/studios-hub';
+import { AiTradingSection } from '@/components/ai-trading-section';
 import { toolDirectory } from '@/lib/tool-directory';
 import { BreadcrumbSchema } from '@/components/breadcrumb-schema';
 import { SITE_NAME, SUPPORT_EMAIL, siteRoute } from '@/lib/site';
@@ -82,7 +83,7 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
-      <StudiosHub tools={toolDirectory} />
+      <StudiosHub tools={toolDirectory} featuredApp={<AiTradingSection />} />
     </>
   );
 }
