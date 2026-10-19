@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react';
 import { PDFDocument, StandardFonts, rgb, degrees } from 'pdf-lib';
 import { PdfDropZone } from '@/components/converters/pdf-drop-zone';
-import { isPdfFile } from '@/lib/download';
+import { downloadBlob, isPdfFile } from '@/lib/download';
 
 export function PdfWatermarkTool() {
   const [file, setFile] = useState<File | null>(null);
@@ -58,14 +58,7 @@ export function PdfWatermarkTool() {
 
       const watermarkedPdf = await pdfDoc.save();
       const blob = new Blob([new Uint8Array(watermarkedPdf)], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `watermarked-${file.name}`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      downloadBlob(blob, `watermarked-${file.name}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Watermarking failed');
     } finally {

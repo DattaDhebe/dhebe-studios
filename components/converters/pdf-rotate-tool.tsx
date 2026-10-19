@@ -4,7 +4,7 @@ import { useRef, useState } from 'react';
 import { degrees, PDFDocument } from 'pdf-lib';
 import { formatPageSummary, parsePageSelection } from '@/lib/pdf-page-selection';
 import { PdfDropZone } from '@/components/converters/pdf-drop-zone';
-import { isPdfFile } from '@/lib/download';
+import { downloadBlob, isPdfFile } from '@/lib/download';
 
 const rotationChoices = [
   { label: '90° clockwise', value: 90 },
@@ -94,14 +94,7 @@ export function PdfRotateTool() {
 
       const rotatedBytes = await pdfDoc.save();
       const blob = new Blob([new Uint8Array(rotatedBytes)], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `rotated-${file.name}`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
+      downloadBlob(blob, `rotated-${file.name}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Rotation failed');
     } finally {

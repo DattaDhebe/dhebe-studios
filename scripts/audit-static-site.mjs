@@ -9,6 +9,8 @@ const errors = [];
 const aliases = [];
 const indexable = new Set();
 const titles = new Set();
+const descriptions = new Set();
+const links = new Map();
 
 async function walk(directory) {
   const files = [];
@@ -34,7 +36,9 @@ for (const file of (await walk(root)).filter(file => file.endsWith('.html'))) {
   const title = html.match(/<title>(.*?)<\/title>/)?.[1];
   if (!title || titles.has(title)) errors.push(`${pathname}: missing or duplicate title`);
   titles.add(title);
-  if (!/<meta name="description" content="[^"]+"/.test(html)) errors.push(`${pathname}: missing description`);
+  const description = html.match(/<meta name="description" content="([^"]+)"/)?.[1];
+  if (!description || descriptions.has(description)) errors.push(`${pathname}: missing or duplicate description`);
+  descriptions.add(description);
   if ([...html.matchAll(/<h1[\s>]/g)].length !== 1) errors.push(`${pathname}: expected one main heading`);
   for (const property of ['og:image', 'twitter:image']) {
     const image = html.match(new RegExp(`<meta (?:property|name)="${property}" content="([^"]+)"`))?.[1];
@@ -46,16 +50,26 @@ for (const file of (await walk(root)).filter(file => file.endsWith('.html'))) {
   for (const [, json] of html.matchAll(/<script[^>]*type="application\/ld\+json"[^>]*>(.*?)<\/script>/gs)) {
     try { JSON.parse(json); } catch { errors.push(`${pathname}: invalid structured data`); }
   }
+  const targets = new Set();
   for (const [, href] of html.matchAll(/<a[^>]*href="(\/[^"?#]*)(?:[?#][^"]*)?"/g)) {
     if (href.startsWith('//') || href.startsWith('/api/')) continue;
+    targets.add(origin + href);
     const target = path.join(root, decodeURIComponent(href));
     try { await access(href.endsWith('/') ? path.join(target, 'index.html') : target); }
     catch { errors.push(`${pathname}: broken internal link ${href}`); }
   }
+  links.set(origin + pathname, targets);
 }
 if (new Set(urls).size !== urls.length) errors.push('Duplicate sitemap URLs');
 for (const url of urls) if (!indexable.has(url)) errors.push(`Sitemap includes a missing, redirected, or noindex page: ${url}`);
 for (const url of indexable) if (!urls.includes(url)) errors.push(`Sitemap omits ${url}`);
+const reachable = new Set([origin + '/']);
+const pending = [...reachable];
+while (pending.length) {
+  const current = pending.pop();
+  for (const target of links.get(current) || []) if (indexable.has(target) && !reachable.has(target)) { reachable.add(target); pending.push(target); }
+}
+for (const url of indexable) if (!reachable.has(url)) errors.push(`Public page has no crawlable link path from the homepage: ${url}`);
 if (errors.length) throw new Error(errors.join('\n'));
 
 // Known public page routes only: never redirect API or separately managed applications.
@@ -72,9 +86,11 @@ RewriteRule ^(?:${routes.map(escape).join('|')})/?$ ${origin}%{REQUEST_URI} [R=3
 </IfModule>
 <IfModule mod_setenvif.c>
 SetEnvIf Request_URI "^/_next/static/" dhebe_immutable=1
+SetEnvIf Request_URI "^/(?:heic|third-party)/" dhebe_noindex=1
 </IfModule>
 <IfModule mod_headers.c>
 Header set Cache-Control "public, max-age=31536000, immutable" env=dhebe_immutable
+Header set X-Robots-Tag "noindex" env=dhebe_noindex
 <FilesMatch "^(?:__next\\..+|index)\\.txt$">
 Header set X-Robots-Tag "noindex"
 </FilesMatch>

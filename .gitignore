@@ -45,6 +45,7 @@ yarn-error.log*
 
 # Generated PDF.js assets and test reports
 /public/pdfjs/
+/public/heic/
 /playwright-report/
 /test-results/
 /services/tools/__pycache__/

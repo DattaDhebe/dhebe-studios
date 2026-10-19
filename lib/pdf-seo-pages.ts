@@ -111,7 +111,7 @@ export const pdfSeoPages: PdfSeoPage[] = [
     id: 'compress',
     seoTitle: 'Compress PDF Online - Reduce PDF File Size Free',
     metaDescription:
-      'Compress PDF files online and reduce PDF file size for free. Make PDF smaller without losing quality.',
+      'Compress PDF locally with quality presets or try a 100, 200, or 500 KB target. Repack objects or explicitly flatten scans; review the actual size before download.',
     keywords: [
       'compress pdf',
       'compress pdf online',
@@ -132,11 +132,11 @@ export const pdfSeoPages: PdfSeoPage[] = [
       ...sharedPdfKeywords,
     ],
     intro:
-      'Compress PDF online to reduce PDF size for job forms, college uploads, government portals, and email attachments. This free PDF compressor helps make PDF smaller fast without sending files away from your browser workflow.',
+      'Prepare a PDF for an upload limit or email attachment without sending it to a server. Choose quality presets for image-heavy files, or enter a target such as 100, 200, or 500 KB. Targets are not guaranteed: the tool shows the actual size and keeps the smaller original when appropriate.',
     howToTitle: 'How to Compress PDF File Size',
     howToSteps: [
       'Upload the PDF file you want to compress.',
-      'Choose the compression flow and let the tool process the document.',
+      'Choose a quality preset, or enter a KB target and select structure-preserving or explicitly accepted scan flattening.',
       'Preview the reduced file size and download the compressed PDF.',
       'Repeat with different files when you need to reduce PDF size online again.',
     ],
@@ -163,12 +163,12 @@ export const pdfSeoPages: PdfSeoPage[] = [
       {
         question: 'How to compress PDF without losing quality?',
         answer:
-          'Compression always involves tradeoffs, but the goal is to reduce PDF size while keeping the document readable and usable for practical uploads.',
+          'Repacking objects avoids rasterizing pages but may not reduce size enough. Quality presets and scan mode flatten pages and remove selectable text, links, forms, and accessibility structure. Any rewrite can invalidate digital signatures; keep signed originals and inspect the result.',
       },
       {
         question: 'How to compress PDF to 1MB?',
         answer:
-          'Upload the file and check the result after compression. Final size depends on the original document content, image density, and embedded assets.',
+          'Select the 1,000 KB preset under target size, choose a method, and try compression. The same control supports 100, 200, and 500 KB or a custom limit. If it cannot reach the target, it says so and offers the best available file without claiming it fits.',
       },
       {
         question: 'How to make PDF smaller?',

@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react';
 import { PDFDocument, rgb } from 'pdf-lib';
 import { PdfDropZone } from '@/components/converters/pdf-drop-zone';
-import { isPdfFile } from '@/lib/download';
+import { downloadBlob, isPdfFile } from '@/lib/download';
 
 export function PdfAddPageNumbersTool() {
   const [file, setFile] = useState<File | null>(null);
@@ -39,14 +39,7 @@ export function PdfAddPageNumbersTool() {
       });
       const bytes = await pdfDoc.save();
       const blob = new Blob([new Uint8Array(bytes)], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `numbered-${file.name}`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      downloadBlob(blob, `numbered-${file.name}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to add page numbers');
     } finally {

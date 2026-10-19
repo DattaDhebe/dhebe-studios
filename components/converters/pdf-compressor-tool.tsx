@@ -6,6 +6,8 @@ import { PdfDropZone } from './pdf-drop-zone';
 import { loadPdf } from '@/lib/pdfjs';
 import { downloadBlob, isPdfFile } from '@/lib/download';
 import { formatBytes } from '@/lib/base64';
+import { TargetPdfCompression } from '@/components/target-pdf-compression';
+import { trackToolEvent } from '@/lib/analytics';
 
 type Level = 'low' | 'medium' | 'high';
 const presets = { low: { scale: 1.8, quality: 0.92 }, medium: { scale: 1.4, quality: 0.75 }, high: { scale: 1.1, quality: 0.55 } };
@@ -19,9 +21,11 @@ export function PdfCompressorTool() {
   const [size, setSize] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const running = useRef(false);
+  const [selection, setSelection] = useState(0);
+  const [targetBusy, setTargetBusy] = useState(false);
 
   const select = (selected: File) => {
-    if (running.current) return;
+    if (running.current || targetBusy) return;
     setFile(null);
     setSize(0);
     setProgress(0);
@@ -29,21 +33,25 @@ export function PdfCompressorTool() {
     setError('');
     if (!isPdfFile(selected)) return setError('Please select a PDF file.');
     setFile(selected);
+    setSelection(value => value + 1);
   };
 
   const compress = async (level: Level) => {
-    if (!file || running.current) return;
+    if (!file || running.current || targetBusy) return;
     running.current = true;
     setBusy(true);
     setError('');
     setSize(0);
     setProgress(0);
     setStatus('Reading PDF...');
+    trackToolEvent('start');
     let task: Awaited<ReturnType<typeof loadPdf>> | undefined;
     try {
       const original = await file.arrayBuffer();
+      if (original.byteLength > 25_000_000) throw new Error('Choose a PDF below 25 MB.');
       task = await loadPdf(original.slice(0));
       const source = await task.promise;
+      if (source.numPages > 150) throw new Error('Choose a PDF with at most 150 pages.');
       const output = await PDFDocument.create();
       const settings = presets[level];
       for (let index = 1; index <= source.numPages; index++) {
@@ -79,7 +87,9 @@ export function PdfCompressorTool() {
       setProgress(100);
       setStatus(smaller ? 'Compressed PDF downloaded.' : 'This PDF is already smaller than the compressed copy. The original was kept.');
       downloadBlob(blob, smaller ? `compressed-${file.name}` : file.name);
+      trackToolEvent('success');
     } catch (err) {
+      trackToolEvent('error');
       setStatus('');
       setError(err instanceof Error ? err.message : 'Compression failed.');
     } finally {
@@ -90,7 +100,7 @@ export function PdfCompressorTool() {
   };
 
   return <div className="space-y-6">
-    <PdfDropZone inputRef={fileInputRef} disabled={busy} onSelect={selected => selected instanceof File && select(selected)} title="Drop your PDF here" />
+    <PdfDropZone inputRef={fileInputRef} disabled={busy || targetBusy} onSelect={selected => selected instanceof File && select(selected)} title="Drop your PDF here" />
     {file && <div className="theme-card space-y-4 rounded-2xl border p-6">
       <p className="break-all font-semibold theme-title">{file.name}</p>
       <p className="text-sm theme-muted">Original: {formatBytes(file.size)}</p>
@@ -100,8 +110,9 @@ export function PdfCompressorTool() {
         <progress aria-label="Compression progress" value={progress} max={100} className="w-full accent-cyan-600" />
       </div>}
       {size > 0 && <p className="text-sm theme-title">Result: {formatBytes(size)} ({Math.max(0, (1 - size / file.size) * 100).toFixed(1)}% smaller)</p>}
-      <div className="grid gap-3 sm:grid-cols-3">{(['low', 'medium', 'high'] as const).map(level => <button key={level} disabled={busy} onClick={() => compress(level)} className="rounded-lg bg-cyan-600 px-4 py-3 font-semibold text-white disabled:opacity-50">{level === 'low' ? 'Better Quality' : level === 'medium' ? 'Balanced' : 'Smaller Size'}</button>)}</div>
+      <div className="grid gap-3 sm:grid-cols-3">{(['low', 'medium', 'high'] as const).map(level => <button key={level} disabled={busy || targetBusy} onClick={() => compress(level)} className="rounded-lg bg-cyan-600 px-4 py-3 font-semibold text-white disabled:opacity-50">{level === 'low' ? 'Better Quality' : level === 'medium' ? 'Balanced' : 'Smaller Size'}</button>)}</div>
     </div>}
+    {file && !busy && <TargetPdfCompression key={selection} file={file} onBusyChange={setTargetBusy} />}
     {error && <p role="alert" className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-900">{error}</p>}
   </div>;
 }

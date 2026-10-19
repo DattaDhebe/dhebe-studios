@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useState, useEffect } from 'react';
+import { downloadBlob } from '@/lib/download';
 import { BlobImage } from './blob-image';
 import { transformImage, imageFilename, loadImage } from '@/lib/image-processing';
 import { ImageDropZone } from './image-drop-zone';
@@ -63,16 +64,7 @@ export function ImageFormatConverterTool({ targetFormat, label }: ImageFormatCon
 
   const downloadFile = (file: ConvertedFile) => {
     if (!file.converted) return;
-    const url = URL.createObjectURL(file.converted);
-    const a = document.createElement('a');
-    a.href = url;
-    const extension = targetFormat.split('/')[1];
-    const nameWithoutExt = file.original.name.substring(0, file.original.name.lastIndexOf('.')) || file.original.name;
-    a.download = imageFilename(file.original.name, file.converted.type, 'converted_');
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    downloadBlob(file.converted, imageFilename(file.original.name, file.converted.type, 'converted_'));
   };
 
   const downloadAll = () => {

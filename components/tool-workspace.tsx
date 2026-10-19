@@ -57,7 +57,7 @@ export function ToolWorkspace({ studio, studioHref, icon, tone, title, descripti
               <Link href="/support/" className="sidebar-help">Need a hand?<span>Visit the help center <UiIcon name="arrow" width="15" height="15" /></span></Link>
             </div>
           </aside>
-          <section className="workspace-main" aria-label={title}>
+          <section className="workspace-main" aria-label={title} data-active-tool={`${tone}:${activeId}`}>
             <div className="workspace-heading">
               <div className="workspace-eyebrow"><span>{studio}</span><span className="processing-badge"><span />{serverProcessing ? 'Temporary server processing' : 'Runs on your device'}</span></div>
               <h1>{title}</h1><p>{description}</p>

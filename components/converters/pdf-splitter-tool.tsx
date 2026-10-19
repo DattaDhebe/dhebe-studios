@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import { PdfDropZone } from '@/components/converters/pdf-drop-zone';
-import { isPdfFile } from '@/lib/download';
+import { downloadBlob, isPdfFile } from '@/lib/download';
 
 export function PdfSplitterTool() {
   const [file, setFile] = useState<File | null>(null);
@@ -70,14 +70,7 @@ export function PdfSplitterTool() {
 
       const newPdfBytes = await newDoc.save();
       const blob = new Blob([new Uint8Array(newPdfBytes)], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `extracted-pages-${start}-${end}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      downloadBlob(blob, `extracted-pages-${start}-${end}.pdf`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Split failed');
     } finally {

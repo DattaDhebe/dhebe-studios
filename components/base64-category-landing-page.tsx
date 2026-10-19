@@ -92,6 +92,8 @@ export function Base64CategoryLandingPage({ view }: Base64CategoryLandingPagePro
               {page.intro}
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
+              <Link href="/base64-encoder/" prefetch={false} className="utility-secondary">Base64 encoder</Link>
+              <Link href="/base64-decoder/" prefetch={false} className="utility-secondary">Base64 decoder</Link>
               <Link
                 href="/base64-converter/"
                 className="inline-flex items-center rounded-full bg-slate-950 px-4 py-2 text-sm font-semibold text-white transition hover:opacity-90"

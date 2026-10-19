@@ -1,4 +1,5 @@
 'use client';
+import { downloadBlob } from '@/lib/download';
 
 import { useRef, useState } from 'react';
 import { PDFDocument } from 'pdf-lib';
@@ -35,14 +36,7 @@ export function JpgToPdfTool() {
       }
       const out = await pdf.save();
       const blob = new Blob([new Uint8Array(out)], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'jpg-to-pdf.pdf';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      downloadBlob(blob, 'jpg-to-pdf.pdf');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Conversion failed');
     } finally {

@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import { PdfDropZone } from '@/components/converters/pdf-drop-zone';
-import { isPdfFile } from '@/lib/download';
+import { downloadBlob, isPdfFile } from '@/lib/download';
 
 export function PdfCropTool() {
   const [file, setFile] = useState<File | null>(null);
@@ -49,14 +49,7 @@ export function PdfCropTool() {
 
       const bytes = await pdfDoc.save();
       const blob = new Blob([new Uint8Array(bytes)], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      const anchor = document.createElement('a');
-      anchor.href = url;
-      anchor.download = `cropped-${file.name}`;
-      document.body.appendChild(anchor);
-      anchor.click();
-      document.body.removeChild(anchor);
-      URL.revokeObjectURL(url);
+      downloadBlob(blob, `cropped-${file.name}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Cropping failed.');
     } finally {

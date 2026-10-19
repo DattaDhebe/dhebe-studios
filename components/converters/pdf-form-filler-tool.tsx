@@ -1,4 +1,5 @@
 'use client';
+import { downloadBlob } from '@/lib/download';
 
 import { useRef, useState } from 'react';
 import { PDFDocument, PDFTextField, PDFCheckBox, PDFRadioGroup, PDFDropdown, PDFOptionList } from 'pdf-lib';
@@ -92,14 +93,7 @@ export function PdfFormFillerTool() {
 
       const filledPdf = await pdfDoc.save();
       const blob = new Blob([new Uint8Array(filledPdf)], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `filled-${file.name}`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      downloadBlob(blob, `filled-${file.name}`);
     } catch (err) {
       setFormError(err instanceof Error ? err.message : 'Form filling failed.');
     } finally {

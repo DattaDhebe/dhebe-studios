@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
+import { downloadBlob } from '@/lib/download';
 import { BlobImage } from './blob-image';
 import { transformImage, imageFilename, loadImage } from '@/lib/image-processing';
 import { ImageDropZone } from './image-drop-zone';
@@ -78,14 +79,7 @@ export function ImageResizerTool() {
 
   const downloadFile = (file: ResizedFile) => {
     if (!file.resized) return;
-    const url = URL.createObjectURL(file.resized);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = imageFilename(file.original.name, file.resized.type, 'resized_');
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    downloadBlob(file.resized, imageFilename(file.original.name, file.resized.type, 'resized_'));
   };
 
   const handleReset = () => {

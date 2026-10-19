@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
+import { downloadBlob } from '@/lib/download';
 import { ConversionOutput } from '@/components/converters/conversion-output';
 import { FileDropZone } from '@/components/converters/file-drop-zone';
 import { fileToDataUrl, formatBytes, formatTextSize } from '@/lib/base64';
@@ -67,12 +68,7 @@ export function ImageToBase64Converter() {
       .replace(/[^a-z0-9-_]+/gi, '-')
       .toLowerCase();
 
-    const link = document.createElement('a');
-    link.href = `data:text/plain;charset=utf-8,${encodeURIComponent(base64)}`;
-    link.download = `${safeName || 'image'}.base64.txt`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    downloadBlob(new Blob([base64], { type: 'text/plain;charset=utf-8' }), `${safeName || 'image'}.base64.txt`);
   };
 
   return (

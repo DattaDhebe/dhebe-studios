@@ -10,7 +10,7 @@ import { utilityTools } from '@/lib/utility-tools';
 export const dynamic = 'force-static';
 
 // Update only when published content changes, not on every rebuild.
-const CONTENT_UPDATED = '2026-10-18';
+const CONTENT_UPDATED = '2026-10-19';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const paths = [

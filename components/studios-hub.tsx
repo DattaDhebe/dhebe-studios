@@ -5,6 +5,7 @@ import { useDeferredValue, useEffect, useState, type ReactNode } from 'react';
 import type { DirectoryTool } from '@/lib/tool-directory';
 import { UiIcon, type IconName } from './ui-icon';
 import { utilityTools } from '@/lib/utility-tools';
+import { trackToolSelection } from '@/lib/analytics';
 
 const studios: { id: string; name: string; category: string; description: string; href: string; icon: IconName; tone: string; count: string }[] = [
   { id: 'pdf', name: 'PDF Studio', category: 'Documents', description: 'Smaller files. Neater pages. Convert, combine, and get your documents ready to go.', href: '/pdf-studio/', icon: 'pdf', tone: 'pdf', count: '28 tools' },
@@ -21,7 +22,7 @@ const shortcuts: { label: string; note: string; href: string; icon: IconName; to
   { label: 'Text to Base64', note: 'A quick encode, then back to it', href: '/tools/text-to-base64/', icon: 'code', tone: 'code' },
 ];
 
-export function StudiosHub({ tools, featuredApp }: { tools: DirectoryTool[]; featuredApp?: ReactNode }) {
+export function StudiosHub({ tools, featuredApp, toolIndex }: { tools: DirectoryTool[]; featuredApp?: ReactNode; toolIndex?: ReactNode }) {
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('All studios');
   const deferredQuery = useDeferredValue(query.trim().toLowerCase());
@@ -29,7 +30,7 @@ export function StudiosHub({ tools, featuredApp }: { tools: DirectoryTool[]; fea
   const results = deferredQuery ? tools.filter(tool => (tool.label + ' ' + tool.description + ' ' + tool.category).toLowerCase().includes(deferredQuery)) : [];
   const visibleStudios = category === 'All studios' ? studios : studios.filter(studio => studio.category === category);
   return (
-    <div className="home-page">
+    <div className="home-page" onClickCapture={event => { const link = (event.target as Element).closest<HTMLAnchorElement>('a[data-tool-id]'); if (link?.dataset.toolId) trackToolSelection(link.dataset.toolId, 'home'); }}>
       <section className="home-hero content-container">
         <div className="hero-copy reveal">
           <p className="eyebrow"><span className="status-dot" />A simpler way to get things done</p>
@@ -37,7 +38,7 @@ export function StudiosHub({ tools, featuredApp }: { tools: DirectoryTool[]; fea
           <p className="hero-description">The little tasks shouldn't take all day. Convert a file, polish an image, run the numbers. Find your tool and keep moving.</p>
           <div className="home-search-wrap">
             <label className="home-search"><UiIcon name="search" width="22" height="22" /><input aria-label="Search all tools" placeholder="What do you need to do?" value={query} onChange={event => setQuery(event.target.value)} onKeyDown={event => { if (event.key === 'Escape') setQuery(''); }} />{query ? <button type="button" aria-label="Clear tool search" onClick={() => setQuery('')}><UiIcon name="close" width="18" height="18" /></button> : <span className="search-hint">Find a tool</span>}</label>
-            {deferredQuery && <div className="home-search-results" role="region" aria-label="Tool search results"><p className="search-result-count" role="status">{results.length} {results.length === 1 ? 'tool' : 'tools'} found{results.length > 12 ? ' / showing first 12' : ''}</p>{results.slice(0, 12).map(tool => <Link key={tool.href} href={tool.href}><div><strong>{tool.label}</strong><span>{tool.category}</span></div><UiIcon name="arrow" width="17" height="17" /></Link>)}{results.length === 0 && <div className="home-search-empty">Try "PDF", "resize", or "calculator".</div>}</div>}
+            {deferredQuery && <div className="home-search-results" role="region" aria-label="Tool search results"><p className="search-result-count" role="status">{results.length} {results.length === 1 ? 'tool' : 'tools'} found{results.length > 12 ? ' / showing first 12' : ''}</p>{results.slice(0, 12).map(tool => <Link key={tool.href} href={tool.href} data-tool-id={tool.href.replace(/^\/|\/$/g, '').replace(/\//g, ':')}><div><strong>{tool.label}</strong><span>{tool.category}</span></div><UiIcon name="arrow" width="17" height="17" /></Link>)}{results.length === 0 && <div className="home-search-empty">Try "PDF", "resize", or "calculator".</div>}</div>}
           </div>
           <div className="hero-popular"><span>Popular:</span><Link href="/compress-pdf/">Compress PDF</Link><Link href="/pdf-to-word/">PDF to Word</Link><Link href="/image-tools/image-resizer/">Resize image</Link></div>
           <div className="hero-assurances"><span><UiIcon name="check" width="15" height="15" />Free to use</span><span><UiIcon name="check" width="15" height="15" />No sign-up</span><span><UiIcon name="check" width="15" height="15" />Made to be simple</span></div>
@@ -53,8 +54,9 @@ export function StudiosHub({ tools, featuredApp }: { tools: DirectoryTool[]; fea
         <div className="category-tabs" aria-label="Filter studios">{['All studios', 'Documents', 'Images', 'Everyday math', 'For developers', 'Create & send'].map(item => <button key={item} type="button" aria-pressed={category === item} onClick={() => setCategory(item)}>{item}</button>)}</div>
         <div className="studio-grid">{visibleStudios.map((studio, index) => <Link key={studio.id} href={studio.href} className={'studio-card tone-' + studio.tone} prefetch={false}><div className="studio-card-top"><span className="studio-icon"><UiIcon name={studio.icon} width="25" height="25" /></span><span className="card-index">{String(index + 1).padStart(2, '0')}</span></div><p className="studio-category">{studio.category}</p><h3>{studio.name}</h3><p className="studio-description">{studio.description}</p><div className="studio-card-bottom"><span>{studio.count}</span><span className="card-arrow"><UiIcon name="arrow" width="19" height="19" /></span></div></Link>)}</div>
       </section>
-      <section className="content-container new-tools-section"><div className="section-heading"><div><p className="eyebrow">THREE MORE SHORTCUTS</p><h2>Small tasks. Sorted.</h2></div><p>A photo that fits. A link you can scan.<br />A draft that stays on track.</p></div><div className="new-tools-grid">{Object.values(utilityTools).map((tool, index) => <Link key={tool.path} href={tool.path} prefetch={false}><span className="eyebrow">0{index + 1} / {tool.category}</span><h3>{tool.label}</h3><p>{tool.description}</p><span className="new-tool-link">Open the tool <UiIcon name="arrow" width="18" height="18" /></span></Link>)}</div></section>
+      <section className="content-container new-tools-section"><div className="section-heading"><div><p className="eyebrow">MORE EVERYDAY SHORTCUTS</p><h2>Small tasks. Sorted.</h2></div><p>Prepare a photo. Extract the words.<br />Make a document. Get back to your day.</p></div><div className="new-tools-grid">{Object.entries(utilityTools).map(([id, tool], index) => <Link key={tool.path} href={tool.path} prefetch={false} data-tool-id={id}><span className="eyebrow">{String(index + 1).padStart(2, '0')} / {tool.category}</span><h3>{tool.label}</h3><p>{tool.description}</p><span className="new-tool-link">Open the tool <UiIcon name="arrow" width="18" height="18" /></span></Link>)}</div></section>
       {featuredApp}
+      {toolIndex}
       <section className="trust-section content-container"><div className="trust-intro"><p className="eyebrow">BUILT AROUND YOU</p><h2>Useful tools.<br />Nothing in the way.</h2></div><div className="trust-item"><UiIcon name="shield" /><h3>Your files, handled with care.</h3><p>Most tools run on your device. Server conversions are clearly marked, with source files deleted after processing.</p></div><div className="trust-item"><UiIcon name="bolt" /><h3>Open it. Use it. Carry on.</h3><p>No installs or accounts to get started. Just practical tools that fit into the way you already work.</p></div></section>
       <section className="home-help content-container"><div><p className="eyebrow">A LITTLE GUIDANCE GOES A LONG WAY</p><h2>Not sure where to start?</h2><p>Our help center can point you in the right direction.</p></div><Link href="/support/" className="button-primary">Visit the help center <UiIcon name="arrow" width="18" height="18" /></Link></section>
     </div>

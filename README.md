@@ -29,11 +29,18 @@ locally; conversions that need a server are clearly labeled before upload.
 | Image upload limits | Reduce an image below a chosen KB limit with a preview | [Image Size Reducer](https://www.dhebe.com/image-size-reducer/) |
 | QR codes | Generate static codes and download PNG or SVG | [QR Code Generator](https://www.dhebe.com/qr-code-generator/) |
 | Text | Count words, characters, paragraphs, and estimated reading time | [Word Counter](https://www.dhebe.com/word-counter/) |
+| Photo uploads | Prepare exact dimensions and a maximum JPG size | [Photo and Signature Formatter](https://www.dhebe.com/photo-signature-formatter/) |
+| Text extraction | Read photos with OCR or extract PDF text | [Image to Text](https://www.dhebe.com/image-to-text/), [PDF to Text](https://www.dhebe.com/pdf-to-text/) |
+| Phone photos | Convert HEIC still images to JPG/PNG in batches | [HEIC Converter](https://www.dhebe.com/heic-to-jpg/) |
+| Developer utilities | Validate JSON, compare text, or generate website icons | [JSON](https://www.dhebe.com/json-formatter/), [Diff](https://www.dhebe.com/text-diff-checker/), [Favicons](https://www.dhebe.com/favicon-generator/) |
+| Business documents | Prepare and export an invoice or quotation locally | [Invoice Generator](https://www.dhebe.com/invoice-generator/) |
 | AI Trading | Open the separate private research and paper-trading dashboard | [AI Trading](https://trade.dhebe.com/) |
 
 Shared workspaces include searchable tool navigation, mobile layouts, keyboard
 focus support, and light/dark themes. See the [studio guide](STUDIOS_HUB_README.md)
 and [PDF feature reference](PDF_TOOLS_FEATURES.md) for scope and limitations.
+The [browser utilities guide](docs/UTILITY_TOOLS.md) documents the eight additional
+tools, QR modes, target-size PDF controls, limits, and third-party notices.
 
 ## Workspace preview
 

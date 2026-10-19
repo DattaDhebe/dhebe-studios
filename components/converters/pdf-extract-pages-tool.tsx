@@ -4,7 +4,7 @@ import { useRef, useState } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import { formatPageSummary, parsePageSelection } from '@/lib/pdf-page-selection';
 import { PdfDropZone } from '@/components/converters/pdf-drop-zone';
-import { isPdfFile } from '@/lib/download';
+import { downloadBlob, isPdfFile } from '@/lib/download';
 
 export function PdfExtractPagesTool() {
   const [file, setFile] = useState<File | null>(null);
@@ -72,14 +72,7 @@ export function PdfExtractPagesTool() {
       copied.forEach((p) => out.addPage(p));
       const bytes = await out.save();
       const blob = new Blob([new Uint8Array(bytes)], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `extracted-${file.name}`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      downloadBlob(blob, `extracted-${file.name}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Extract failed');
     } finally {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { trackDownload } from '@/lib/analytics';
 import { base64ToBytes, bytesToBlobUrl, formatBytes, formatTextSize, parseBase64Input } from '@/lib/base64';
 
 interface Base64BinaryDecoderProps {
@@ -109,6 +110,7 @@ export function Base64BinaryDecoder({
     link.download = `${downloadName}.${extension}`;
     document.body.appendChild(link);
     link.click();
+    trackDownload(mimeType);
     document.body.removeChild(link);
   };
 

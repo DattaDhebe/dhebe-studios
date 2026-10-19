@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useState, useEffect } from 'react';
+import { downloadBlob } from '@/lib/download';
 import { BlobImage } from './blob-image';
 import { transformImage, imageFilename, loadImage } from '@/lib/image-processing';
 import { ImageDropZone } from './image-drop-zone';
@@ -58,14 +59,7 @@ export function ImageCropperTool() {
 
   const downloadFile = (file: CroppedFile) => {
     if (!file.cropped) return;
-    const url = URL.createObjectURL(file.cropped);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = imageFilename(file.original.name, file.cropped.type, 'cropped_');
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    downloadBlob(file.cropped, imageFilename(file.original.name, file.cropped.type, 'cropped_'));
   };
 
   return (

@@ -1,4 +1,5 @@
 'use client';
+import { downloadBlob } from '@/lib/download';
 
 import { useState, useRef } from 'react';
 import { PDFDocument, PDFPage, rgb } from 'pdf-lib';
@@ -67,14 +68,7 @@ export function PdfAnnotationTool() {
 
       const annotatedPdf = await pdfDoc.save();
       const blob = new Blob([new Uint8Array(annotatedPdf)], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `annotated-${file.name}`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      downloadBlob(blob, `annotated-${file.name}`);
 
       setAnnotationText('');
     } catch (err) {

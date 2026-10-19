@@ -1,4 +1,5 @@
 'use client';
+import { downloadBlob } from '@/lib/download';
 
 import { useRef, useState } from 'react';
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
@@ -24,14 +25,7 @@ const SLIDE_PAGE: [number, number] = [960, 540];
 
 function downloadBytes(bytes: Uint8Array, filename: string, type: string) {
   const blob = new Blob([Uint8Array.from(bytes).buffer], { type });
-  const url = URL.createObjectURL(blob);
-  const anchor = document.createElement('a');
-  anchor.href = url;
-  anchor.download = filename;
-  document.body.appendChild(anchor);
-  anchor.click();
-  document.body.removeChild(anchor);
-  URL.revokeObjectURL(url);
+  downloadBlob(blob, filename);
 }
 
 function getBaseName(name: string) {

@@ -17,7 +17,7 @@ function environment({ hostname = 'www.dhebe.com', signal = false, noindex = fal
   };
   const window = {};
   const context = vm.createContext({ location, document, window, navigator: { globalPrivacyControl: signal }, URL });
-  vm.runInContext(outputText.replace(/^export /gm, '') + '\nglobalThis.api = { setAnalyticsEnabled, trackPageView, trackDownload, trackTesterSignup, trackToolSelection };', context);
+  vm.runInContext(outputText.replace(/^export /gm, '') + '\nglobalThis.api = { setAnalyticsEnabled, trackPageView, trackDownload, trackTesterSignup, trackToolSelection, trackToolEvent };', context);
   return { api: context.api, window, location, scripts };
 }
 
@@ -49,8 +49,24 @@ test('Withdrawal stops all events and re-enabling never creates a second tag', (
   state.api.trackToolSelection('image-compressor', 'image'); state.api.trackDownload('image/jpeg'); state.api.trackTesterSignup();
   state.api.setAnalyticsEnabled(false); const count = state.window.dataLayer.length;
   state.api.trackPageView(); state.api.trackDownload('image/png'); state.api.trackTesterSignup(); state.api.trackToolSelection('merge', 'pdf');
+  state.api.trackToolEvent('start', 'json-formatter');
   assert.equal(state.window.dataLayer.length, count);
   assert.equal(state.window['ga-disable-G-D9BJ344ZDV'], true);
   state.api.setAnalyticsEnabled(true); state.api.trackPageView();
   assert.equal(state.scripts.length, 1);
+});
+
+test('Tool funnels and downloads include only safe IDs, formats and categorical errors', () => {
+  const state = environment(); state.api.setAnalyticsEnabled(true);
+  state.api.trackToolEvent('start', 'json-formatter');
+  state.api.trackToolEvent('success', 'json-formatter');
+  state.api.trackToolEvent('error', 'json-formatter', 'private@example.com');
+  state.api.trackDownload('text/plain;charset=utf-8');
+  const events = state.window.dataLayer.filter(event => event[0] === 'event');
+  assert.deepEqual(Array.from(events, event => event[1]), ['tool_start', 'tool_success', 'tool_error', 'tool_download']);
+  assert.equal(events[2][2].error_code, 'processing_failed');
+  assert.equal(events[3][2].tool_id, 'word-counter'); assert.equal(events[3][2].file_type, 'txt');
+  state.api.trackToolEvent('success', 'private@example.com'); state.api.trackToolSelection('json', 'private@example.com');
+  assert.equal(state.window.dataLayer.filter(event => event[0] === 'event').length, 4);
+  assert.doesNotMatch(JSON.stringify(events), /private|email|filename|\?/);
 });

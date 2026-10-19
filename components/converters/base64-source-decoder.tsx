@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { downloadBlob } from '@/lib/download';
 import { ConversionOutput } from '@/components/converters/conversion-output';
 import { formatTextSize } from '@/lib/base64';
 
@@ -72,12 +73,7 @@ export function Base64SourceDecoder({
       return;
     }
 
-    const link = document.createElement('a');
-    link.href = `data:text/plain;charset=utf-8,${encodeURIComponent(decoded)}`;
-    link.download = `${downloadName}.txt`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    downloadBlob(new Blob([decoded], { type: 'text/plain;charset=utf-8' }), `${downloadName}.txt`);
   };
 
   return (

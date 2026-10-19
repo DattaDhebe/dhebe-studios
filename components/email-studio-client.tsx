@@ -1,6 +1,7 @@
 ﻿'use client';
 
 import { Fragment, useEffect, useMemo, useState } from 'react';
+import { downloadBlob } from '@/lib/download';
 import { SITE_URL } from '@/lib/site';
 
 type Align = 'left' | 'center';
@@ -489,14 +490,7 @@ export function EmailStudioClient() {
 
   const downloadHtml = () => {
     const blob = new Blob([html], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `${slugify(editor.theme.campaignName || editor.theme.brandName || 'email-template')}.html`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    downloadBlob(blob, `${slugify(editor.theme.campaignName || editor.theme.brandName || 'email-template')}.html`);
     setStatusMessage('HTML template downloaded.');
   };
 

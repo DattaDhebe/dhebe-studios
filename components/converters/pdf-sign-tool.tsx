@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react';
 import { PDFDocument, rgb } from 'pdf-lib';
 import { PdfDropZone } from '@/components/converters/pdf-drop-zone';
-import { isPdfFile } from '@/lib/download';
+import { downloadBlob, isPdfFile } from '@/lib/download';
 
 export function PdfSignTool() {
   const [file, setFile] = useState<File | null>(null);
@@ -99,14 +99,7 @@ export function PdfSignTool() {
 
       const signedPdf = await pdfDoc.save();
       const blob = new Blob([new Uint8Array(signedPdf)], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `signed-${file.name}`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      downloadBlob(blob, `signed-${file.name}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Signing failed');
     } finally {

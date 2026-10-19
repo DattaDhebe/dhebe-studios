@@ -1,4 +1,5 @@
 'use client';
+import { downloadBlob } from '@/lib/download';
 
 import { useRef, useState } from 'react';
 import { PDFDocument } from 'pdf-lib';
@@ -70,14 +71,7 @@ export function PdfMergerTool() {
 
       const mergedPdfBytes = await mergedPdf.save();
       const blob = new Blob([new Uint8Array(mergedPdfBytes)], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'merged.pdf';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      downloadBlob(blob, 'merged.pdf');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Merge failed');
     } finally {

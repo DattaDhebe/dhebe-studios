@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import { PdfDropZone } from '@/components/converters/pdf-drop-zone';
-import { isPdfFile } from '@/lib/download';
+import { downloadBlob, isPdfFile } from '@/lib/download';
 
 interface PageOrder {
   originalIndex: number;
@@ -82,14 +82,7 @@ export function PdfOrganizeTool() {
 
       const organizedBytes = await newPdf.save();
       const blob = new Blob([new Uint8Array(organizedBytes)], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `organized-${file.name}`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      downloadBlob(blob, `organized-${file.name}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Organization failed');
     } finally {

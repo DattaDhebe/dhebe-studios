@@ -89,14 +89,27 @@ export function trackPageView() {
 }
 
 export function trackToolSelection(toolId: string, studio: string) {
-  if (!enabled || privacySignalEnabled() || !/^[a-z0-9:-]{1,64}$/.test(toolId)) return;
+  if (!enabled || privacySignalEnabled() || !publicPageLocation() || !/^[a-z0-9:-]{1,64}$/.test(toolId) || !/^[a-z-]{1,24}$/.test(studio)) return;
   (window as AnalyticsWindow).gtag?.('event', 'tool_select', { tool_id: toolId, studio });
 }
 
+function currentToolId() {
+  const workspace = document.querySelector<HTMLElement>('[data-active-tool]');
+  const active = workspace?.dataset?.activeTool;
+  return active && /^[a-z0-9:-]{1,64}$/.test(active) ? active : location.pathname.replace(/^\/+|\/+$/g, '').replace(/\//g, ':') || 'home';
+}
+
+export function trackToolEvent(stage: 'start' | 'success' | 'error', toolId?: string, reason?: 'cancelled' | 'processing_failed') {
+  if (!enabled || privacySignalEnabled() || !publicPageLocation() || !['start', 'success', 'error'].includes(stage)) return;
+  const id = toolId || currentToolId();
+  if (!/^[a-z0-9:-]{1,64}$/.test(id)) return;
+  (window as AnalyticsWindow).gtag?.('event', 'tool_' + stage, { tool_id: id, ...(stage === 'error' ? { error_code: reason === 'cancelled' ? 'cancelled' : 'processing_failed' } : {}) });
+}
+
 export function trackDownload(type: string) {
-  if (!enabled || privacySignalEnabled()) return;
-  const format = ({ 'application/pdf': 'pdf', 'application/zip': 'zip', 'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp', 'text/html': 'html' } as Record<string, string>)[type] || 'other';
-  (window as AnalyticsWindow).gtag?.('event', 'tool_download', { file_type: format });
+  if (!enabled || privacySignalEnabled() || !publicPageLocation()) return;
+  const format = ({ 'application/pdf': 'pdf', 'application/zip': 'zip', 'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp', 'image/svg+xml': 'svg', 'image/x-icon': 'ico', 'application/json': 'json', 'text/plain': 'txt', 'text/html': 'html' } as Record<string, string>)[type.split(';')[0]] || 'other';
+  (window as AnalyticsWindow).gtag?.('event', 'tool_download', { file_type: format, tool_id: currentToolId() });
 }
 
 export function trackTesterSignup() {

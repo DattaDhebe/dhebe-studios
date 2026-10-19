@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 import { SITE_NAME, siteRoute } from './site';
+import { moreUtilities } from './more-utilities';
 
 export const utilityTools = {
+  ...moreUtilities,
   'image-size-reducer': {
     label: 'Image Size Reducer', path: '/image-size-reducer/', category: 'Images',
     title: 'Reduce Image Size in KB - 20, 50, 100 or 200 KB',
@@ -16,10 +18,10 @@ export const utilityTools = {
   },
   'qr-code-generator': {
     label: 'QR Code Generator', path: '/qr-code-generator/', category: 'Utilities',
-    title: 'Free QR Code Generator - Download PNG and SVG',
-    description: 'Create a static QR code for a website URL or text. Download sharp PNG or scalable SVG without a sign-up, watermark, expiry service, or tracking redirect.',
+    title: 'Free QR Code Generator - URL, Wi-Fi, Contact and UPI',
+    description: 'Create static website, text, Wi-Fi, contact, and UPI QR codes. Download PNG or SVG locally without a sign-up, watermark, expiry service, or tracking redirect.',
     intro: 'Make a scannable link for a menu, flyer, event, or business card. Your destination is encoded directly in the QR code, not routed through a subscription or tracking service.',
-    steps: ['Choose a website URL or plain text, then enter the content to encode.', 'Choose a PNG size and generate your black-and-white code.', 'Download PNG for digital use or SVG for print. Scan-test the downloaded file before distributing it.'],
+    steps: ['Choose website, text, Wi-Fi, contact card, or UPI details and fill in the requested fields.', 'Choose a PNG size and generate your black-and-white code. Wi-Fi codes contain the network password; UPI codes do not verify the recipient.', 'Download PNG for digital use or SVG for print. Scan-test the downloaded file before distributing it.'],
     faqs: [
       { question: 'Do these QR codes expire?', answer: 'A static QR code has no expiry service. A linked website still needs to remain available, and its address cannot be changed inside an already printed code.' },
       { question: 'What is the difference between PNG and SVG?', answer: 'PNG is a bitmap image for everyday sharing. SVG scales cleanly for printing. Keep the white margin around either format, maintain contrast, and test at the final print size.' },

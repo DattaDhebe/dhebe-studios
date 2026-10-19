@@ -4,7 +4,7 @@ import { useRef, useState } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import { formatPageSummary, parsePageSelection } from '@/lib/pdf-page-selection';
 import { PdfDropZone } from '@/components/converters/pdf-drop-zone';
-import { isPdfFile } from '@/lib/download';
+import { downloadBlob, isPdfFile } from '@/lib/download';
 
 export function PdfRemovePagesTool() {
   const [file, setFile] = useState<File | null>(null);
@@ -86,14 +86,7 @@ export function PdfRemovePagesTool() {
 
       const nextBytes = await pdfDoc.save();
       const blob = new Blob([new Uint8Array(nextBytes)], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `pages-removed-${file.name}`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
+      downloadBlob(blob, `pages-removed-${file.name}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Removing pages failed');
     } finally {

@@ -27,9 +27,9 @@
     "typescript"
   ],
   "scripts": {
-    "predev": "node scripts/sync-pdfjs-assets.mjs",
+    "predev": "node scripts/sync-pdfjs-assets.mjs && node scripts/sync-heic-assets.mjs",
     "dev": "next dev",
-    "prebuild": "node scripts/sync-pdfjs-assets.mjs",
+    "prebuild": "node scripts/sync-pdfjs-assets.mjs && node scripts/sync-heic-assets.mjs",
     "build": "next build",
     "postbuild": "node scripts/fix-static-rsc-aliases.mjs && node scripts/audit-static-site.mjs",
     "start": "node scripts/serve-static.mjs",
@@ -40,6 +40,7 @@
   },
   "dependencies": {
     "fflate": "^0.8.3",
+    "heic-to": "1.6.6",
     "next": "^16.2.3",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^6.4.299",

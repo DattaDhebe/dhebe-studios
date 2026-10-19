@@ -1,0 +1,26 @@
+HEIC conversion uses heic-to 1.6.6 by Hopper Gee, under LGPL-3.0-or-later.
+The decoder is distributed unmodified and separately from DHEBE application code.
+Its license does not replace the license of unrelated DHEBE source files.
+
+The complete upstream license and README are served alongside the module:
+/heic/LICENSE.txt
+/heic/README.txt
+/third-party/GPL-3.0.txt (GNU GPL incorporated by the LGPL)
+
+Replaceable module: /heic/heic-to-1.6.6.js
+Integration source: /heic-converter.worker.js
+You may replace the decoder with a compatible modified version. The integration
+is a separate ES module, not a restriction on modifying or debugging the library.
+
+Exact upstream source revision for package 1.6.6:
+https://github.com/hoppergee/heic-to/tree/4045b8d7607e326c2b479cc424c7a60519b42dae
+Source archive:
+https://github.com/hoppergee/heic-to/archive/4045b8d7607e326c2b479cc424c7a60519b42dae.tar.gz
+Published package:
+https://registry.npmjs.org/heic-to/-/heic-to-1.6.6.tgz
+
+Upstream build instructions and dependency notices are in the corresponding source.
+The embedded decoder is based on libheif 1.23.6:
+https://github.com/strukturag/libheif/tree/v1.23.6
+https://github.com/strukturag/libheif/blob/v1.23.6/COPYING
+Follow the applicable licenses for modifications and redistribution.

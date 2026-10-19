@@ -21,5 +21,4 @@ export const toolDirectory: DirectoryTool[] = [
   ...converterOptions.map(tool => ({ label: tool.label, description: tool.description, href: `/tools/${tool.id}-to-base64/`, category: 'Base64' })),
   ...decoderOptions.map(tool => ({ label: tool.label, description: tool.description, href: `/tools/base64-to-${tool.id}/`, category: 'Base64' })),
   { label: 'Email Template Editor', description: 'Design, preview, and export responsive emails.', href: '/email-template-editor/', category: 'Email' },
-  { label: 'Circle Calculator', description: 'Calculate area and circumference.', href: '/tools/circle/', category: 'Calculators' },
 ];
