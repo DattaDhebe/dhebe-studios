@@ -2,14 +2,17 @@ import { test, expect } from '@playwright/test';
 import { PDFDocument } from 'pdf-lib';
 import { unzipSync } from 'fflate';
 
-test('Live DhebeVoice tester form confirms a synthetic signup', async ({ page }) => {
-  test.skip(!process.env.TEST_BASE_URL || !process.env.TEST_TESTER_EMAIL, 'Requires an explicit disposable example.com address and subsequent private database verification.');
-  expect(process.env.TEST_TESTER_EMAIL).toMatch(/^dv-smoke-[a-z0-9-]+@example\.com$/);
+test('Live DhebeVoice form queues verification only for an approved real test inbox', async ({ page }) => {
+  test.skip(!process.env.TEST_BASE_URL || !process.env.TEST_TESTER_EMAIL || process.env.TEST_ALLOW_VERIFICATION_EMAIL !== '1', 'Requires explicit delivery approval, a disposable real inbox, and subsequent targeted private cleanup.');
+  expect(process.env.TEST_TESTER_EMAIL).toMatch(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
+  expect(process.env.TEST_TESTER_EMAIL).not.toMatch(/@(example\.(com|org|net)|[^@]+\.invalid)$/i);
   await page.goto('/dhebevoice/');
   await page.getByRole('textbox', { name: 'Your email address' }).fill(process.env.TEST_TESTER_EMAIL!);
-  await page.getByRole('checkbox').check();
+  await page.getByRole('checkbox', { name: 'I volunteer to test' }).check();
+  await expect(page.getByRole('checkbox', { name: 'Optional: include me' })).not.toBeChecked();
   await page.getByRole('button', { name: 'Join the tester list' }).click();
-  await expect(page.getByRole('status')).toContainText("You're on the tester list.");
+  await expect(page.getByRole('form', { name: 'Verify your tester email' })).toBeVisible();
+  await expect(page.locator('.tester-success')).toHaveCount(0);
 });
 
 test('Live website converts a generated PDF to a real DOCX over the approved VPS API', async ({ page }) => {

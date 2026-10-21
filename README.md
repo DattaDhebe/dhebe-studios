@@ -92,14 +92,17 @@ See the [indexing and analytics guide](SEO_ANALYTICS_README.md) and
 | --- | --- | --- |
 | Browser | Most PDF, image, Base64, calculator, and email workflows | Inputs remain on the device; email drafts can persist in local browser storage |
 | Conversion API | Office imports/exports, PDF/A, repair, encryption, and background removal | Selected files are uploaded; temporary files are deleted after processing, and prepared results expire |
-| Premium-hosting PHP | Optional DhebeVoice tester signup | Email, signup time, and consent version are stored privately with 180-day retention |
+| Premium-hosting PHP | Optional DhebeVoice tester signup and public list | Inbox verification, deduplicated private records with 180-day retention, and separately opted-in names/email visibility |
 
 Server conversions have **25 MB input** and **150 PDF-page** limits. PDF-to-Word
 extracts selectable text; it does not reconstruct every layout. PDF-to-PowerPoint
 uses page images, and spreadsheet export depends on detectable text or tables.
 
-The tester list is separate from using the Android app. Signup does not send an
-invitation automatically. [Storage ownership and exact locations](STORAGE.md)
+The tester list is separate from using the Android app. Signup verifies inbox
+ownership with an expiring code; app invitations remain manual. Public listing,
+a display name, and full-email publication are optional choices, not defaults.
+Existing signups stay private. A configured sender and live delivery check are
+required before activating this update. [Storage ownership and exact locations](STORAGE.md)
 and the [signup service guide](services/shared-hosting/README.md) explain private
 access, retention, and the pending legacy-record reconciliation.
 
@@ -119,7 +122,7 @@ Next.js + React + TypeScript
 | `components/` | Studios, shared interface elements, and tool workbenches |
 | `lib/` | Tool registries, calculations, processing helpers, and API client |
 | `services/tools/` | Containerized conversion service and integration tests |
-| `services/shared-hosting/` | Private tester-signup handler and maintenance |
+| `services/shared-hosting/` | Tester verification, consent-based public list, and private-storage maintenance |
 | `scripts/` | Static preview, PDF.js asset synchronization, and deployment helpers |
 | `tests/` | Unit, browser, and opt-in live regression checks |
 

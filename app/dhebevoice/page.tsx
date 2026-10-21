@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { BreadcrumbSchema } from '@/components/breadcrumb-schema';
 import { DhebeVoiceTesterForm } from '@/components/dhebevoice-tester-form';
+import { DhebeVoiceTesterList } from '@/components/dhebevoice-tester-list';
 import { UiIcon } from '@/components/ui-icon';
 import { SITE_NAME, siteAsset, siteRoute } from '@/lib/site';
 
@@ -56,8 +57,9 @@ export default function DhebeVoicePage() {
         </section>
         <section className="voice-testing content-container" aria-labelledby="testing-steps-title">
           <div className="section-heading"><div><p className="eyebrow">WHAT HAPPENS NEXT</p><h2 id="testing-steps-title">A small part in something useful.</h2></div></div>
-          <div className="voice-steps"><article><span>01</span><h3>Leave your email</h3><p>Use the email associated with your Google Play account, and agree to receive testing invitations.</p></article><article><span>02</span><h3>Wait for your invitation</h3><p>We'll contact selected volunteers with testing access and setup instructions when a build is ready.</p></article><article><span>03</span><h3>Listen. Explore. Share.</h3><p>Try the reading and playback experience with content you can use, then tell us about bugs and confusing moments.</p></article></div>
+          <div className="voice-steps"><article><span>01</span><h3>Verify your email</h3><p>Use your Google Play email, agree to testing invitations, and enter the one-time code from your inbox.</p></article><article><span>02</span><h3>Wait for your invitation</h3><p>We'll contact selected verified volunteers with testing access and setup instructions when a build is ready.</p></article><article><span>03</span><h3>Listen. Explore. Share.</h3><p>Try the reading and playback experience with content you can use, then tell us about bugs and confusing moments.</p></article></div>
         </section>
+        <DhebeVoiceTesterList />
         <section className="voice-about content-container">
           <div><UiIcon name="voice" width="28" height="28" /><h2>A reader worth listening to.</h2><p>The project supports pasted text, TXT, EPUB, text-based PDF, and readable web imports, with local reading progress and playback controls. Features can vary between testing builds.</p></div>
           <div className="voice-testing-note"><h3>Early access means a work in progress.</h3><p>Testing access is not automatic, and signing up does not download or install the app. Source code may include changes that are not in the current Google Play build.</p><a href="https://github.com/DattaDhebe/dhebevoice-app/issues" target="_blank" rel="noopener noreferrer">Share feedback on GitHub <UiIcon name="arrow" width="16" height="16" /></a></div>

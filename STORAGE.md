@@ -28,8 +28,11 @@ directories from appearing in future website commits.
   `domains/dhebe.com/private/dhebevoice-signups/testers.sqlite3`, outside
   `public_html`. The frontend uses `/api/dhebevoice-signup.php`; cached clients
   using the old VPS URL are proxied to the same PHP endpoint. Only email, UTC
-  creation time, and consent version persist, with 180-day expiry and daily
-  pruning. See `services/shared-hosting/README.md`. Invitations remain manual.
+  creation time, and consent version currently persist, with 180-day expiry and
+  daily pruning. The verification/public-list update also stores inbox confirmation
+  times and separately opted-in publication choices. Activating it requires a
+  configured, delivery-tested sender and matching PHP/static deployment; see
+  `services/shared-hosting/README.md`. Testing invitations remain manual.
 - The legacy VPS volume `dhebe-tools_tester_signups` remains for rollback. One
   existing record awaits explicit owner-approved reconciliation; no old record
   has been deleted. Include that copy when administering the tester list until
@@ -49,14 +52,20 @@ Premium, not in MySQL, browser storage, or this Git repository:
 
 This path is outside `public_html`; it is not a website URL. The directory has
 0700 permissions and the database has 0600 permissions. Use authorized Hostinger
-private-file or SSH administration to access it. There is no public tester-list,
-admin, or export endpoint. Never upload the database to the public website or
+private-file or SSH administration to access it. There is no public private-list
+admin or export endpoint. The new read-only public tester endpoint exposes only
+verified volunteers who separately opt in: masked emails by default, optional
+display names, and full email only after another explicit publication choice.
+Existing/private records must never be included. Never upload the database to the public website or
 commit it, an export, or real tester addresses to Git.
 
 Each signup stores the normalized email address, original UTC signup timestamp,
-and consent version. Entries expire after 180 days, with pruning on new signups
-and through a daily maintenance job. Signup does not automatically send an
-invitation. Handler, maintenance, and deployment details are in
+and consent version. Verification adds a confirmation timestamp; public opt-ins
+also store the chosen display name/email visibility, consent time, and a random
+public ID. Pending verification codes/request IDs are stored only as hashes,
+expire after 10 minutes, and are pruned on requests or daily maintenance. Entries
+expire after 180 days. Confirming a code is not an app invitation. Handler,
+maintenance, and deployment details are in
 [the signup service guide](services/shared-hosting/README.md).
 
 One older tester record remains in the private legacy VPS volume

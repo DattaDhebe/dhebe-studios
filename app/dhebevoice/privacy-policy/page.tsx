@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { BreadcrumbSchema } from '@/components/breadcrumb-schema';
 import { SITE_NAME, SUPPORT_EMAIL, siteRoute } from '@/lib/site';
 
-const effectiveDate = 'October 17, 2026';
+const effectiveDate = 'October 22, 2026';
 const DHEBEVOICE_PRIVACY_POLICY_URL = siteRoute('/dhebevoice/privacy-policy/');
 
 export const metadata: Metadata = {
@@ -100,12 +100,12 @@ export default function DhebeVoicePrivacyPolicyPage() {
                 <h2 className="text-xl font-bold theme-title">Optional Website Tester Signup</h2>
                 <p className="mt-3">
                   The volunteer tester form on this website is separate from using the Android app. If you choose
-                  to sign up and give consent, we save your email address, signup time, and consent version in a
+                  to sign up and give consent, we send an email containing a one-time verification code. We save your email address, signup time, verification time, optional public-list choice, and consent version in a
                   private database on our Hostinger Premium hosting account, outside the public website folder.
                 </p>
                 <p className="mt-3">
                   We use this list for DhebeVoice testing and early-access emails, not unrelated marketing. Entries
-                  expire after 180 days. Signup requests do not automatically send an invitation or grant app access.
+                  expire after 180 days. Unconfirmed requests and hashed codes expire after 10 minutes and are removed on the next pruning run. Short-lived counters limit abuse; the signup service does not store visitor IP addresses. New addresses join the confirmed list only after verification. A separate, optional checkbox lets verified testers display a masked address (for example, r***@e***.com) and opt-in date publicly. They may also provide a public display name, and separately choose to show their full email. Both publication checkboxes are unchecked by default; existing signups remain private. Public details can be viewed and copied by anyone, including search engines and spammers; removing them cannot recall third-party copies. Names are self-provided, not identity-verified. To change these choices, sign up and verify again. Verification emails do not grant app access or constitute testing invitations.
                   To leave the tester list earlier, email{' '}
                   <a href={`mailto:${SUPPORT_EMAIL}?subject=DhebeVoice%20tester%20list%20removal`} className="underline">
                     {SUPPORT_EMAIL}

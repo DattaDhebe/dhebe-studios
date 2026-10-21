@@ -275,6 +275,20 @@ svg { flex-shrink: 0; }
 .tester-success strong { font-size: 14px; font-weight: 600; }
 .tester-success p { font-size: 12px; line-height: 1.9; color: var(--app-muted); margin-top: 8px; }
 .tester-error { color: var(--app-accent); font-size: 12px; line-height: 1.8; margin-top: 16px; }
+.tester-actions, .tester-list-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-top: 18px; font-size: 12px; color: var(--app-muted); }
+.tester-actions button, .tester-list-controls button { text-decoration: underline; text-underline-offset: 4px; }
+.tester-actions button:disabled, .tester-list-controls button:disabled { opacity: .5; cursor: not-allowed; }
+.voice-tester-list { min-width: 0; padding-top: 42px; margin-top: 42px; border-top: 1px solid var(--app-card-border); }
+.tester-public-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,310px),1fr)); gap: 14px; margin-top: 24px; }
+.tester-public-grid li { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 18px; min-width: 0; border: 1px solid var(--app-card-border); border-radius: 10px; background: var(--app-card); font-size: 13px; color: var(--app-title); }
+.tester-public-grid li > div { flex: 1; min-width: 100px; overflow-wrap: anywhere; }
+.tester-avatar { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--tone-soft); color: var(--tone); font-family: var(--font-display); }
+.tester-empty { margin-top: 22px; padding: 24px; border: 1px dashed var(--app-card-border); border-radius: 10px; color: var(--app-muted); font-size: 13px; line-height: 1.9; }
+.tester-public-options { margin-top: 18px; padding: 16px; border: 1px solid var(--app-card-border); border-radius: 8px; background: var(--app-card-soft); }
+.tester-public-options legend { padding-inline: 5px; color: var(--tone); font-size: 11px; }
+.tester-public-name { font-weight: 600; margin-bottom: 5px; }
+.tester-badge { display: inline-block; padding: 5px 9px; border-radius: 6px; background: var(--app-card-soft); white-space: nowrap; font-size: 11px; color: var(--app-muted); }
+.tester-badge-verified { color: var(--tone); background: var(--tone-soft); }
 .voice-testing { border-top: 1px solid var(--app-card-border); padding-top: 42px; }
 .voice-steps { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 35px; margin-top: 32px; }
 .voice-steps article > span { color: var(--tone); font-family: var(--font-mono); font-size: 12px; }
