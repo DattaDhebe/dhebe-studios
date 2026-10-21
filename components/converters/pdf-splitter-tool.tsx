@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import { PdfDropZone } from '@/components/converters/pdf-drop-zone';
 import { downloadBlob, isPdfFile } from '@/lib/download';
@@ -14,8 +14,11 @@ export function PdfSplitterTool() {
   const [error, setError] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const selection = useRef(0);
+  const running = useRef(false);
+  useEffect(() => () => { selection.current++; }, []);
 
   const handleFileSelect = async (selectedFile: File) => {
+    if (running.current) return;
     const version = ++selection.current;
     setFile(null);
     setTotalPages(0);
@@ -42,7 +45,7 @@ export function PdfSplitterTool() {
   };
 
   const handleSplit = async () => {
-    if (!file) return;
+    if (!file || running.current) return;
 
     const start = Number(startPage);
     const end = Number(endPage);
@@ -52,6 +55,8 @@ export function PdfSplitterTool() {
       return;
     }
 
+    const version = selection.current;
+    running.current = true;
     setSplitting(true);
     setError('');
 
@@ -69,18 +74,21 @@ export function PdfSplitterTool() {
       copiedPages.forEach((page) => newDoc.addPage(page));
 
       const newPdfBytes = await newDoc.save();
+      if (version !== selection.current) return;
       const blob = new Blob([new Uint8Array(newPdfBytes)], { type: 'application/pdf' });
       downloadBlob(blob, `extracted-pages-${start}-${end}.pdf`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Split failed');
+      if (version === selection.current) setError(err instanceof Error ? err.message : 'Split failed');
     } finally {
-      setSplitting(false);
+      running.current = false;
+      if (version === selection.current) setSplitting(false);
     }
   };
 
   return (
     <div className="space-y-6">
       <PdfDropZone
+        disabled={splitting}
         inputRef={fileInputRef}
         onSelect={(selected) => selected instanceof File && handleFileSelect(selected)}
         title="Drop your PDF here"
@@ -101,6 +109,7 @@ export function PdfSplitterTool() {
               </label>
               <input
                 id="split-start-page"
+                disabled={splitting}
                 type="number"
                 min="1"
                 max={totalPages}
@@ -116,6 +125,7 @@ export function PdfSplitterTool() {
               </label>
               <input
                 id="split-end-page"
+                disabled={splitting}
                 type="number"
                 min="1"
                 max={totalPages}
@@ -135,7 +145,9 @@ export function PdfSplitterTool() {
               {splitting ? 'Splitting...' : 'Extract Pages'}
             </button>
             <button
+              disabled={splitting}
               onClick={() => {
+                selection.current++;
                 setFile(null);
                 setTotalPages(0);
               }}
@@ -148,7 +160,7 @@ export function PdfSplitterTool() {
       )}
 
       {error && (
-        <div className="rounded-lg bg-red-50 border border-red-200 p-4">
+        <div role="alert" className="rounded-lg bg-red-50 border border-red-200 p-4">
           <p className="text-sm font-semibold text-red-900">{error}</p>
         </div>
       )}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import { formatPageSummary, parsePageSelection } from '@/lib/pdf-page-selection';
 import { PdfDropZone } from '@/components/converters/pdf-drop-zone';
@@ -15,8 +15,11 @@ export function PdfExtractPagesTool() {
   const [error, setError] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const selection = useRef(0);
+  const running = useRef(false);
+  useEffect(() => () => { selection.current++; }, []);
 
   const handleFileSelect = async (selectedFile: File) => {
+    if (running.current) return;
     const version = ++selection.current;
     setFile(null);
     setTotalPages(0);
@@ -53,7 +56,7 @@ export function PdfExtractPagesTool() {
   };
 
   const handleExtract = async () => {
-    if (!file) return;
+    if (!file || running.current) return;
     let pages: number[] = [];
     try {
       pages = parsePageSelection(pageInput, totalPages);
@@ -63,6 +66,8 @@ export function PdfExtractPagesTool() {
       return;
     }
 
+    const version = selection.current;
+    running.current = true;
     setProcessing(true);
     setError('');
     try {
@@ -71,18 +76,20 @@ export function PdfExtractPagesTool() {
       const copied = await out.copyPages(src, pages.map((p) => p - 1));
       copied.forEach((p) => out.addPage(p));
       const bytes = await out.save();
+      if (version !== selection.current) return;
       const blob = new Blob([new Uint8Array(bytes)], { type: 'application/pdf' });
       downloadBlob(blob, `extracted-${file.name}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Extract failed');
+      if (version === selection.current) setError(err instanceof Error ? err.message : 'Extract failed');
     } finally {
-      setProcessing(false);
+      running.current = false;
+      if (version === selection.current) setProcessing(false);
     }
   };
 
   return (
     <div className="space-y-6">
-      <PdfDropZone inputRef={fileInputRef} onSelect={(f) => f instanceof File && handleFileSelect(f)} title="Drop your PDF here" />
+      <PdfDropZone inputRef={fileInputRef} disabled={processing} onSelect={(f) => f instanceof File && handleFileSelect(f)} title="Drop your PDF here" />
       {file && totalPages > 0 && (
         <div className="theme-card space-y-4 rounded-2xl border p-6">
           <div>
@@ -91,8 +98,8 @@ export function PdfExtractPagesTool() {
             <p className="mt-1 text-sm theme-muted">Total Pages: {totalPages}</p>
           </div>
           <div className="border-t pt-4">
-            <label className="mb-2 block text-sm font-semibold theme-title">Pages to extract</label>
-            <input value={pageInput} onChange={(e) => handleInput(e.target.value)} className="theme-card w-full rounded-lg border px-4 py-2 theme-title" placeholder="Example: 1,3-5" />
+            <label htmlFor="extract-page-selection" className="mb-2 block text-sm font-semibold theme-title">Pages to extract</label>
+            <input id="extract-page-selection" disabled={processing} value={pageInput} onChange={(e) => handleInput(e.target.value)} className="theme-card w-full rounded-lg border px-4 py-2 theme-title" placeholder="Example: 1,3-5" />
             <p className="mt-2 text-xs theme-muted-2">Use commas and ranges.</p>
           </div>
           <div className="rounded-xl border p-4 theme-card-soft">
@@ -106,7 +113,7 @@ export function PdfExtractPagesTool() {
           </div>
         </div>
       )}
-      {error && <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm font-semibold text-red-900">{error}</div>}
+      {error && <div role="alert" className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm font-semibold text-red-900">{error}</div>}
     </div>
   );
 }

@@ -72,3 +72,29 @@ actual HEIC decoding, image OCR, PDF extraction, generated downloads, QR decodin
 input errors, cancellation, stale-result clearing, and size-limit reporting.
 The generated HEIC fixture has source attribution in `tests/fixtures/README.md`.
 Only synthetic test data is used; no actual tester or trading data is involved.
+
+## October 21 Tool-State Audit
+
+Ten new reproductions failed against the previous export before fixes were applied.
+The shared Base64 text encoders, source decoders, and binary decoders now clear
+results, copy feedback, and errors when input changes. Old preview blob URLs are
+revoked, so an edited input cannot leave the previous file available for download.
+Clipboard feedback ignores completions from an older input, older copy attempt,
+or an unmounted tool; pending clipboard writes themselves cannot be cancelled.
+
+Shared inputs now have accessible names and descriptions, output fields have names,
+and tool errors are announced. Source decoders say Copy decoded text rather than
+incorrectly calling the decoded output Base64. The PDF page-list field is labelled.
+
+The PDF splitter and page extractor lock file/range controls during an export,
+guard duplicate starts, and discard late downloads/errors after unmounting. This
+does not forcibly stop pdf-lib CPU work, but leaving the tool cannot trigger a
+subsequent file download. The shared PDF picker also ignores disabled change events.
+
+Verification: lint, 34 unit tests, the production build/static audit, and 198 browser
+checks passed, including 13 focused state, clipboard, preview cleanup, accessibility,
+and delayed-PDF cases. Four opt-in live-service tests were skipped in the local run.
+`npm audit --omit=dev` reported zero known vulnerabilities. A live health check returned
+200 with LibreOffice, qpdf, and OCR engines available; this alone is not proof that
+every conversion format or every input file works. Tester records and trading storage
+were not read or changed.

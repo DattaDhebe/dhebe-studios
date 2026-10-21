@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
+import { useCopyFeedback } from './use-copy-feedback';
 import { trackDownload } from '@/lib/analytics';
 import { base64ToBytes, bytesToBlobUrl, formatBytes, formatTextSize, parseBase64Input } from '@/lib/base64';
 
@@ -35,7 +36,9 @@ export function Base64BinaryDecoder({
   const [blobUrl, setBlobUrl] = useState('');
   const [mimeType, setMimeType] = useState(defaultMimeType);
   const [bytes, setBytes] = useState<Uint8Array | null>(null);
-  const [copied, setCopied] = useState(false);
+  const feedback = useCopyFeedback();
+  const inputId = useId();
+  const outputId = useId();
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -47,6 +50,7 @@ export function Base64BinaryDecoder({
   }, [blobUrl]);
 
   const handleDecode = () => {
+    feedback.reset();
     if (!source.trim()) {
       setError('Add a Base64 value before decoding.');
       setBytes(null);
@@ -63,23 +67,15 @@ export function Base64BinaryDecoder({
       }
       const nextBlobUrl = bytesToBlobUrl(nextBytes, nextMimeType);
 
-      if (blobUrl) {
-        URL.revokeObjectURL(blobUrl);
-      }
-
       setBytes(nextBytes);
       setMimeType(nextMimeType);
       setBlobUrl(nextBlobUrl);
-      setCopied(false);
       setError('');
     } catch (decodeError) {
       setError(
         decodeError instanceof Error ? decodeError.message : 'Unable to decode this Base64 content.',
       );
       setBytes(null);
-      if (blobUrl) {
-        URL.revokeObjectURL(blobUrl);
-      }
       setBlobUrl('');
     }
   };
@@ -89,13 +85,9 @@ export function Base64BinaryDecoder({
       return;
     }
 
-    try {
-      await navigator.clipboard.writeText(blobUrl);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 1800);
-    } catch {
+    await feedback.copy(blobUrl, () => {
       setError('Clipboard access was blocked. You can still download the recovered file directly.');
-    }
+    });
   };
 
   const handleDownload = () => {
@@ -119,14 +111,16 @@ export function Base64BinaryDecoder({
       <div className="space-y-6">
         <div className="rounded-[1.75rem] border border-slate-200 bg-slate-50 p-5 sm:p-6">
           <div className="mb-5">
-            <h3 className="text-xl font-semibold text-slate-950">{inputLabel}</h3>
-            <p className="mt-2 text-sm leading-6 text-slate-600">{inputDescription}</p>
+            <h3 id={inputId + '-label'} className="text-xl font-semibold text-slate-950">{inputLabel}</h3>
+            <p id={inputId + '-description'} className="mt-2 text-sm leading-6 text-slate-600">{inputDescription}</p>
           </div>
 
           <textarea
+            aria-labelledby={inputId + '-label'}
+            aria-describedby={inputId + '-description'}
             disabled={!ready}
             value={source}
-            onChange={(event) => setSource(event.target.value)}
+            onChange={(event) => { feedback.reset(); setSource(event.target.value); setBytes(null); setBlobUrl(''); setError(''); }}
             placeholder={inputPlaceholder}
             className="min-h-72 w-full rounded-[1.5rem] border border-slate-200 bg-white p-4 font-mono text-sm leading-7 text-slate-700 outline-none transition focus:border-cyan-400"
           />
@@ -146,7 +140,7 @@ export function Base64BinaryDecoder({
           </div>
 
           {error ? (
-            <div className="mt-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+            <div role="alert" className="mt-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
               {error}
             </div>
           ) : null}
@@ -194,7 +188,7 @@ export function Base64BinaryDecoder({
       <div className="rounded-[1.75rem] border border-slate-200 bg-[linear-gradient(180deg,_#fff_0%,_#f8fafc_100%)] p-5 sm:p-6">
         <div className="flex flex-col gap-4 border-b border-slate-200 pb-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h3 className="text-xl font-semibold text-slate-950">{outputTitle}</h3>
+            <h3 id={outputId} className="text-xl font-semibold text-slate-950">{outputTitle}</h3>
             <p className="mt-2 text-sm leading-6 text-slate-600">{outputDescription}</p>
           </div>
           {bytes ? (
@@ -208,6 +202,7 @@ export function Base64BinaryDecoder({
           {blobUrl ? (
             <div className="space-y-4">
               <textarea
+                aria-labelledby={outputId}
                 value={blobUrl}
                 readOnly
                 className="min-h-80 w-full rounded-3xl border border-slate-200 bg-white p-4 font-mono text-xs leading-6 text-slate-700 outline-none ring-0"
@@ -218,7 +213,7 @@ export function Base64BinaryDecoder({
                   onClick={handleCopy}
                   className="rounded-2xl bg-slate-950 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
                 >
-                  {copied ? 'Copied' : 'Copy Blob URL'}
+                  {feedback.copied ? 'Copied' : 'Copy Blob URL'}
                 </button>
                 <button
                   type="button"

@@ -12,7 +12,7 @@ export const dynamic = 'force-static';
 // Update only when published content changes, not on every rebuild.
 const CONTENT_UPDATED = '2026-10-19';
 const REFRESHED_URLS = new Set([
-  siteRoute('/email-template-editor/'), siteRoute('/split-pdf/'),
+  siteRoute('/email-template-editor/'), siteRoute('/split-pdf/'), siteRoute('/pdf-tools/extract-pdf-pages/'),
   ...base64ToolPages.map(tool => siteRoute(getBase64ToolPath(tool))),
 ]);
 

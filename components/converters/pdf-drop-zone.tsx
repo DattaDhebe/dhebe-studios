@@ -29,6 +29,7 @@ export function PdfDropZone({
   useEffect(() => setReady(true), []);
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (disabled || !ready) return;
     if (multiple) {
       const files = event.target.files;
       onSelect(files ?? null);

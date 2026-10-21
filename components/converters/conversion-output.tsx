@@ -1,9 +1,14 @@
+'use client';
+
+import { useId } from 'react';
+
 interface ConversionOutputProps {
   title: string;
   description: string;
   base64: string;
   loading: boolean;
   copied: boolean;
+  copyLabel?: string;
   onCopy: () => Promise<void>;
   onDownload: () => void;
   outputSizeLabel: string | null;
@@ -16,16 +21,18 @@ export function ConversionOutput({
   base64,
   loading,
   copied,
+  copyLabel = 'Copy Base64',
   onCopy,
   onDownload,
   outputSizeLabel,
   emptyState,
 }: ConversionOutputProps) {
+  const outputId = useId();
   return (
     <div className="rounded-[1.75rem] border border-slate-200 bg-[linear-gradient(180deg,_#fff_0%,_#f8fafc_100%)] p-5 sm:p-6">
       <div className="flex flex-col gap-4 border-b border-slate-200 pb-5 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h3 className="text-xl font-semibold text-slate-950">{title}</h3>
+          <h3 id={outputId} className="text-xl font-semibold text-slate-950">{title}</h3>
           <p className="mt-2 text-sm leading-6 text-slate-600">{description}</p>
         </div>
         {outputSizeLabel ? (
@@ -44,6 +51,7 @@ export function ConversionOutput({
         ) : base64 ? (
           <div className="space-y-4">
             <textarea
+              aria-labelledby={outputId}
               value={base64}
               readOnly
               className="min-h-80 w-full rounded-3xl border border-slate-200 bg-white p-4 font-mono text-xs leading-6 text-slate-700 outline-none ring-0"
@@ -54,7 +62,7 @@ export function ConversionOutput({
                 onClick={onCopy}
                 className="rounded-2xl bg-slate-950 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
               >
-                {copied ? 'Copied' : 'Copy Base64'}
+                {copied ? 'Copied' : copyLabel}
               </button>
               <button
                 type="button"
