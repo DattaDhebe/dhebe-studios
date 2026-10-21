@@ -392,9 +392,9 @@ export const pdfSeoPages: PdfSeoPage[] = [
   },
   {
     id: 'split',
-    seoTitle: 'Split PDF Online - Extract Pages from PDF Free',
+    seoTitle: 'Split PDF Online - Extract a Page Range Free',
     metaDescription:
-      'Split PDF files online for free. Extract pages, separate PDF pages, or save selected pages as a new PDF.',
+      'Save one page or a continuous page range as a new PDF. Choose start and end pages, then download. Free, no signup, and no server upload.',
     keywords: [
       'split pdf',
       'split pdf online',
@@ -414,48 +414,48 @@ export const pdfSeoPages: PdfSeoPage[] = [
       ...sharedPdfKeywords,
     ],
     intro:
-      'Split PDF online to separate PDF pages, extract selected pages, or save one page from a PDF as a new document. This free PDF splitter is useful for assignments, legal packets, office files, and long form uploads.',
+      'Save only the part of a PDF you need. Choose a start and end page to download one new PDF containing that continuous range. For example, start at 3 and end at 7 to keep pages 3 through 7, or use the same number in both fields to save a single page. Processing stays in your browser.',
     howToTitle: 'How to Split PDF Pages',
     howToSteps: [
-      'Upload the PDF file you want to split.',
-      'Choose the pages or page range you want to extract.',
-      'Start the split process to create a smaller PDF file.',
-      'Download the extracted pages or new PDF segment.',
+      'Choose a PDF from your device. The tool reads its page count locally.',
+      'Set Start Page and End Page using the page positions in the file, beginning at 1.',
+      'Select Extract Pages to download the chosen range as one new PDF.',
+      'Repeat with another range if you need another file. Your source file is not overwritten.',
     ],
     featuresTitle: 'Why Use Our Free PDF Splitter',
     features: [
-      'Split PDF online without a multi-step desktop workflow.',
-      'Extract pages from PDF for forms, assignments, and office sharing.',
-      'Useful when you need to save one page from PDF or split large PDF files.',
-      'Runs in the browser for a fast privacy-first experience.',
+      'Save a single page or one continuous range without creating an account.',
+      'Download PDF pages rather than screenshots, keeping their original page dimensions.',
+      'Keep the original file; each extraction downloads a separate document.',
+      'No server upload. Rewriting a PDF can invalidate digital signatures; keep signed originals.',
     ],
     relatedTitle: 'Related PDF Tools',
-    relatedToolIds: ['merge', 'compress', 'pdf-to-jpg', 'jpg-to-pdf'],
+    relatedToolIds: ['extract-pages', 'merge', 'compress', 'pdf-to-jpg'],
     faqs: [
       {
         question: 'How to split PDF pages?',
         answer:
-          'Upload the file, choose the pages or ranges you want, and download the extracted result as a separate PDF.',
+          'Choose your PDF, enter a start and end page, then select Extract Pages. One PDF containing that continuous range is downloaded.',
       },
       {
-        question: 'How to extract pages from PDF?',
+        question: 'Can I extract non-consecutive pages such as 1, 3, and 8?',
         answer:
-          'Use the PDF splitter to select specific pages and export only those pages into a new document.',
+          'Use the separate Extract Pages tool in Related PDF Tools for a list of pages and ranges. This splitter exports one continuous start-to-end range at a time.',
       },
       {
         question: 'How to save one page from a PDF?',
         answer:
-          'Select just that page during the split workflow and export it as a new single-page PDF.',
+          'Enter the same number in Start Page and End Page. For example, set both to 4 to download only the fourth page.',
       },
       {
-        question: 'How to separate PDF pages online?',
+        question: 'Does this automatically create a separate file for every page?',
         answer:
-          'The online split PDF flow lets you choose pages or ranges and download them as a new PDF file after processing.',
+          'No. Each extraction creates one PDF for the range you chose. Repeat the process with another range to create another file.',
       },
       {
         question: 'Can I split PDF files for free?',
         answer:
-          'Yes. This split PDF page is designed as a free online tool for extracting and separating pages quickly.',
+          'Yes. Range extraction is free, needs no account, and processes the PDF on your device rather than uploading it to a conversion server.',
       },
     ],
   },

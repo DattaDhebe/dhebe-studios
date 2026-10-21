@@ -1,10 +1,10 @@
 export const emailTemplateEditorPath = '/email-template-editor/';
 
 export const emailTemplateEditorSeoTitle =
-  'Email Template Editor - Create HTML Email Templates Online';
+  'Free HTML Email Editor - Preview and Export Templates';
 
 export const emailTemplateEditorMetaDescription =
-  'Create responsive HTML email templates online with a free drag-and-drop email template editor. Design, edit, preview, and export email templates easily.';
+  'Build an HTML email from a template, edit content and branding, preview desktop and mobile layouts, and export HTML. Free browser editor, no signup.';
 
 export const emailTemplateEditorKeywords = [
   'email template editor',
@@ -25,27 +25,18 @@ export const emailTemplateEditorKeywords = [
   'email newsletter builder',
 ];
 
-export const emailTemplateEditorHighlightKeywords = [
-  'email template editor',
-  'email template builder',
-  'html email editor',
-  'drag and drop email builder',
-  'responsive email template builder',
-  'newsletter template editor',
-];
-
 export const emailTemplateEditorSections = [
   {
-    title: 'Create Responsive HTML Email Templates Online',
-    body: 'This email template editor helps marketers, founders, internal communications teams, and agencies design responsive HTML email templates without starting from scratch. Use it to create onboarding emails, newsletters, launch campaigns, and business email templates that stay readable across Gmail, Outlook, and mobile inboxes.',
+    title: 'Start with a template, then make it yours',
+    body: 'Choose a newsletter, welcome email, or product-launch preset. Replace the sample copy, update your brand colors and links, and arrange the content blocks. Your draft is saved in this browser when local storage is available; it is not a cloud account or a shared workspace.',
   },
   {
-    title: 'Free Drag And Drop Email Template Builder',
-    body: 'Use drag-and-drop email builder controls to reorder sections, load a professional preset, and build layouts faster. The new app-style workspace uses one sidebar, a focused canvas, and built-in preview modes so the editing flow feels closer to professional email software.',
+    title: 'Check desktop and mobile before exporting',
+    body: 'Use both preview widths to review spacing, text size, images, and the main call to action. Add a useful subject line and preheader. The preview is a browser rendering, not a Gmail or Outlook inbox test, so send a test message through your email platform before a campaign.',
   },
   {
-    title: 'Edit And Export HTML Email Templates',
-    body: 'Every layout is previewed live and can be exported as HTML for email platforms, campaign tools, or direct development handoff. That makes this page useful as an HTML email editor, newsletter template editor, and responsive email template builder in one workflow.',
+    title: 'Download HTML without a platform lock-in',
+    body: 'Copy the generated HTML or download an .html file for a developer or an email platform that accepts HTML imports. Use publicly reachable HTTPS image URLs and check every destination link. This editor creates templates; it does not send email, manage subscribers, or guarantee inbox delivery.',
   },
 ];
 
@@ -53,53 +44,21 @@ export const emailTemplateEditorBenefits = [
   'Create email templates online with a polished visual editor and responsive HTML output.',
   'Use one-sidebar workflow controls for templates, blocks, brand styling, and campaign setup.',
   'Preview subject line, preheader, desktop layout, and mobile layout before exporting.',
-  'Export clean HTML email templates for Gmail, Outlook, ESPs, or developer review.',
+  'Copy or download HTML for a compatible email platform, then test it in the inboxes you support.',
 ];
 
-export const emailTemplateEditorKeywordGroups = [
+export const emailTemplateEditorWorkflow = [
   {
-    title: 'Core Keywords',
-    items: [
-      'email template editor',
-      'email template builder',
-      'html email editor',
-      'free email template builder',
-      'online email template editor',
-      'responsive email template builder',
-    ],
+    title: 'Choose a starting layout',
+    body: 'Select a preset and replace the example text with one clear message.',
   },
   {
-    title: 'High Intent Keywords',
-    items: [
-      'create email template online',
-      'design email template online',
-      'build html email template',
-      'free drag and drop email builder',
-      'email template generator',
-      'html email generator',
-    ],
+    title: 'Check content and links',
+    body: 'Review image URLs, button destinations, the subject line, and the mobile preview.',
   },
   {
-    title: 'Builder Keywords',
-    items: [
-      'drag and drop email builder',
-      'drag and drop email editor',
-      'wysiwyg email editor',
-      'visual email editor',
-      'no code email builder',
-      'responsive html email editor',
-    ],
-  },
-  {
-    title: 'Newsletter Keywords',
-    items: [
-      'newsletter template editor',
-      'newsletter builder',
-      'email newsletter editor',
-      'newsletter maker',
-      'responsive newsletter template',
-      'free newsletter template builder',
-    ],
+    title: 'Export and send a test',
+    body: 'Download HTML, import it into your sending platform, and test before sending to subscribers.',
   },
 ];
 
@@ -164,8 +123,8 @@ export const emailTemplateEditorFaqs = [
       'Yes. This editor lets you copy the HTML directly or download it as an `.html` file for campaign tools or development workflows.',
   },
   {
-    question: 'Can I use HTML email templates in Gmail or Outlook?',
+    question: 'Does this editor send emails or guarantee Gmail and Outlook rendering?',
     answer:
-      'Yes, exported HTML email templates can be adapted for Gmail, Outlook, and most email marketing platforms, although each platform may have its own sending workflow.',
+      'No. It exports HTML but does not send messages. Import the result into a compatible sending platform and test it in your target inboxes; email clients may render the same HTML differently.',
   },
 ];

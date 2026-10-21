@@ -85,12 +85,12 @@ export function Base64ToolLandingPage({ tool }: Base64ToolLandingPageProps) {
               {tool.intro}
             </p>
             <div className="mt-6 flex flex-wrap gap-2">
-              {tool.keywords.slice(0, 8).map((keyword) => (
+              {['Runs in your browser', 'No account needed', 'No server upload'].map((feature) => (
                 <span
-                  key={keyword}
+                  key={feature}
                   className="rounded-full border border-orange-200 bg-orange-50 px-3 py-1 text-xs font-semibold text-orange-700 sm:text-sm"
                 >
-                  {keyword}
+                  {feature}
                 </span>
               ))}
             </div>
@@ -183,6 +183,13 @@ export function Base64ToolLandingPage({ tool }: Base64ToolLandingPageProps) {
 }
 
 function buildUsageSteps(tool: Base64ToolPageEntry) {
+  if (tool.slug === 'base64-to-image') {
+    return [
+      'Paste the complete image data URL, including its image MIME prefix when available. Raw Base64 defaults to PNG.',
+      'Select Decode Base64 and check the recovered MIME type, file size, and image preview.',
+      'Download the recovered image. The original bytes are retained; this is not an image-format converter.',
+    ];
+  }
   if (tool.kind === 'converter') {
     return [
       `Add your source ${tool.id === 'text' || tool.id === 'url' || tool.id === 'hex' || tool.id === 'html' || tool.id === 'css' ? 'content' : 'file'} to the ${tool.label} tool.`,
@@ -199,6 +206,14 @@ function buildUsageSteps(tool: Base64ToolPageEntry) {
 }
 
 function buildFeaturePoints(tool: Base64ToolPageEntry) {
+  if (tool.slug === 'base64-to-image') {
+    return [
+      'Recover PNG, JPG, WebP, or SVG image data URLs without uploading the encoded image.',
+      'Inspect the recovered MIME type and byte size before downloading.',
+      'Decode locally with no account. Browser support determines which image formats can be previewed.',
+      'Use Image to Base64 for the reverse direction, or Base64 to File for a non-image payload.',
+    ];
+  }
   const basePoints = [
     'Runs entirely in the browser for privacy-first Base64 conversion.',
     'Supports quick copy and download workflows without sign-up.',

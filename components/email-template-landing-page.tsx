@@ -4,7 +4,7 @@ import { BreadcrumbSchema } from '@/components/breadcrumb-schema';
 import {
   emailTemplateEditorBenefits,
   emailTemplateEditorFaqs,
-  emailTemplateEditorKeywordGroups,
+  emailTemplateEditorWorkflow,
   emailTemplateEditorMetaDescription,
   emailTemplateEditorPath,
   emailTemplateEditorSections,
@@ -60,7 +60,7 @@ export function EmailTemplateLandingPage() {
       <section className="email-page theme-page-email text-[var(--app-text)] px-4 py-6 xl:px-6">
         <div className="mx-auto max-w-[1600px] space-y-8">
           <header className="editor-page-heading">
-            <div><p className="eyebrow">EMAIL STUDIO</p><h1>Email Template Editor</h1><p>Start with a template. Make it yours. Preview and export your HTML.</p></div>
+            <div><p className="eyebrow">EMAIL STUDIO</p><h1>Email Template Editor</h1><p>Build a free HTML email from a template. Preview desktop and mobile layouts, then export. No signup needed.</p></div>
             <Link href="/support/">Need a hand?</Link>
           </header>
           <EmailStudioClient />
@@ -79,22 +79,18 @@ export function EmailTemplateLandingPage() {
               ))}
             </div>
 
-            <aside className="grid gap-6">
-              {emailTemplateEditorKeywordGroups.map((group) => (
-                <section key={group.title} className="rounded-[2rem] border p-6 theme-panel">
-                  <h2 className="text-lg font-semibold theme-title">{group.title}</h2>
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {group.items.map((keyword) => (
-                      <span
-                        key={keyword}
-                        className="rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-xs font-medium text-sky-900 sm:text-sm"
-                      >
-                        {keyword}
-                      </span>
-                    ))}
-                  </div>
-                </section>
-              ))}
+            <aside className="grid content-start gap-6" aria-labelledby="email-workflow-title">
+              <section className="rounded-[2rem] border p-6 theme-panel">
+                <h2 id="email-workflow-title" className="text-lg font-semibold theme-title">From idea to test email</h2>
+                <ol className="mt-4 list-decimal space-y-5 pl-5">
+                  {emailTemplateEditorWorkflow.map(step => <li key={step.title}><h3 className="font-semibold theme-title">{step.title}</h3><p className="mt-2 text-sm leading-7 theme-muted">{step.body}</p></li>)}
+                </ol>
+              </section>
+              <section className="rounded-[2rem] border p-6 theme-panel">
+                <h2 className="text-lg font-semibold theme-title">Prepare your email images</h2>
+                <p className="mt-3 text-sm leading-7 theme-muted">Resize large images before adding them to your sending platform. Smaller assets can reduce how much recipients need to download.</p>
+                <ul className="mt-4 space-y-3 text-sm underline underline-offset-4"><li><Link href="/image-tools/image-resizer/">Resize an email image</Link></li><li><Link href="/image-tools/image-compressor/">Compress an email image</Link></li></ul>
+              </section>
             </aside>
           </section>
 

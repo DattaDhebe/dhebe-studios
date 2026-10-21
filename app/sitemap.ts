@@ -11,6 +11,10 @@ export const dynamic = 'force-static';
 
 // Update only when published content changes, not on every rebuild.
 const CONTENT_UPDATED = '2026-10-19';
+const REFRESHED_URLS = new Set([
+  siteRoute('/email-template-editor/'), siteRoute('/split-pdf/'),
+  ...base64ToolPages.map(tool => siteRoute(getBase64ToolPath(tool))),
+]);
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const paths = [
@@ -26,6 +30,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ];
   return [...new Set(paths.map(path => siteRoute(path)))].map(url => ({
     url,
-    lastModified: new Date(CONTENT_UPDATED),
+    lastModified: new Date(REFRESHED_URLS.has(url) ? '2026-10-21' : CONTENT_UPDATED),
   }));
 }

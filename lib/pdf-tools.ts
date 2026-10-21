@@ -60,7 +60,7 @@ const toolDefinitions: PdfTool[] = [
     label: 'Split PDF',
     description: 'Extract pages from PDF.',
     longDescription:
-      'Split large PDFs by page ranges or selected pages to create smaller document files.',
+      'Save one page or a continuous page range as a new PDF. Choose start and end pages; processing stays on your device.',
     status: 'ready',
   },
   {

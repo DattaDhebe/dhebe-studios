@@ -96,10 +96,11 @@ export function PdfSplitterTool() {
 
           <div className="border-t pt-4 space-y-4">
             <div>
-              <label className="mb-2 block text-sm font-semibold theme-title">
+              <label htmlFor="split-start-page" className="mb-2 block text-sm font-semibold theme-title">
                 Start Page (1 - {totalPages})
               </label>
               <input
+                id="split-start-page"
                 type="number"
                 min="1"
                 max={totalPages}
@@ -110,10 +111,11 @@ export function PdfSplitterTool() {
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-semibold theme-title">
+              <label htmlFor="split-end-page" className="mb-2 block text-sm font-semibold theme-title">
                 End Page (1 - {totalPages})
               </label>
               <input
+                id="split-end-page"
                 type="number"
                 min="1"
                 max={totalPages}
