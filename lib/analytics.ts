@@ -112,6 +112,8 @@ export function trackDownload(type: string) {
   (window as AnalyticsWindow).gtag?.('event', 'tool_download', { file_type: format, tool_id: currentToolId() });
 }
 
-export function trackTesterSignup() {
-  if (enabled && !privacySignalEnabled()) (window as AnalyticsWindow).gtag?.('event', 'tester_signup');
+export function trackTesterSignup(appId = 'dhebevoice') {
+  if (enabled && !privacySignalEnabled() && publicPageLocation() && ['dhebevoice', 'rivetprep', 'rostercairn'].includes(appId)) {
+    (window as AnalyticsWindow).gtag?.('event', 'tester_signup', { app_id: appId });
+  }
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { testerApps, type TesterAppId } from '@/lib/tester-apps';
 
 type Tester = { id: string; email_label: string; email_visibility: 'full' | 'masked'; display_name: string; joined_on: string };
 type List = { testers: Tester[]; total: number; page: number; page_size: number };
@@ -14,7 +15,14 @@ function validTester(row: Tester) {
     : row.email_visibility === 'masked' && /^[^\s@]\*{3}@[A-Za-z0-9]\*{3}\.[A-Za-z0-9-]{1,63}$/.test(row.email_label);
 }
 
-export function DhebeVoiceTesterList() {
+export function AppTesterList({ appId = 'dhebevoice' }: { appId?: TesterAppId }) {
+  return <TesterList key={appId} appId={appId} />;
+}
+
+export const DhebeVoiceTesterList = AppTesterList;
+
+function TesterList({ appId }: { appId: TesterAppId }) {
+  const app = testerApps[appId];
   const [list, setList] = useState<List | null>(null);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
@@ -27,7 +35,7 @@ export function DhebeVoiceTesterList() {
     active.current = controller;
     setBusy(true); setMessage('');
     try {
-      const response = await fetch('/api/dhebevoice-testers.php?page=' + page, {
+      const response = await fetch(`/api/${appId}-testers.php?page=` + page, {
         cache: 'no-store', credentials: 'omit',
         signal: AbortSignal.any([controller.signal, AbortSignal.timeout(15000)]),
       });
@@ -51,14 +59,15 @@ export function DhebeVoiceTesterList() {
   useEffect(() => {
     void load();
     const refresh = () => { if (!document.hidden && !active.current) void load(currentPage.current); };
+    const verified = () => { if (!document.hidden) void load(currentPage.current); };
     const timer = setInterval(refresh, 60_000);
-    window.addEventListener('dhebevoice-tester-verified', refresh);
-    return () => { clearInterval(timer); window.removeEventListener('dhebevoice-tester-verified', refresh); active.current?.abort(); };
-  }, []);
+    window.addEventListener(appId + '-tester-verified', verified);
+    return () => { clearInterval(timer); window.removeEventListener(appId + '-tester-verified', verified); active.current?.abort(); };
+  }, [appId]);
 
   return <section id="tester-list" className="voice-tester-list content-container" aria-labelledby="tester-list-title" aria-busy={busy}>
-    <div className="section-heading"><div><p className="eyebrow">THE EARLY LISTENERS</p><h2 id="tester-list-title">Meet the volunteer testers.</h2></div></div>
-    <p className="tester-intro">A small community helping DhebeVoice find its voice. Only email-verified testers who choose to appear are listed. Each person chooses a public name and whether their email is masked or shown in full.</p>
+    <div className="section-heading"><div><p className="eyebrow">{app.communityEyebrow}</p><h2 id="tester-list-title">Meet the volunteer testers.</h2></div></div>
+    <p className="tester-intro">{app.communityIntro} Only email-verified testers who choose to appear are listed. Each person chooses a public name and whether their email is masked or shown in full.</p>
     <div className="tester-list-controls"><p role="status">{list ? list.total + ' public ' + (list.total === 1 ? 'volunteer' : 'volunteers') : busy ? 'Loading volunteers...' : 'Tester list not loaded'}</p><button type="button" disabled={busy} onClick={() => void load(currentPage.current)}>Refresh tester list</button></div>
     {list?.testers.length ? <ul className="tester-public-grid" aria-label="Opted-in verified testers">{list.testers.map(row => <li key={row.id}><span className="tester-avatar" aria-hidden="true">{Array.from(row.display_name || row.email_label)[0].toUpperCase()}</span><div>{row.display_name && <p className="tester-public-name">{row.display_name}</p>}<p>{row.email_label}</p><span className="tester-privacy">Joined <time dateTime={row.joined_on}>{row.joined_on}</time></span></div><span className="tester-badge tester-badge-verified">Email verified</span></li>)}</ul> : list && <p className="tester-empty">Be one of the first to appear here. Join, verify your email, and choose the optional public-list checkbox.</p>}
     {list && list.total > list.page_size && <div className="tester-list-controls"><button type="button" disabled={busy || list.page === 0} onClick={() => void load(list.page - 1)}>Previous page</button><span>Page {list.page + 1} of {Math.ceil(list.total / list.page_size)}</span><button type="button" disabled={busy || (list.page + 1) * list.page_size >= list.total} onClick={() => void load(list.page + 1)}>Next page</button></div>}

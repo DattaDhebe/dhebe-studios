@@ -70,3 +70,15 @@ test('Tool funnels and downloads include only safe IDs, formats and categorical 
   assert.equal(state.window.dataLayer.filter(event => event[0] === 'event').length, 4);
   assert.doesNotMatch(JSON.stringify(events), /private|email|filename|\?/);
 });
+
+test('Tester signup analytics records only an allowlisted app ID after consent', () => {
+  const state = environment();
+  state.api.trackTesterSignup('rivetprep');
+  assert.equal(state.scripts.length, 0);
+  state.api.setAnalyticsEnabled(true);
+  for (const app of ['dhebevoice', 'rivetprep', 'rostercairn']) state.api.trackTesterSignup(app);
+  state.api.trackTesterSignup('reader@example.com');
+  const events = state.window.dataLayer.filter(event => event[0] === 'event' && event[1] === 'tester_signup');
+  assert.deepEqual(Array.from(events, event => event[2].app_id), ['dhebevoice', 'rivetprep', 'rostercairn']);
+  assert.doesNotMatch(JSON.stringify(events), /reader@example|request_id|code|display_name/);
+});

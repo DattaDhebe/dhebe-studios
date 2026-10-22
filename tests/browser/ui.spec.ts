@@ -16,10 +16,11 @@ test('Home tool finder searches real tools and handles empty results', async ({ 
 test('Studio category filters are functional', async ({ page }) => {
   await page.goto('/');
   await page.getByRole('button', { name: 'Documents', exact: true }).click();
-  await expect(page.locator('.studio-card')).toHaveCount(1);
-  await expect(page.locator('.studio-card')).toContainText('PDF Studio');
+  await expect(page.locator('#all-studios .studio-card')).toHaveCount(1);
+  await expect(page.locator('#all-studios .studio-card')).toContainText('PDF Studio');
   await page.getByRole('button', { name: 'All studios', exact: true }).click();
-  await expect(page.locator('.studio-card')).toHaveCount(6);
+  await expect(page.locator('#all-studios .studio-card')).toHaveCount(5);
+  await expect(page.locator('#android-apps .android-app-card')).toHaveCount(3);
 });
 
 test('Home finder supports shared search URLs', async ({ page }) => {

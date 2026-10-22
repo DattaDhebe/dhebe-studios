@@ -1,4 +1,4 @@
-# DhebeVoice signup on Premium hosting
+# Android app tester signup on Premium hosting
 
 The website uses PHP 8.3 and private SQLite on Hostinger Premium, not a Next.js
 API route or the conversion VPS. No Node.js server is needed on Premium.
@@ -11,6 +11,68 @@ API route or the conversion VPS. No Node.js server is needed on Premium.
 | dhebevoice-smtp.php | api/dhebevoice-smtp.php |
 | testers.php | api/dhebevoice-testers.php |
 | maintenance.php | api/dhebevoice-maintenance.php |
+| rivetprep-signup.php | api/rivetprep-signup.php |
+| rivetprep-testers.php | api/rivetprep-testers.php |
+| rostercairn-signup.php | api/rostercairn-signup.php |
+| rostercairn-testers.php | api/rostercairn-testers.php |
+
+## App Isolation and Branding
+
+Public names were confirmed from the Android release source on October 22, 2026:
+RivetPrep (com.rivetprep.app) in F:/apps/android/RivetPrep, and RosterCairn
+(com.dhebe.rostercairn; store title RosterCairn: Shifts & Pay) in
+F:/apps/android/ShiftPay Calendar. Do not publish the earlier Shift Ledger name
+as the current app identity. Android source repositories are reference-only for
+this website change; no Android signing material or private files are copied.
+
+The entry-point wrappers select a fixed allowlisted app on the server. Clients
+cannot select a database, sender identity, app, directory, or consent version.
+Each app has its own normalized-email uniqueness constraint, verification hashes,
+public consent, rate counters, and 180-day retention. A challenge from one list
+cannot verify or publish an entry in another. Existing DhebeVoice testers are not
+enrolled in the new apps, and the same email may volunteer independently for each.
+
+| App | Private SQLite location (relative to the domain directory) | Consent version |
+| --- | --- | --- |
+| DhebeVoice | private/dhebevoice-signups/testers.sqlite3 | dhebevoice-testers-2026-10-22 |
+| RivetPrep | private/rivetprep-signups/testers.sqlite3 | rivetprep-testers-2026-10-22 |
+| RosterCairn | private/rostercairn-signups/testers.sqlite3 | rostercairn-testers-2026-10-22 |
+
+The domain directory is /home/u942725982/domains/dhebe.com. New directories and
+SQLite files are created with 0700 and 0600 permissions on first use. All apps
+reuse private/dhebevoice-signups/settings.php and its vendor/ library for SMTP;
+no password duplication or new mailbox is needed. Optional per-app settings.php
+files may override sender settings, but are not created by this implementation.
+DHEBE_SIGNUP_DIRECTORY remains the legacy DhebeVoice directory override; the
+other app directories are siblings, never the same database. The mail library
+can be overridden separately with DHEBE_SIGNUP_MAIL_DIRECTORY.
+
+The main-site invitation pages are /apps/rivetprep/ and /apps/rostercairn/.
+Do not publish them into /public_html/rivetprep or /public_html/rostercairn:
+those existing directories are the document roots of the app privacy subdomains.
+Preserve those sites and verify their privacy URLs remain unchanged after release.
+
+Deploy the SMTP helper first (it remains compatible with the previous core), then
+the shared signup core and tester-list handler, then the four app wrappers. Publish
+the static pages last. Keep the existing private SMTP configuration and database
+untouched. Verify GET on each new list returns the correct empty/opted-in data
+and unknown app fields are rejected without sending mail. Never present frontend
+mock tests as live signup or mail-delivery proof.
+
+Run backend regressions independently for each identity:
+
+```sh
+php services/shared-hosting/tests.php
+php services/shared-hosting/tests.php rivetprep
+php services/shared-hosting/tests.php rostercairn
+```
+
+The existing scheduled CLI-only `--prune` command now prunes all three existing
+databases independently, without creating unused ones or moving rows. No new cron
+job is required. `--prune --app=rivetprep` and `--prune --app=rostercairn` target
+one list for authorized maintenance. Public-list reads and signup requests also
+prune their own database. The synthetic CLI regression verifies that the existing
+cron command removes expired records in every app while retaining current entries.
 
 Publish these handlers separately from the static out/ manifest. The SMTP helper
 must sit beside the signup handler. Preserve all other api/, trade/, and ai_lead_agent/ applications.
@@ -167,9 +229,11 @@ No code or request ID is placed in URLs, analytics, browser storage, or Git.
 Requests for existing addresses use the same confirmation flow and do not reveal
 whether the address is already a member.
 
-Sends are bounded to one/address/minute, five/address/hour, and 100 globally/hour.
-Signup and verification share 30 requests/minute. Pending plus confirmed records
-share the 10,000 cap. Existing addresses can reverify at capacity without creating
+Within each app, sends are bounded to one/address/minute, five/address/hour, and
+100/app/hour. All apps also share the provider's mailbox sending quota; provider
+rejections fail closed rather than claiming a code was queued. Signup and
+verification share 30 requests/minute per app. Pending plus confirmed records
+share the 10,000 cap per app. Existing addresses can reverify at capacity without creating
 duplicates. Legitimate plus/dot aliases are not collapsed into guessed identities.
 Testing invitations remain manual; the automatic email only confirms inbox access.
 

@@ -73,4 +73,7 @@ jobs:
         working-directory: services/shared-hosting
         run: composer audit --locked --no-dev
       - name: Verify signup with synthetic temporary data
-        run: php8.3 services/shared-hosting/tests.php
+        run: |
+          php8.3 services/shared-hosting/tests.php
+          php8.3 services/shared-hosting/tests.php rivetprep
+          php8.3 services/shared-hosting/tests.php rostercairn

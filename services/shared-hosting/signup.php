@@ -1,12 +1,24 @@
 <?php
 declare(strict_types=1);
 
-const DHEBE_CONSENT = 'dhebevoice-testers-2026-10-22';
+function signup_app(): array {
+    $id = defined('DHEBE_TESTER_APP') ? DHEBE_TESTER_APP : 'dhebevoice';
+    $names = ['dhebevoice' => 'DhebeVoice', 'rivetprep' => 'RivetPrep', 'rostercairn' => 'RosterCairn'];
+    if (!is_string($id) || !isset($names[$id])) throw new RuntimeException('Unsupported tester app.');
+    return ['id' => $id, 'name' => $names[$id], 'path' => $id === 'dhebevoice' ? '/dhebevoice/' : '/apps/' . $id . '/', 'consent' => $id . '-testers-2026-10-22'];
+}
+
+define('DHEBE_CONSENT', signup_app()['consent']);
 
 require_once __DIR__ . '/dhebevoice-smtp.php';
 
 function signup_directory(): string {
-    return getenv('DHEBE_SIGNUP_DIRECTORY') ?: dirname(__DIR__, 2) . '/private/dhebevoice-signups';
+    $voice = getenv('DHEBE_SIGNUP_DIRECTORY') ?: dirname(__DIR__, 2) . '/private/dhebevoice-signups';
+    return signup_app()['id'] === 'dhebevoice' ? $voice : dirname($voice) . '/' . signup_app()['id'] . '-signups';
+}
+
+function signup_mail_directory(): string {
+    return getenv('DHEBE_SIGNUP_MAIL_DIRECTORY') ?: (getenv('DHEBE_SIGNUP_DIRECTORY') ?: dirname(__DIR__, 2) . '/private/dhebevoice-signups');
 }
 
 function signup_database(string $directory): PDO {
@@ -48,6 +60,8 @@ function signup_prune(PDO $db, int $now): void {
 }
 
 function signup_settings(string $directory): array {
+    // Apps share the existing private sender credentials, never signup records.
+    if (signup_app()['id'] !== 'dhebevoice' && !file_exists($directory . '/settings.php')) $directory = signup_mail_directory();
     $path = $directory . '/settings.php';
     $settings = [];
     if (is_file($path) && !is_link($path)) {
@@ -90,7 +104,7 @@ function signup_send_code(string $email, string $code, array $settings): bool {
     if (!signup_smtp_config($settings)) return false;
     try {
         if (!class_exists(\PHPMailer\PHPMailer\PHPMailer::class)) {
-            $autoload = signup_directory() . '/vendor/autoload.php';
+            $autoload = signup_mail_directory() . '/vendor/autoload.php';
             if (!is_file($autoload) || is_link($autoload)) return false;
             require_once $autoload;
         }
@@ -170,7 +184,7 @@ function signup_request(array $server, string $raw, string $directory, int $now,
     $verifying = ($data['action'] ?? '') === 'verify';
     $email = null;
     if (!$verifying) {
-        if (($data['consent'] ?? null) !== true) return $error(400, 'Please agree to receive DhebeVoice testing invitations.');
+        if (($data['consent'] ?? null) !== true) return $error(400, 'Please agree to receive ' . signup_app()['name'] . ' testing invitations.');
         if (!empty($data['website']) || array_diff(array_keys($data), ['email', 'consent', 'website', 'public_opt_in', 'display_name', 'public_email'])
             || (array_key_exists('public_opt_in', $data) && !is_bool($data['public_opt_in']))
             || (array_key_exists('public_email', $data) && !is_bool($data['public_email']))

@@ -11,6 +11,7 @@ export const dynamic = 'force-static';
 
 // Update only when published content changes, not on every rebuild.
 const CONTENT_UPDATED = '2026-10-19';
+const APP_REFRESHED_URLS = new Set(['/', '/privacy/', '/dhebevoice/', '/apps/rivetprep/', '/apps/rivetprep/tester-privacy/', '/apps/rostercairn/', '/apps/rostercairn/tester-privacy/'].map(siteRoute));
 const REFRESHED_URLS = new Set([
   siteRoute('/email-template-editor/'), siteRoute('/split-pdf/'), siteRoute('/pdf-tools/extract-pdf-pages/'),
   ...base64ToolPages.map(tool => siteRoute(getBase64ToolPath(tool))),
@@ -19,6 +20,7 @@ const REFRESHED_URLS = new Set([
 export default function sitemap(): MetadataRoute.Sitemap {
   const paths = [
     '/', '/support/', '/privacy/', '/dhebevoice/', '/dhebevoice/privacy-policy/',
+    '/apps/rivetprep/', '/apps/rivetprep/tester-privacy/', '/apps/rostercairn/', '/apps/rostercairn/tester-privacy/',
     '/image-studio/', '/pdf-studio/', '/calculator-studio/',
     '/email-template-editor/', '/pdf-tools/', '/calculator-tools/',
     ...Object.values(base64CategoryPages).map(page => page.path),
@@ -30,6 +32,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ];
   return [...new Set(paths.map(path => siteRoute(path)))].map(url => ({
     url,
-    lastModified: new Date(REFRESHED_URLS.has(url) ? '2026-10-21' : CONTENT_UPDATED),
+    lastModified: new Date(APP_REFRESHED_URLS.has(url) ? '2026-10-22' : REFRESHED_URLS.has(url) ? '2026-10-21' : CONTENT_UPDATED),
   }));
 }

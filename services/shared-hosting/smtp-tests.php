@@ -13,6 +13,9 @@ function smtp_check(bool $value, string $message): void {
 
 $smtpSettings = ['mail_from' => 'support@dhebe.com', 'smtp_username' => 'support@dhebe.com', 'smtp_password' => 'synthetic-test-password'];
 smtp_check(signup_smtp_config($smtpSettings) !== null, 'Valid implicit TLS configuration');
+$smtpApp = signup_app();
+smtp_check(str_ends_with(signup_directory(), '/' . $smtpApp['id'] . '-signups'), 'App-specific private database directory');
+smtp_check(DHEBE_CONSENT === $smtpApp['id'] . '-testers-2026-10-22', 'App-specific consent version');
 smtp_check(signup_smtp_config($smtpSettings + ['smtp_port' => 587, 'smtp_encryption' => 'tls']) !== null, 'Explicit STARTTLS configuration');
 foreach ([
     ['mail_from' => 'sender@example.com'], ['smtp_username' => 'other@dhebe.com'],
@@ -24,12 +27,15 @@ foreach ([
 smtp_check(signup_smtp_config(['mail_from' => 'support@dhebe.com']) === null, 'Legacy PHP-mail-only settings are insufficient');
 
 $previousDirectory = getenv('DHEBE_SIGNUP_DIRECTORY');
+$previousMailDirectory = getenv('DHEBE_SIGNUP_MAIL_DIRECTORY');
 $missingDependencies = sys_get_temp_dir() . '/dhebe-missing-mailer-' . bin2hex(random_bytes(8));
 putenv('DHEBE_SIGNUP_DIRECTORY=' . $missingDependencies);
+putenv('DHEBE_SIGNUP_MAIL_DIRECTORY=' . $missingDependencies);
 try {
     smtp_check(!signup_send_code('reader@example.com', '12345678', $smtpSettings), 'Missing private dependency fails closed without PHP mail fallback');
 } finally {
     putenv($previousDirectory === false ? 'DHEBE_SIGNUP_DIRECTORY' : 'DHEBE_SIGNUP_DIRECTORY=' . $previousDirectory);
+    putenv($previousMailDirectory === false ? 'DHEBE_SIGNUP_MAIL_DIRECTORY' : 'DHEBE_SIGNUP_MAIL_DIRECTORY=' . $previousMailDirectory);
 }
 
 require __DIR__ . '/vendor/autoload.php';
@@ -82,8 +88,9 @@ foreach ([465 => 'ssl', 587 => 'tls'] as $port => $encryption) {
     smtp_check(($port === 587) === in_array('tls', $smtp->events, true), 'STARTTLS before authentication where required');
     if ($port === 587) smtp_check(array_search('tls', $smtp->events) < array_search('auth', $smtp->events), 'Never authenticate over plaintext');
     $mime = $mail->getSentMIMEMessage();
-    smtp_check(str_contains($mime, 'From: DhebeVoice <support@dhebe.com>'), 'Correct visible sender');
-    smtp_check(str_contains($mime, 'Subject: Verify your DhebeVoice tester email') && str_contains($mime, '12345678'), 'Expected verification subject and code');
+    smtp_check(str_contains($mime, 'From: ' . $smtpApp['name'] . ' <support@dhebe.com>'), 'Correct visible sender');
+    smtp_check(str_contains($mime, 'Subject: Verify your ' . $smtpApp['name'] . ' tester email') && str_contains($mime, '12345678'), 'Expected verification subject and code');
+    smtp_check(str_contains(quoted_printable_decode($mime), 'https://www.dhebe.com' . $smtpApp['path']), 'Code links to the correct app');
     smtp_check(str_contains($mime, '@www.dhebe.com>') && str_contains($mime, 'Date:'), 'Domain message ID and date');
     smtp_check(!str_contains($mime, 'synthetic-test-password') && !str_contains($mime, 'main-hosting.eu'), 'No credential or generic hosting identity in the message');
 }
