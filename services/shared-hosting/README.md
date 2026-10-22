@@ -8,11 +8,12 @@ API route or the conversion VPS. No Node.js server is needed on Premium.
 | Repository file | Hostinger document-root path |
 | --- | --- |
 | signup.php | api/dhebevoice-signup.php |
+| dhebevoice-smtp.php | api/dhebevoice-smtp.php |
 | testers.php | api/dhebevoice-testers.php |
 | maintenance.php | api/dhebevoice-maintenance.php |
 
-Publish these handlers separately from the static out/ manifest, before the new
-frontend HTML. Preserve all other api/, trade/, and ai_lead_agent/ applications.
+Publish these handlers separately from the static out/ manifest. The SMTP helper
+must sit beside the signup handler. Preserve all other api/, trade/, and ai_lead_agent/ applications.
 Do not upload tests, templates, private settings, databases, or source archives.
 Maintenance is CLI-only and refuses HTTP access.
 
@@ -20,17 +21,68 @@ Before activating verification, install settings.example.php ONLY as:
 
     /home/u942725982/domains/dhebe.com/private/dhebevoice-signups/settings.php
 
-Use 0600 permissions and a working domain sender in mail_from, or set the hosting
-PHP environment variable DHEBE_SIGNUP_MAIL_FROM. Do not publish this settings file.
-The implementation uses hosting PHP mail(), without third-party email-validation
-services or new SMTP secrets. Confirm sender authentication and actual delivery
-to an owner-approved disposable inbox before release. A successful mail() result
-means queued, NOT delivered ([PHP mail documentation](https://www.php.net/manual/en/function.mail.php)). Missing mail setup fails closed rather than claiming
-verification. Deployment and live delivery are separate from local mock tests.
+Use 0600 permissions and configure authenticated SMTP as described below. Do not
+publish this settings file. Missing or invalid mail setup fails closed rather
+than claiming verification. SMTP acceptance means queued, not inbox delivery.
+Deployment and real delivery are separate from local mock tests.
+
+## Authenticated SMTP Setup
+
+The source now replaces PHP mail() with PHPMailer, pinned by composer.lock. There
+is no fallback to the generic hosting sender. Hostinger's authenticated SMTP
+service supplies the transport and signing; the application does not implement
+SMTP or DKIM itself.
+
+1. Build the private dependency bundle using PHP 8.3 or newer:
+
+   ```sh
+   cd services/shared-hosting
+   composer install --no-dev --prefer-dist --no-interaction --no-plugins --no-scripts
+   composer audit --locked --no-dev
+   php tests.php
+   ```
+
+2. Install the resulting vendor/ directory ONLY at
+   /home/u942725982/domains/dhebe.com/private/dhebevoice-signups/vendor/.
+   Keep this directory outside public_html, inside the existing 0700 private
+   directory. Do not upload Composer files, tests, or private settings publicly.
+
+3. In the existing private settings.php, retain mail_from and add the fields in
+   settings.example.php: smtp_host=smtp.hostinger.com, smtp_port=465,
+   smtp_encryption=ssl, smtp_username=support@dhebe.com, and smtp_password.
+   The owner must enter the EXISTING mailbox password directly in that private
+   file, or configure DHEBE_SIGNUP_SMTP_PASSWORD privately. Do not send it in
+   chat or commit it. No mailbox password reset or new access grant is required.
+   DHEBE_SIGNUP_MAIL_FROM and DHEBE_SIGNUP_SMTP_USERNAME are also supported as
+   environment defaults when absent from the settings file. The username must
+   match mail_from, and both must be a dhebe.com mailbox.
+
+4. After private settings and dependencies are ready, upload dhebevoice-smtp.php
+   beside api/dhebevoice-signup.php, then replace the signup handler LAST. Do not
+   activate the new handler with only the legacy mail_from setting: it will
+   correctly return 503. Until setup is ready, leave the existing live handler
+   unchanged, and report that the transport fix is not yet active.
+
+5. With the owner's approval, request one code to an owner-controlled inbox.
+   Inspect the received message's full headers for aligned SPF/DKIM/DMARC and
+   the domain envelope sender; check Inbox and Spam. Do not claim real delivery
+   from mock tests or a successful SMTP queue response. Do not verify the code
+   into the public tester list just to test mail. Retain the Spam/Junk warning:
+   no transport can guarantee inbox placement.
+
+Implicit TLS on port 465 is the default; mandatory STARTTLS on 587 is supported
+only with smtp_encryption=tls. Certificate and hostname verification stay on;
+there is no insecure, plaintext, alternate-host, or PHP mail fallback. SMTP
+debugging is disabled, credentials never reach public responses, and failures
+remove the pending challenge rather than reporting it as queued.
+
+[Hostinger's SMTP settings](https://www.hostinger.com/support/1575756-how-to-get-email-account-configuration-details-for-hostinger-email/)
+and [PHPMailer](https://github.com/PHPMailer/PHPMailer) are the authoritative
+configuration and transport references.
 
 ## Spam Delivery Check (October 22, 2026)
 
-The deployment test to the owner's support mailbox was delivered but classified
+Before the SMTP change, the deployment test to the owner's support mailbox was delivered but classified
 as SPAM. Hostinger's delivery log showed the transport sender as
 noreply@srv1004.main-hosting.eu, rather than the domain mailbox. Current DNS
 already has Hostinger MX, SPF, three hosted DKIM selectors, and DMARC p=none;
@@ -47,12 +99,11 @@ The website now shows a prominent Spam/Junk notice before requesting a code and
 through the code-entry/retry flow, including the exact subject to search for,
 Not spam/Not junk guidance, resend advice, and the 10-minute expiry. This is a
 delivery warning, not a claim that spam routing has been fixed. Completing the
-transport fix requires authenticated SMTP configured with the owner's existing
-mailbox credentials in private server settings. The current handler has no SMTP
-transport, so adding credentials alone will not change its sending method.
-Do not put passwords in chat,
-Git, browser code, screenshots, or public files. Never reset the mailbox password
-or create broader mailbox/API access just to avoid requesting that setup.
+transport fix is implemented in source but must not be described as active until
+the private mailbox credentials, dependency bundle, and new handler are deployed
+and tested. See the activation sequence above. Do not put passwords in chat, Git,
+browser code, screenshots, or public files. Never reset the mailbox password or
+create broader mailbox/API access just to avoid requesting that setup.
 
 ## Private Storage and Retention
 

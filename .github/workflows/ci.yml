@@ -65,6 +65,12 @@ jobs:
       - name: Install PHP SQLite support
         run: |
           sudo apt-get update -qq
-          sudo apt-get install --no-install-recommends -y php8.3-cli php8.3-sqlite3
+          sudo apt-get install --no-install-recommends -y php8.3-cli php8.3-sqlite3 composer
+      - name: Install locked private mail dependencies
+        working-directory: services/shared-hosting
+        run: composer install --no-dev --prefer-dist --no-interaction --no-plugins --no-scripts
+      - name: Audit mail dependencies
+        working-directory: services/shared-hosting
+        run: composer audit --locked --no-dev
       - name: Verify signup with synthetic temporary data
         run: php8.3 services/shared-hosting/tests.php

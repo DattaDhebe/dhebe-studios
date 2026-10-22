@@ -50,3 +50,5 @@ yarn-error.log*
 /test-results/
 /services/tools/__pycache__/
 /services/tools/tests/__pycache__/
+/services/shared-hosting/vendor/
+/services/shared-hosting/settings.php

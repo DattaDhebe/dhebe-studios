@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 const DHEBE_CONSENT = 'dhebevoice-testers-2026-10-22';
 
+require_once __DIR__ . '/dhebevoice-smtp.php';
+
 function signup_directory(): string {
     return getenv('DHEBE_SIGNUP_DIRECTORY') ?: dirname(__DIR__, 2) . '/private/dhebevoice-signups';
 }
@@ -57,7 +59,11 @@ function signup_settings(string $directory): array {
         $settings = require $path;
         if (!is_array($settings)) throw new RuntimeException('Invalid private settings.');
     }
-    return $settings + ['mail_from' => getenv('DHEBE_SIGNUP_MAIL_FROM') ?: ''];
+    return $settings + [
+        'mail_from' => getenv('DHEBE_SIGNUP_MAIL_FROM') ?: '',
+        'smtp_username' => getenv('DHEBE_SIGNUP_SMTP_USERNAME') ?: '',
+        'smtp_password' => getenv('DHEBE_SIGNUP_SMTP_PASSWORD') ?: '',
+    ];
 }
 
 function signup_limit(PDO $db, string $bucket, int $window, int $maximum): bool {
@@ -81,17 +87,17 @@ function signup_domain(string $domain): ?bool {
 }
 
 function signup_send_code(string $email, string $code, array $settings): bool {
-    $from = signup_email($settings['mail_from'] ?? null);
-    if (!$from || !str_ends_with($from, '@dhebe.com')) return false;
-    $message = "Your DhebeVoice verification code is: $code\r\n\r\n"
-        . "Enter it on https://www.dhebe.com/dhebevoice/ within 10 minutes.\r\n"
-        . "Do not share this code. This confirms your email, not app access.\r\n\r\n"
-        . "If you did not request this, ignore this email. You will not be added.\r\n"
-        . "Questions or removal requests: support@dhebe.com\r\n";
-    return @mail($email, 'Verify your DhebeVoice tester email', $message, [
-        'From' => 'DhebeVoice <' . $from . '>', 'Reply-To' => 'support@dhebe.com',
-        'Content-Type' => 'text/plain; charset=UTF-8',
-    ]);
+    if (!signup_smtp_config($settings)) return false;
+    try {
+        if (!class_exists(\PHPMailer\PHPMailer\PHPMailer::class)) {
+            $autoload = signup_directory() . '/vendor/autoload.php';
+            if (!is_file($autoload) || is_link($autoload)) return false;
+            require_once $autoload;
+        }
+        return signup_deliver_mail(signup_code_mailer($email, $code, $settings));
+    } catch (Throwable $exception) {
+        return false;
+    }
 }
 
 function signup_verify(PDO $db, array $data, int $now): array {
@@ -199,7 +205,7 @@ function signup_request(array $server, string $raw, string $directory, int $now,
         $db->exec('COMMIT');
         if (!$allowed) return $error(429, 'Too many code requests. Please try again later.');
         $settings = $services['settings'] ?? signup_settings($directory);
-        if (!isset($services['send']) && empty($settings['mail_from'])) return $error(503, 'Email verification is not configured yet. Please contact support@dhebe.com.');
+        if (!isset($services['send']) && !signup_smtp_config($settings)) return $error(503, 'Email verification is not configured yet. Please contact support@dhebe.com.');
         $domain = ($services['domain'] ?? 'signup_domain')(explode('@', $email)[1]);
         if ($domain === null) return $error(503, 'We could not check your email domain. Please try again.');
         if (!$domain) return $error(400, 'This email domain cannot receive mail. Check the address.');
