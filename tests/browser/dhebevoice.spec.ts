@@ -69,6 +69,27 @@ test('Private signup posts only necessary data and only succeeds after verificat
   expect(storage).not.toMatch(/volunteer|12345678|aaaaaaa/);
 });
 
+test('Spam warning appears before signup and stays accessible through verification and retry', async ({ page }) => {
+  await page.goto('/dhebevoice/');
+  const notice = page.getByRole('note', { name: 'Important: check Spam or Junk' });
+  await expect(notice).toBeVisible();
+  await expect(notice).toContainText('Verify your DhebeVoice tester email');
+  await expect(notice).toContainText('Not spam or Not junk');
+  await expect(notice).toContainText('only the latest code works');
+  await expect(page.getByRole('textbox', { name: 'Your email address' })).toHaveAttribute('aria-describedby', 'tester-privacy tester-delivery-warning');
+  await join(page);
+  await expect(notice).toBeVisible();
+  await expect(page.getByRole('textbox', { name: 'Verification code', exact: true })).toHaveAttribute('aria-describedby', 'tester-code-help tester-delivery-warning');
+  await page.route(endpoint, route => route.fulfill({ status: 400, json: { detail: 'The code is incorrect.' } }));
+  await confirm(page);
+  await expect(page.locator('#early-access').getByRole('alert')).toContainText('The code is incorrect.');
+  await expect(notice).toBeVisible();
+  await page.route(endpoint, route => route.fulfill({ json: verified }));
+  await confirm(page);
+  await expect(page.locator('.tester-success')).toBeVisible();
+  await expect(notice).toHaveCount(0);
+});
+
 test('Public name and full email need separate unchecked-by-default choices', async ({ page }) => {
   let submitted: unknown;
   await page.route(endpoint, route => { submitted = route.request().postDataJSON(); return route.fulfill({ json: challenge }); });

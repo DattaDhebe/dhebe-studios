@@ -28,6 +28,32 @@ to an owner-approved disposable inbox before release. A successful mail() result
 means queued, NOT delivered ([PHP mail documentation](https://www.php.net/manual/en/function.mail.php)). Missing mail setup fails closed rather than claiming
 verification. Deployment and live delivery are separate from local mock tests.
 
+## Spam Delivery Check (October 22, 2026)
+
+The deployment test to the owner's support mailbox was delivered but classified
+as SPAM. Hostinger's delivery log showed the transport sender as
+noreply@srv1004.main-hosting.eu, rather than the domain mailbox. Current DNS
+already has Hostinger MX, SPF, three hosted DKIM selectors, and DMARC p=none;
+those records alone do not authenticate messages sent by this PHP mail path.
+
+Hostinger documents the generic sender and weaker deliverability of PHP mail(),
+and recommends authenticated SMTP for regular website messages:
+[Hostinger spam-delivery guidance](https://www.hostinger.com/support/3423286-what-to-do-if-sending-emails-go-to-spam/).
+The current sender method is a likely contributor, not proof of the receiver's
+complete spam-scoring decision. Do not weaken DMARC, disable spam filtering, or
+promise inbox placement as a workaround.
+
+The website now shows a prominent Spam/Junk notice before requesting a code and
+through the code-entry/retry flow, including the exact subject to search for,
+Not spam/Not junk guidance, resend advice, and the 10-minute expiry. This is a
+delivery warning, not a claim that spam routing has been fixed. Completing the
+transport fix requires authenticated SMTP configured with the owner's existing
+mailbox credentials in private server settings. The current handler has no SMTP
+transport, so adding credentials alone will not change its sending method.
+Do not put passwords in chat,
+Git, browser code, screenshots, or public files. Never reset the mailbox password
+or create broader mailbox/API access just to avoid requesting that setup.
+
 ## Private Storage and Retention
 
 The authoritative database is:

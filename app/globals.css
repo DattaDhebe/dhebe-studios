@@ -275,6 +275,10 @@ svg { flex-shrink: 0; }
 .tester-success strong { font-size: 14px; font-weight: 600; }
 .tester-success p { font-size: 12px; line-height: 1.9; color: var(--app-muted); margin-top: 8px; }
 .tester-error { color: var(--app-accent); font-size: 12px; line-height: 1.8; margin-top: 16px; }
+.tester-delivery-warning { display: flex; align-items: flex-start; gap: 10px; padding: 16px; margin-top: 22px; border: 1px solid color-mix(in srgb, var(--app-accent) 45%, var(--app-card-border)); border-radius: 8px; background: color-mix(in srgb, var(--app-accent) 8%, var(--app-card)); }
+.tester-delivery-warning > svg { flex-shrink: 0; margin-top: 2px; color: var(--app-accent); }
+.tester-delivery-warning strong { display: block; color: var(--app-title); font-size: 12px; font-weight: 600; }
+.tester-delivery-warning p { color: var(--app-muted); font-size: 11px; line-height: 1.8; margin-top: 6px; }
 .tester-actions, .tester-list-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-top: 18px; font-size: 12px; color: var(--app-muted); }
 .tester-actions button, .tester-list-controls button { text-decoration: underline; text-underline-offset: 4px; }
 .tester-actions button:disabled, .tester-list-controls button:disabled { opacity: .5; cursor: not-allowed; }
