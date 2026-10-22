@@ -28,6 +28,22 @@ Deployment and real delivery are separate from local mock tests.
 
 ## Authenticated SMTP Setup
 
+Activated on October 22, 2026, after the owner entered the existing mailbox
+password directly into the private settings file. The server-side check confirmed
+valid PHP, 0700 directory and 0600 settings permissions, the expected sender and
+username, the private dependency bundle, OpenSSL, and authenticated SMTP over
+certificate-verified implicit TLS. No password was returned by the check or copied
+into the local workspace.
+
+One SMTP delivery test arrived in support@dhebe.com's INBOX at
+2026-10-22 11:40:05 UTC (17:10:05 IST), not the Junk folder. Its received headers
+reported SPF=pass, DKIM=pass for dhebe.com (hostingermail-a), and DMARC=pass, with
+Return-Path support@dhebe.com. The new live signup handler matches the tested
+source; no real tester record was created for this test. The short-lived,
+token-protected status probe was removed and confirmed HTTP 404 afterward.
+This self-test does not guarantee inbox placement at Gmail or other recipients;
+retain the Spam/Junk notice and monitor delivery without weakening DNS or filters.
+
 The source now replaces PHP mail() with PHPMailer, pinned by composer.lock. There
 is no fallback to the generic hosting sender. Hostinger's authenticated SMTP
 service supplies the transport and signing; the application does not implement
@@ -98,10 +114,10 @@ promise inbox placement as a workaround.
 The website now shows a prominent Spam/Junk notice before requesting a code and
 through the code-entry/retry flow, including the exact subject to search for,
 Not spam/Not junk guidance, resend advice, and the 10-minute expiry. This is a
-delivery warning, not a claim that spam routing has been fixed. Completing the
-transport fix is implemented in source but must not be described as active until
-the private mailbox credentials, dependency bundle, and new handler are deployed
-and tested. See the activation sequence above. Do not put passwords in chat, Git,
+delivery warning, not a guarantee of inbox placement. The authenticated transport
+was subsequently activated and tested as recorded above. Future releases must
+follow the same private configuration and delivery checks before being described
+as active. Do not put passwords in chat, Git,
 browser code, screenshots, or public files. Never reset the mailbox password or
 create broader mailbox/API access just to avoid requesting that setup.
 
