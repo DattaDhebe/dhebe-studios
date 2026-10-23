@@ -11,6 +11,7 @@ export const dynamic = 'force-static';
 
 // Update only when published content changes, not on every rebuild.
 const CONTENT_UPDATED = '2026-10-19';
+const BRAND_REFRESHED_URLS = new Set(['/', '/apps/rivetprep/', '/apps/rostercairn/'].map(siteRoute));
 const APP_REFRESHED_URLS = new Set(['/', '/privacy/', '/dhebevoice/', '/apps/rivetprep/', '/apps/rivetprep/tester-privacy/', '/apps/rostercairn/', '/apps/rostercairn/tester-privacy/'].map(siteRoute));
 const REFRESHED_URLS = new Set([
   siteRoute('/email-template-editor/'), siteRoute('/split-pdf/'), siteRoute('/pdf-tools/extract-pdf-pages/'),
@@ -32,6 +33,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ];
   return [...new Set(paths.map(path => siteRoute(path)))].map(url => ({
     url,
-    lastModified: new Date(APP_REFRESHED_URLS.has(url) ? '2026-10-22' : REFRESHED_URLS.has(url) ? '2026-10-21' : CONTENT_UPDATED),
+    lastModified: new Date(BRAND_REFRESHED_URLS.has(url) ? '2026-10-23' : APP_REFRESHED_URLS.has(url) ? '2026-10-22' : REFRESHED_URLS.has(url) ? '2026-10-21' : CONTENT_UPDATED),
   }));
 }

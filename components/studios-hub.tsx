@@ -6,6 +6,7 @@ import type { DirectoryTool } from '@/lib/tool-directory';
 import { UiIcon, type IconName } from './ui-icon';
 import { utilityTools } from '@/lib/utility-tools';
 import { trackToolSelection } from '@/lib/analytics';
+import { testerApps } from '@/lib/tester-apps';
 
 const studios: { id: string; name: string; category: string; description: string; href: string; icon: IconName; tone: string; count: string }[] = [
   { id: 'pdf', name: 'PDF Studio', category: 'Documents', description: 'Smaller files. Neater pages. Convert, combine, and get your documents ready to go.', href: '/pdf-studio/', icon: 'pdf', tone: 'pdf', count: '28 tools' },
@@ -16,9 +17,9 @@ const studios: { id: string; name: string; category: string; description: string
 ];
 
 const androidAppCards = [
-  { id: 'dhebevoice', href: '/dhebevoice/#early-access', name: 'DhebeVoice', label: 'Reading, out loud', description: 'Turn text, books, and readable web pages into listening time. Help shape our Android reading companion.', tone: 'voice', icon: '/dhebevoice-app-icon.png' },
-  { id: 'rivetprep', href: '/apps/rivetprep/#early-access', name: 'RivetPrep', label: 'Offline EPA 608 study', description: 'Learn with offline lessons, practice questions, flashcards, and focused review. Volunteer to test the study experience.', tone: 'rivet', icon: '/rivetprep-app-icon.svg' },
-  { id: 'rostercairn', href: '/apps/rostercairn/#early-access', name: 'RosterCairn', label: 'Shifts & Pay', description: 'Plan shifts, record actual hours, and understand your pay estimate. Help test an Android ledger built around working life.', tone: 'roster', icon: '/rostercairn-app-icon.svg' },
+  { id: 'dhebevoice', href: '/dhebevoice/#early-access', name: 'DhebeVoice', label: 'Reading, out loud', description: 'Turn text, books, and readable web pages into listening time. Help shape our Android reading companion.', tone: 'voice', icon: testerApps.dhebevoice.icon },
+  { id: 'rivetprep', href: '/apps/rivetprep/#early-access', name: 'RivetPrep', label: 'Offline EPA 608 study', description: 'Learn with offline lessons, practice questions, flashcards, and focused review. Volunteer to test the study experience.', tone: 'rivet', icon: testerApps.rivetprep.icon },
+  { id: 'rostercairn', href: '/apps/rostercairn/#early-access', name: 'RosterCairn', label: 'Shifts & Pay', description: 'Plan shifts, record actual hours, and understand your pay estimate. Help test an Android ledger built around working life.', tone: 'roster', icon: testerApps.rostercairn.icon },
 ];
 
 const shortcuts: { label: string; note: string; href: string; icon: IconName; tone: string }[] = [

@@ -2,7 +2,7 @@ import { testerApps } from './tester-apps';
 
 export const androidApps = {
   rivetprep: {
-    name: testerApps.rivetprep.name, tone: 'rivet', icon: '/rivetprep-app-icon.svg',
+    name: testerApps.rivetprep.name, tone: 'rivet', icon: testerApps.rivetprep.icon,
     category: 'EducationalApplication', label: 'Offline EPA 608 study',
     headline: 'Build your study rhythm.', kicker: 'FOR CURIOUS TRADE LEARNERS',
     description: 'Make room for a little learning, wherever the day takes you. RivetPrep brings offline EPA Section 608 lessons, practice questions, and personal review tools to your Android phone.',
@@ -23,7 +23,7 @@ export const androidApps = {
     dataNote: 'Study features work offline without an app account, advertising, or tracking SDKs. Optional official reference links open in your browser. Your chosen backup provider handles any file you export to it.',
   },
   rostercairn: {
-    name: testerApps.rostercairn.name, tone: 'roster', icon: '/rostercairn-app-icon.svg',
+    name: testerApps.rostercairn.name, tone: 'roster', icon: testerApps.rostercairn.icon,
     category: 'ProductivityApplication', label: 'Shifts & Pay',
     headline: 'See the work. Understand the estimate.', kicker: 'MADE FOR LIFE BETWEEN SHIFTS',
     description: 'A work week is more than a row of dates. RosterCairn brings your shift calendar, actual hours, and itemized pay estimates into one Android work ledger, with no account needed for the core features.',

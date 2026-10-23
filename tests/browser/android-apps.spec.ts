@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const apps = [{ id: 'rivetprep', name: 'RivetPrep' }, { id: 'rostercairn', name: 'RosterCairn' }];
+const apps = [{ id: 'rivetprep', name: 'RivetPrep', icon: '/rivetprep-app-icon-v3.webp' }, { id: 'rostercairn', name: 'RosterCairn', icon: '/rostercairn-app-icon-v3.svg' }];
 const challenge = { request_received: true, verification_required: true, request_id: 'a'.repeat(64), expires_in: 600, resend_after: 60 };
 const empty = { testers: [], total: 0, page: 0, page_size: 24 };
 
@@ -16,10 +16,15 @@ for (const app of apps) {
     await expect(section.getByRole('heading', { name: app.name, exact: true })).toBeVisible();
     const card = section.locator('.android-app-card').filter({ hasText: app.name });
     await expect(card).toHaveAttribute('href', `/apps/${app.id}/#early-access`);
-    await expect(card.getByRole('img')).toHaveAttribute('src', `/${app.id}-app-icon.svg`);
+    await expect(card.getByRole('img')).toHaveAttribute('src', app.icon);
+    await expect(card.getByRole('img')).toHaveJSProperty('naturalWidth', app.id === 'rivetprep' ? 256 : 512);
     await card.click();
     await expect(page.getByRole('form', { name: app.name + ' early-access signup', exact: true })).toBeVisible();
     await expect(page.getByRole('heading', { level: 1 })).toContainText(app.name);
+    await expect(page.locator('.voice-identity img')).toHaveAttribute('src', app.icon);
+    await expect(page.locator('.voice-identity img')).toHaveJSProperty('complete', true);
+    const schema = await page.locator('script[id="' + app.id + '-structured-data"]').evaluate(element => JSON.parse(element.textContent || '{}'));
+    expect(schema.image).toBe('https://www.dhebe.com' + app.icon);
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', `https://www.dhebe.com/apps/${app.id}/`);
     await expect(page.locator('body')).not.toContainText('Shift Ledger');
     await expect(page.getByRole('link', { name: 'Android apps', exact: true })).toHaveAttribute('href', '/#android-apps');
