@@ -27,9 +27,21 @@ test.beforeEach(async ({ page }) => {
 test('DhebeVoice homepage card invites volunteer testers', async ({ page }) => {
   await page.goto('/');
   const card = page.locator('.studio-card').filter({ hasText: 'DhebeVoice' });
-  await expect(card).toContainText('Become a tester');
-  await expect(card).toHaveAttribute('href', '/dhebevoice/#early-access');
-  await card.click();
+  await expect(card.locator('.android-app-card-summary')).toHaveAttribute('href', '/dhebevoice/#early-access');
+  await expect(card.getByRole('link', { name: 'Join test on Google Play for DhebeVoice', exact: true })).toHaveAttribute('href', 'https://play.google.com/apps/testing/com.dhebe.dhebevoice');
+  await expect(card.getByRole('link', { name: 'Install from Play Store for DhebeVoice', exact: true })).toHaveAttribute('href', 'https://play.google.com/store/apps/details?id=com.dhebe.dhebevoice');
+  await expect(card.locator('a a')).toHaveCount(0);
+  await expect(card.getByRole('link', { name: 'Not invited? Request access', exact: true })).toHaveAttribute('href', '/dhebevoice/#tester-signup');
+  await card.locator('.android-app-card-summary').click();
+  await expect(page).toHaveURL(/#early-access$/);
+  await expect(page.locator('#early-access .app-play-actions')).toHaveCount(1);
+  await expect(page.locator('#early-access')).toHaveCount(1);
+  await expect(page.locator('#tester-signup')).toHaveCount(1);
+  await page.getByRole('link', { name: 'Request an invitation', exact: true }).click();
+  await expect(page).toHaveURL(/#tester-signup$/);
+  await expect(page.getByRole('link', { name: 'Join test on Google Play for DhebeVoice', exact: true })).toHaveAttribute('href', 'https://play.google.com/apps/testing/com.dhebe.dhebevoice');
+  await expect(page.getByRole('link', { name: 'Install from Play Store for DhebeVoice', exact: true })).toHaveAttribute('href', 'https://play.google.com/store/apps/details?id=com.dhebe.dhebevoice');
+  await expect(page.locator('.app-play-note')).toContainText('same account');
   await expect(page.getByRole('form', { name: 'DhebeVoice early-access signup' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Explore the GitHub project' })).toHaveAttribute('href', 'https://github.com/DattaDhebe/dhebevoice-app#dhebevoice');
 });
@@ -82,7 +94,7 @@ test('Spam warning appears before signup and stays accessible through verificati
   await expect(page.getByRole('textbox', { name: 'Verification code', exact: true })).toHaveAttribute('aria-describedby', 'tester-code-help tester-delivery-warning');
   await page.route(endpoint, route => route.fulfill({ status: 400, json: { detail: 'The code is incorrect.' } }));
   await confirm(page);
-  await expect(page.locator('#early-access').getByRole('alert')).toContainText('The code is incorrect.');
+  await expect(page.locator('#tester-signup').getByRole('alert')).toContainText('The code is incorrect.');
   await expect(notice).toBeVisible();
   await page.route(endpoint, route => route.fulfill({ json: verified }));
   await confirm(page);
@@ -120,7 +132,7 @@ test('Signup failure keeps email and consent choices for retry', async ({ page }
   let requests = 0;
   await page.route(endpoint, route => ++requests === 1 ? route.fulfill({ status: 503, json: { detail: 'Please try again later.' } }) : route.fulfill({ json: challenge }));
   await page.goto('/dhebevoice/'); await join(page);
-  await expect(page.locator('#early-access').getByRole('alert')).toContainText('Please try again later.');
+  await expect(page.locator('#tester-signup').getByRole('alert')).toContainText('Please try again later.');
   await expect(page.getByRole('textbox', { name: 'Your email address' })).toHaveValue('reader@example.com');
   await page.getByRole('button', { name: 'Join the tester list' }).click();
   await expect(page.getByRole('form', { name: 'Verify your tester email' })).toBeVisible();
@@ -130,7 +142,7 @@ test('Wrong or expired code stays retryable and cannot report signup success', a
   let attempts = 0;
   await page.route(endpoint, route => route.request().postDataJSON().action !== 'verify' ? route.fulfill({ json: challenge }) : ++attempts === 1 ? route.fulfill({ status: 400, json: { detail: 'The code is incorrect.' } }) : route.fulfill({ json: verified }));
   await page.goto('/dhebevoice/'); await join(page); await confirm(page);
-  await expect(page.locator('#early-access').getByRole('alert')).toContainText('The code is incorrect.');
+  await expect(page.locator('#tester-signup').getByRole('alert')).toContainText('The code is incorrect.');
   await expect(page.locator('.tester-success')).toHaveCount(0);
   await confirm(page); await expect(page.locator('.tester-success')).toBeVisible();
 });
@@ -148,14 +160,14 @@ test('Verification requires all 8 digits before making a request', async ({ page
 for (const bad of [{ unexpected: true }, { request_received: true }]) test('Old or malformed signup response cannot bypass verification: ' + JSON.stringify(bad), async ({ page }) => {
   await page.route(endpoint, route => route.fulfill({ json: bad }));
   await page.goto('/dhebevoice/'); await join(page);
-  await expect(page.locator('#early-access').getByRole('alert')).toContainText('could not be confirmed');
+  await expect(page.locator('#tester-signup').getByRole('alert')).toContainText('could not be confirmed');
   await expect(page.locator('.tester-success')).toHaveCount(0);
 });
 
 test('Malformed verification response cannot report success', async ({ page }) => {
   await page.route(endpoint, route => route.fulfill({ json: route.request().postDataJSON().action === 'verify' ? { request_received: true } : challenge }));
   await page.goto('/dhebevoice/'); await join(page); await confirm(page);
-  await expect(page.locator('#early-access').getByRole('alert')).toContainText('could not be confirmed');
+  await expect(page.locator('#tester-signup').getByRole('alert')).toContainText('could not be confirmed');
   await expect(page.locator('.tester-success')).toHaveCount(0);
 });
 

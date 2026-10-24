@@ -7,6 +7,7 @@ import { AppTesterForm } from './dhebevoice-tester-form';
 import { AppTesterList } from './dhebevoice-tester-list';
 import { BreadcrumbSchema } from './breadcrumb-schema';
 import { UiIcon } from './ui-icon';
+import { AppPlayLinks } from './app-play-links';
 
 export function androidAppMetadata(appId: AndroidAppId): Metadata {
   const app = androidApps[appId];
@@ -26,13 +27,14 @@ export function AndroidTesterPage({ appId }: { appId: AndroidAppId }) {
     <BreadcrumbSchema items={[{ name: 'Home', item: '/' }, { name: app.name, item: `/apps/${appId}/` }]} />
     <script id={appId + '-structured-data'} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
     <div className={`voice-page android-app-page tone-${app.tone}`}>
-      <section className="voice-hero content-container">
+      <section id="early-access" className="voice-hero content-container">
         <div className="voice-copy">
           <div className="voice-identity"><img src={app.icon} alt={app.name + ' app logo'} width={72} height={72} /><div><p>{app.name}</p><span>Android 8.0+ / Tester invitations</span></div></div>
           <p className="eyebrow">{app.kicker}</p>
           <h1>{app.name}.<br /><span>{app.headline}</span></h1>
           <p className="voice-description">{app.description}</p>
           <ul className="voice-highlights">{app.highlights.map(text => <li key={text}><UiIcon name="check" width="17" height="17" />{text}</li>)}</ul>
+          <AppPlayLinks appId={appId} />
           <div className="voice-project-links"><a href={app.appPrivacy} target="_blank" rel="noopener noreferrer">Android app privacy policy <UiIcon name="arrow" width="16" height="16" /></a><Link href={testerApps[appId].privacyPath}>Website tester privacy</Link></div>
         </div>
         <AppTesterForm appId={appId} />

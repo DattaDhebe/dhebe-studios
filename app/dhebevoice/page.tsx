@@ -4,6 +4,7 @@ import { BreadcrumbSchema } from '@/components/breadcrumb-schema';
 import { DhebeVoiceTesterForm } from '@/components/dhebevoice-tester-form';
 import { DhebeVoiceTesterList } from '@/components/dhebevoice-tester-list';
 import { UiIcon } from '@/components/ui-icon';
+import { AppPlayLinks } from '@/components/app-play-links';
 import { SITE_NAME, siteAsset, siteRoute } from '@/lib/site';
 
 const projectUrl = 'https://github.com/DattaDhebe/dhebevoice-app#dhebevoice';
@@ -44,13 +45,14 @@ export default function DhebeVoicePage() {
       <BreadcrumbSchema items={[{ name: 'Home', item: '/' }, { name: 'DhebeVoice', item: '/dhebevoice/' }]} />
       <script id="dhebevoice-structured-data" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
       <div className="voice-page tone-voice">
-        <section className="voice-hero content-container">
+        <section id="early-access" className="voice-hero content-container">
           <div className="voice-copy">
             <div className="voice-identity"><img src="/dhebevoice-app-icon.png" alt="DhebeVoice app logo" width={72} height={72} /><div><p>DhebeVoice</p><span>Android / Closed testing</span></div></div>
             <p className="eyebrow">CALLING CURIOUS LISTENERS</p>
             <h1>Your reading.<br /><span>Out loud.</span></h1>
             <p className="voice-description">Turn text, books, and readable web pages into listening time. We're looking for volunteer Android testers to try DhebeVoice and help make it better.</p>
             <ul className="voice-highlights"><li><UiIcon name="check" width="17" height="17" />Try early builds on your Android phone.</li><li><UiIcon name="check" width="17" height="17" />Tell us what works and what could be simpler.</li><li><UiIcon name="check" width="17" height="17" />Help shape a more useful reading companion.</li></ul>
+            <AppPlayLinks appId="dhebevoice" />
             <div className="voice-project-links"><a href={projectUrl} target="_blank" rel="noopener noreferrer">Explore the GitHub project <UiIcon name="arrow" width="16" height="16" /></a><Link href="/dhebevoice/privacy-policy/">App privacy policy</Link></div>
           </div>
           <DhebeVoiceTesterForm />

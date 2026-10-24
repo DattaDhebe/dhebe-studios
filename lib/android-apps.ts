@@ -5,10 +5,10 @@ export const androidApps = {
     name: testerApps.rivetprep.name, tone: 'rivet', icon: testerApps.rivetprep.icon,
     category: 'EducationalApplication', label: 'Offline EPA 608 study',
     headline: 'Build your study rhythm.', kicker: 'FOR CURIOUS TRADE LEARNERS',
-    description: 'Make room for a little learning, wherever the day takes you. RivetPrep brings offline EPA Section 608 lessons, practice questions, and personal review tools to your Android phone.',
+    description: 'Make room for a little learning, wherever the day takes you. RivetPrep brings offline U.S. EPA Section 608 lessons and practice, separate regional HVAC/R introductions, and personal review tools to your Android phone.',
     shortDescription: 'Offline lessons, practice questions, and focused review for EPA Section 608 learners. Help us test the study experience.',
     appPrivacy: 'https://rivetprep.dhebe.com/privacy/',
-    highlights: ['500 original practice questions with answer explanations.', '24 offline lessons across the four study sections.', 'Study plans, flashcards, notes, and custom decks.'],
+    highlights: ['600 original EPA practice questions with answer explanations.', '32 offline EPA lessons across the four study sections.', 'Seven regional packs add 15 introductory lessons and 78 explained checks.', 'Study plans, flashcards, notes, and custom decks.'],
     features: [
       ['Learn before you drill', 'Read bundled lessons, worked examples, key points, and glossary terms without a connection.'],
       ['Practice with purpose', 'Try quick sessions, focused section drills, bookmarks, mistake retries, and configurable timed study mocks.'],
@@ -19,7 +19,7 @@ export const androidApps = {
     ],
     testingTask: 'Try a lesson, complete a practice session, and tell us where the study flow or explanation could be clearer.',
     limitationTitle: 'Independent practice, not a certification.',
-    limitation: 'RivetPrep is independent of the EPA and testing providers. Its original learning content awaits qualified subject-matter review. It is not an official exam bank, an approved course, or a promise of passing. The English-language material concerns U.S. EPA Section 608; choosing another region does not change the certification content.',
+    limitation: 'RivetPrep is independent of the EPA and testing providers. Its original learning content awaits qualified subject-matter review. It is not an official exam bank, an approved course, or a promise of passing. The main practice bank covers U.S. EPA Section 608. Seven separate English-language regional packs are introductory, not complete local examination courses. Regional answers do not change EPA scores or readiness.',
     dataNote: 'Study features work offline without an app account, advertising, or tracking SDKs. Optional official reference links open in your browser. Your chosen backup provider handles any file you export to it.',
   },
   rostercairn: {

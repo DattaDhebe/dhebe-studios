@@ -245,7 +245,7 @@ svg { flex-shrink: 0; }
 
 /* DhebeVoice volunteer testing */
 .voice-page { padding-bottom: 64px; background: radial-gradient(ellipse at 10% 10%, #b4c9af16, transparent 40%), var(--app-bg); }
-.voice-hero { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 70px; padding-block: 64px; }
+.voice-hero { scroll-margin-top: 100px; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 70px; padding-block: 64px; }
 .voice-identity { display: flex; align-items: center; gap: 15px; margin-bottom: 34px; }
 .voice-identity img { width: 60px; height: 60px; border-radius: 13px; object-fit: contain; }
 .voice-identity p { font-family: var(--font-display); font-size: 20px; font-weight: 600; color: var(--app-title); }
@@ -691,3 +691,26 @@ svg { flex-shrink: 0; }
 .utility-related span { display: block; font-size: 12px; line-height: 1.8; color: var(--app-muted); font-weight: 400; margin-top: 12px; }
 @media (max-width: 800px) { .new-tools-grid, .utility-split, .utility-guide, .utility-related > div { grid-template-columns: 1fr; } .utility-workspace { padding: 20px; } .utility-guide { gap: 30px; } .utility-stat-grid { grid-template-columns: repeat(2, 1fr); } .utility-stat-grid dd { font-size: 25px; } }
 @media (max-width: 700px) { .analytics-choice { inset: auto 12px 12px; padding: 18px; display: block; max-height: 60dvh; overflow-y: auto; } .analytics-choice-actions { margin-top: 14px; } }
+
+/* Closed-test access: keep enrollment before installation and invitation signup separate. */
+.android-test-access-note { max-width: 74ch; margin: -4px 0 22px; color: var(--app-muted); font-size: 12px; line-height: 1.75; }
+.android-app-card-summary { display: block; }
+.app-play-access { margin-top: 26px; padding: 20px; border: 1px solid var(--app-card-border); border-radius: 10px; background: var(--app-card-soft); }
+.app-play-intro { margin-bottom: 12px; color: var(--app-title); font-size: 13px; font-weight: 600; }
+.app-play-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.app-play-link { display: inline-flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; padding: 12px 14px; border: 1px solid var(--app-card-border); border-radius: 7px; font-size: 12px; font-weight: 600; line-height: 1.5; transition: opacity 150ms; }
+.app-play-link svg { flex: 0 0 auto; }
+.app-play-join { background: var(--app-title); color: var(--app-bg); border-color: var(--app-title); }
+.app-play-install { background: var(--app-card); color: var(--app-title); }
+.app-play-link:hover { opacity: .82; }
+.app-play-note { margin-top: 12px; font-size: 12px; line-height: 1.75; color: var(--app-muted); }
+.app-play-note a { color: var(--app-title); text-decoration: underline; text-underline-offset: 3px; }
+.app-play-access-compact { margin-top: auto; padding: 24px 0 0; border: 0; background: none; }
+.app-play-access-compact .app-play-actions { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
+.android-request-link { display: inline-flex; align-items: center; gap: 7px; margin-top: 16px; color: var(--app-muted); font-size: 11px; text-decoration: underline; text-underline-offset: 3px; }
+.app-play-link:focus-visible, .android-app-card-summary:focus-visible, .android-request-link:focus-visible { outline: 2px solid var(--tone, var(--app-title)); outline-offset: 4px; }
+@media (max-width: 480px) {
+  .app-play-actions { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .app-play-access { padding: 16px; }
+  .app-play-access-compact { padding: 22px 0 0; }
+}

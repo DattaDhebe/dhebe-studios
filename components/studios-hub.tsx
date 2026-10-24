@@ -7,6 +7,7 @@ import { UiIcon, type IconName } from './ui-icon';
 import { utilityTools } from '@/lib/utility-tools';
 import { trackToolSelection } from '@/lib/analytics';
 import { testerApps } from '@/lib/tester-apps';
+import { AppPlayLinks } from './app-play-links';
 
 const studios: { id: string; name: string; category: string; description: string; href: string; icon: IconName; tone: string; count: string }[] = [
   { id: 'pdf', name: 'PDF Studio', category: 'Documents', description: 'Smaller files. Neater pages. Convert, combine, and get your documents ready to go.', href: '/pdf-studio/', icon: 'pdf', tone: 'pdf', count: '28 tools' },
@@ -17,10 +18,10 @@ const studios: { id: string; name: string; category: string; description: string
 ];
 
 const androidAppCards = [
-  { id: 'dhebevoice', href: '/dhebevoice/#early-access', name: 'DhebeVoice', label: 'Reading, out loud', description: 'Turn text, books, and readable web pages into listening time. Help shape our Android reading companion.', tone: 'voice', icon: testerApps.dhebevoice.icon },
-  { id: 'rivetprep', href: '/apps/rivetprep/#early-access', name: 'RivetPrep', label: 'Offline EPA 608 study', description: 'Learn with offline lessons, practice questions, flashcards, and focused review. Volunteer to test the study experience.', tone: 'rivet', icon: testerApps.rivetprep.icon },
-  { id: 'rostercairn', href: '/apps/rostercairn/#early-access', name: 'RosterCairn', label: 'Shifts & Pay', description: 'Plan shifts, record actual hours, and understand your pay estimate. Help test an Android ledger built around working life.', tone: 'roster', icon: testerApps.rostercairn.icon },
-];
+  { id: 'dhebevoice', href: '/dhebevoice/#early-access', signupHref: '/dhebevoice/#tester-signup', name: 'DhebeVoice', label: 'Reading, out loud', description: 'Turn text, books, and readable web pages into listening time. Help shape our Android reading companion.', tone: 'voice', icon: testerApps.dhebevoice.icon },
+  { id: 'rivetprep', href: '/apps/rivetprep/#early-access', signupHref: '/apps/rivetprep/#tester-signup', name: 'RivetPrep', label: 'Offline EPA 608 study', description: 'Learn with offline lessons, practice questions, flashcards, and focused review. Volunteer to test the study experience.', tone: 'rivet', icon: testerApps.rivetprep.icon },
+  { id: 'rostercairn', href: '/apps/rostercairn/#early-access', signupHref: '/apps/rostercairn/#tester-signup', name: 'RosterCairn', label: 'Shifts & Pay', description: 'Plan shifts, record actual hours, and understand your pay estimate. Help test an Android ledger built around working life.', tone: 'roster', icon: testerApps.rostercairn.icon },
+] as const;
 
 const shortcuts: { label: string; note: string; href: string; icon: IconName; tone: string }[] = [
   { label: 'Compress PDF', note: 'Make room for the important stuff', href: '/compress-pdf/', icon: 'pdf', tone: 'pdf' },
@@ -61,8 +62,13 @@ export function StudiosHub({ tools, featuredApp, toolIndex }: { tools: Directory
         <div className="studio-grid">{visibleStudios.map((studio, index) => <Link key={studio.id} href={studio.href} className={'studio-card tone-' + studio.tone} prefetch={false}><div className="studio-card-top"><span className="studio-icon"><UiIcon name={studio.icon} width="25" height="25" /></span><span className="card-index">{String(index + 1).padStart(2, '0')}</span></div><p className="studio-category">{studio.category}</p><h3>{studio.name}</h3><p className="studio-description">{studio.description}</p><div className="studio-card-bottom"><span>{studio.count}</span><span className="card-arrow"><UiIcon name="arrow" width="19" height="19" /></span></div></Link>)}</div>
       </section>
       <section id="android-apps" className="android-app-section content-container" aria-labelledby="android-apps-title">
-        <div className="section-heading"><div><p className="eyebrow">FROM OUR ANDROID WORKBENCH</p><h2 id="android-apps-title">Try what we're building.</h2></div><p>Three different apps. One way to help.<br />Choose an app and volunteer as an early tester.</p></div>
-        <div className="studio-grid">{androidAppCards.map(app => <Link key={app.id} href={app.href} className={`studio-card android-app-card tone-${app.tone}`} prefetch={false}><div className="studio-card-top"><span className="studio-icon"><img src={app.icon} alt={app.name + ' app logo'} width={54} height={54} /></span><span className="studio-category">Android / Early access</span></div><p className="studio-category">{app.label}</p><h3>{app.name}</h3><p className="studio-description">{app.description}</p><div className="studio-card-bottom"><span>Become a tester</span><span className="card-arrow"><UiIcon name="arrow" width="19" height="19" /></span></div></Link>)}</div>
+        <div className="section-heading"><div><p className="eyebrow">FROM OUR ANDROID WORKBENCH</p><h2 id="android-apps-title">Try what we're building.</h2></div><p>Three apps in closed testing.<br />Join your invited app, or request access.</p></div>
+        <p className="android-test-access-note">Invited testers: join the closed test before installing. Use the same eligible Google account in your browser and the Play Store. New visitors can request an invitation on each app's page.</p>
+        <div className="studio-grid">{androidAppCards.map(app => <article key={app.id} className={`studio-card android-app-card tone-${app.tone}`}>
+          <Link href={app.href} className="android-app-card-summary" prefetch={false}><div className="studio-card-top"><span className="studio-icon"><img src={app.icon} alt={app.name + ' app logo'} width={54} height={54} /></span><span className="studio-category">Android / Closed testing</span></div><p className="studio-category">{app.label}</p><h3>{app.name}</h3><p className="studio-description">{app.description}</p></Link>
+          <AppPlayLinks appId={app.id} compact />
+          <Link href={app.signupHref} className="android-request-link" prefetch={false}>Not invited? Request access <UiIcon name="arrow" width="15" height="15" /></Link>
+        </article>)}</div>
       </section>
       <section className="content-container new-tools-section"><div className="section-heading"><div><p className="eyebrow">MORE EVERYDAY SHORTCUTS</p><h2>Small tasks. Sorted.</h2></div><p>Prepare a photo. Extract the words.<br />Make a document. Get back to your day.</p></div><div className="new-tools-grid">{Object.entries(utilityTools).map(([id, tool], index) => <Link key={tool.path} href={tool.path} prefetch={false} data-tool-id={id}><span className="eyebrow">{String(index + 1).padStart(2, '0')} / {tool.category}</span><h3>{tool.label}</h3><p>{tool.description}</p><span className="new-tool-link">Open the tool <UiIcon name="arrow" width="18" height="18" /></span></Link>)}</div></section>
       {featuredApp}

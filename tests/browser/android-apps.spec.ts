@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const apps = [{ id: 'rivetprep', name: 'RivetPrep', icon: '/rivetprep-app-icon-v3.webp' }, { id: 'rostercairn', name: 'RosterCairn', icon: '/rostercairn-app-icon-v3.svg' }];
+const apps = [{ id: 'rivetprep', name: 'RivetPrep', icon: '/rivetprep-app-icon-v3.webp', packageName: 'com.rivetprep.app' }, { id: 'rostercairn', name: 'RosterCairn', icon: '/rostercairn-app-icon-v3.svg', packageName: 'com.dhebe.rostercairn' }];
 const challenge = { request_received: true, verification_required: true, request_id: 'a'.repeat(64), expires_in: 600, resend_after: 60 };
 const empty = { testers: [], total: 0, page: 0, page_size: 24 };
 
@@ -15,10 +15,23 @@ for (const app of apps) {
     const section = page.locator('#android-apps');
     await expect(section.getByRole('heading', { name: app.name, exact: true })).toBeVisible();
     const card = section.locator('.android-app-card').filter({ hasText: app.name });
-    await expect(card).toHaveAttribute('href', `/apps/${app.id}/#early-access`);
+    await expect(card.locator('.android-app-card-summary')).toHaveAttribute('href', '/apps/' + app.id + '/#early-access');
+    await expect(card.getByRole('link', { name: 'Join test on Google Play for ' + app.name, exact: true })).toHaveAttribute('href', 'https://play.google.com/apps/testing/' + app.packageName);
+    await expect(card.getByRole('link', { name: 'Install from Play Store for ' + app.name, exact: true })).toHaveAttribute('href', 'https://play.google.com/store/apps/details?id=' + app.packageName);
+    await expect(card.locator('a a')).toHaveCount(0);
+    await expect(card.getByRole('link', { name: 'Not invited? Request access', exact: true })).toHaveAttribute('href', '/apps/' + app.id + '/#tester-signup');
     await expect(card.getByRole('img')).toHaveAttribute('src', app.icon);
     await expect(card.getByRole('img')).toHaveJSProperty('naturalWidth', app.id === 'rivetprep' ? 256 : 512);
-    await card.click();
+    await card.locator('.android-app-card-summary').click();
+    await expect(page).toHaveURL(/#early-access$/);
+    await expect(page.locator('#early-access .app-play-actions')).toHaveCount(1);
+    await expect(page.locator('#early-access')).toHaveCount(1);
+    await expect(page.locator('#tester-signup')).toHaveCount(1);
+    await page.getByRole('link', { name: 'Request an invitation', exact: true }).click();
+    await expect(page).toHaveURL(/#tester-signup$/);
+    await expect(page.getByRole('link', { name: 'Join test on Google Play for ' + app.name, exact: true })).toHaveAttribute('href', 'https://play.google.com/apps/testing/' + app.packageName);
+    await expect(page.getByRole('link', { name: 'Install from Play Store for ' + app.name, exact: true })).toHaveAttribute('href', 'https://play.google.com/store/apps/details?id=' + app.packageName);
+    await expect(page.locator('.app-play-note')).toContainText('same account');
     await expect(page.getByRole('form', { name: app.name + ' early-access signup', exact: true })).toBeVisible();
     await expect(page.getByRole('heading', { level: 1 })).toContainText(app.name);
     await expect(page.locator('.voice-identity img')).toHaveAttribute('src', app.icon);

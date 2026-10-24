@@ -92,7 +92,7 @@ function TesterSignup({ appId }: { appId: TesterAppId }) {
   };
 
   return (
-    <section id="early-access" className="tester-signup" aria-labelledby="tester-signup-title">
+    <section id="tester-signup" className="tester-signup" aria-labelledby="tester-signup-title">
       <span className="tester-signup-icon"><UiIcon name="mail" width="24" height="24" /></span>
       <p className="eyebrow">VOLUNTEER TESTERS WANTED</p>
       <h2 id="tester-signup-title">Be one of the first to try {app.name}.</h2>
