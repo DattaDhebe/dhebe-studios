@@ -71,7 +71,26 @@ while (pending.length) {
   for (const target of links.get(current) || []) if (indexable.has(target) && !reachable.has(target)) { reachable.add(target); pending.push(target); }
 }
 for (const url of indexable) if (!reachable.has(url)) errors.push(`Public page has no crawlable link path from the homepage: ${url}`);
+const home = await readFile(path.join(root, 'index.html'), 'utf8');
+const directory = home.match(/<section\b[^>]*\bid="tool-directory"[^>]*>[\s\S]*?<\/details>\s*<\/section>/)?.[0] || '';
+const toolLinks = [...directory.matchAll(/<a\b([^>]*\bdata-tool-id="[^"]+"[^>]*)>/g)];
+const toolPaths = new Set();
+for (const [, attributes] of toolLinks) {
+  const href = attributes.match(/\bhref="([^"]+)"/)?.[1];
+  const workspace = attributes.match(/\bdata-tool-workspace="([^"]+)"/)?.[1];
+  if (!href || !href.startsWith('/') || href.startsWith('//')) { errors.push('Tool directory must contain local direct URLs'); continue; }
+  const url = origin + href.replace(/\/?$/, '/');
+  if (toolPaths.has(url)) errors.push(`Duplicate tool directory entry: ${url}`);
+  toolPaths.add(url);
+  if (!indexable.has(url)) { errors.push(`Tool is not a canonical, indexable landing page: ${url}`); continue; }
+  const html = await readFile(path.join(root, new URL(url).pathname, 'index.html'), 'utf8');
+  if (workspace && !html.includes(`data-active-tool="${workspace}"`)) errors.push(`${url}: wrong tool rendered for a direct search visit`);
+  const schemas = [...html.matchAll(/<script[^>]*type="application\/ld\+json"[^>]*>(.*?)<\/script>/gs)].map(([, json]) => JSON.parse(json));
+  const applications = schemas.flatMap(schema => schema['@graph'] || [schema]).filter(schema => schema['@type'] === 'WebApplication');
+  if (!applications.some(application => application.url === url)) errors.push(`${url}: missing matching tool application URL`);
+}
+if (!toolPaths.size) errors.push('Missing crawlable tool directory');
 if (errors.length) throw new Error(errors.join('\n'));
 
 await writeFile(path.join(root, '.htaccess'), staticSearchConfig([...indexable], aliases));
-console.log(`[audit] ${indexable.size} canonical pages, ${aliases.length} permanent aliases, no indexing or internal-link errors.`);
+console.log(`[audit] ${indexable.size} canonical pages, ${aliases.length} permanent aliases, ${toolPaths.size} direct tool landings, no indexing or internal-link errors.`);

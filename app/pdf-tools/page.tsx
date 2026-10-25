@@ -145,7 +145,7 @@ export default function PdfToolsPage() {
               <div className="mt-5 grid gap-4 md:grid-cols-2">
                 {pdfToolPages
                   .filter((tool) =>
-                    ['pdf-to-word', 'jpg-to-pdf', 'pdf-to-jpg', 'merge', 'compress', 'word-to-pdf', 'split', 'sign'].includes(tool.id),
+                    ['pdf-to-word', 'jpg-to-pdf', 'pdf-to-jpg', 'pdf-to-png', 'merge', 'compress', 'word-to-pdf', 'split', 'sign'].includes(tool.id),
                   )
                   .map((tool) => (
                     <Link

@@ -35,13 +35,14 @@ test('Tool navigation can filter and switch workflows', async ({ page }) => {
   const search = page.getByRole('searchbox', { name: 'Search PDF Studio tools' });
   await search.fill('merge');
   const navigation = page.getByRole('navigation', { name: 'PDF Studio tools', exact: true });
-  await expect(navigation.getByRole('button')).toHaveCount(1);
-  await navigation.getByRole('button', { name: 'Open Merge PDF' }).click();
+  await expect(navigation.getByRole('link')).toHaveCount(1);
+  await navigation.getByRole('link', { name: 'Open Merge PDF' }).click();
+  await expect(page).toHaveURL(/\/merge-pdf\/$/);
   await expect(page.locator('.workspace-heading h1')).toHaveText('Merge PDF');
   await search.fill('nothing-matches-984');
   await expect(navigation).toContainText('No matching tools.');
   await navigation.getByRole('button', { name: 'Clear search' }).click();
-  await expect(navigation.getByRole('button')).toHaveCount(28);
+  await expect(navigation.getByRole('link')).toHaveCount(29);
 });
 
 test('Mobile navigation is reachable and closes after choosing a studio', async ({ page }) => {
@@ -65,7 +66,7 @@ test('Mobile tool selector is compact and the upload area remains near the top',
   expect(box!.y + box!.height).toBeLessThan(750);
   await toggle.click();
   await page.getByRole('searchbox', { name: 'Search PDF Studio tools' }).fill('merge');
-  await page.getByRole('navigation', { name: 'PDF Studio tools', exact: true }).getByRole('button', { name: 'Open Merge PDF' }).click();
+  await page.getByRole('navigation', { name: 'PDF Studio tools', exact: true }).getByRole('link', { name: 'Open Merge PDF' }).click();
   await expect(page).toHaveURL(/\/merge-pdf\//);
   await expect(page.locator('.workspace-heading h1')).toHaveText('Merge PDF');
   await expect(toggle).toHaveAttribute('aria-expanded', 'false');

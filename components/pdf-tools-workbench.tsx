@@ -1,9 +1,8 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { type ComponentType, useEffect, useState } from 'react';
+import { type ComponentType } from 'react';
 import { ToolWorkspace } from '@/components/tool-workspace';
-import { usePathname, useRouter } from 'next/navigation';
 
 const PdfCompressorTool = dynamic(() => import('@/components/converters/pdf-compressor-tool').then(mod => mod.PdfCompressorTool), { loading: () => <div className="p-12 text-center theme-muted">Loading compressor...</div> });
 const PdfComingSoonTool = dynamic(() => import('@/components/converters/pdf-coming-soon-tool').then(mod => mod.PdfComingSoonTool));
@@ -21,6 +20,7 @@ const PdfOcrTool = dynamic(() => import('@/components/converters/pdf-ocr-tool').
 const PdfExtractPagesTool = dynamic(() => import('@/components/converters/pdf-extract-pages-tool').then(mod => mod.PdfExtractPagesTool));
 const PdfAddPageNumbersTool = dynamic(() => import('@/components/converters/pdf-add-page-numbers-tool').then(mod => mod.PdfAddPageNumbersTool));
 const PdfToJpgTool = dynamic(() => import('@/components/converters/pdf-to-jpg-tool').then(mod => mod.PdfToJpgTool));
+const PdfToPngTool = dynamic(() => import('@/components/converters/pdf-to-png-tool').then(mod => mod.PdfToPngTool));
 const JpgToPdfTool = dynamic(() => import('@/components/converters/jpg-to-pdf-tool').then(mod => mod.JpgToPdfTool));
 const PdfBuilderTool = dynamic(() => import('@/components/converters/pdf-builder-tool').then(mod => mod.PdfBuilderTool));
 const PdfExporterTool = dynamic(() => import('@/components/converters/pdf-exporter-tool').then(mod => mod.PdfExporterTool));
@@ -52,6 +52,7 @@ const toolComponents: Record<string, ComponentType> = {
   'extract-pages': PdfExtractPagesTool,
   'add-page-numbers': PdfAddPageNumbersTool,
   'pdf-to-jpg': PdfToJpgTool,
+  'pdf-to-png': PdfToPngTool,
   'jpg-to-pdf': JpgToPdfTool,
   'scan-to-pdf': () => <PdfBuilderTool mode="scan-to-pdf" />,
   optimize: PdfCompressorTool,
@@ -69,23 +70,12 @@ const toolComponents: Record<string, ComponentType> = {
 };
 
 export function PdfToolsWorkbench({ initialTool = 'pdf-to-word' }: PdfToolsWorkbenchProps) {
-  const pathname = usePathname();
-  const router = useRouter();
-  const [activeTool, setActiveTool] = useState(initialTool);
-  useEffect(() => setActiveTool(initialTool), [initialTool]);
+  const activeTool = initialTool;
   const activeOption = pdfTools.find(tool => tool.id === activeTool) ?? pdfTools[0];
-  const activeToolPage = pdfToolPages.find(tool => tool.id === activeTool);
-  const isDedicatedToolPage = activeToolPage
-    ? pathname.replace(/\/+$/, '') === getPdfToolPath(activeToolPage).replace(/\/+$/, '')
-    : false;
   const ActiveComponent = toolComponents[activeTool];
-  const handleToolSelect = (id: string) => {
-    const target = pdfToolPages.find(tool => tool.id === id);
-    if (isDedicatedToolPage && target) router.push(getPdfToolPath(target));
-    else setActiveTool(id);
-  };
+  const options = pdfToolPages.map(page => ({ ...pdfTools.find(tool => tool.id === page.id)!, href: getPdfToolPath(page) }));
   return (
-    <ToolWorkspace studio="PDF Studio" studioHref="/pdf-studio/" icon="pdf" tone="pdf" title={activeOption.label} description={activeOption.longDescription} activeId={activeTool} groups={[{ label: 'All PDF tools', options: pdfTools }]} onSelect={handleToolSelect} serverProcessing={serverToolIds.has(activeTool)}>
+    <ToolWorkspace studio="PDF Studio" studioHref="/pdf-studio/" icon="pdf" tone="pdf" title={activeOption.label} description={activeOption.longDescription} activeId={activeTool} groups={[{ label: 'All PDF tools', options }]} serverProcessing={serverToolIds.has(activeTool)}>
       {ActiveComponent ? <ActiveComponent key={activeTool} /> : <PdfComingSoonTool label={activeOption.label} description={activeOption.longDescription} />}
     </ToolWorkspace>
   );

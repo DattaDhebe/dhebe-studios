@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { converterOptions } from '@/lib/converters';
 import { decoderOptions } from '@/lib/decoders';
@@ -60,21 +59,18 @@ interface Base64WorkbenchProps {
 }
 
 export function Base64Workbench({ initialTool }: Base64WorkbenchProps) {
-  const [activeTool, setActiveTool] = useState<ActiveTool>(initialTool ?? { kind: 'converter', id: 'text' });
-  useEffect(() => {
-    if (initialTool) setActiveTool(initialTool);
-  }, [initialTool?.kind, initialTool?.id]);
+  const activeTool: ActiveTool = initialTool ?? { kind: 'converter', id: 'text' };
   const isDecoder = activeTool.kind === 'decoder';
   const options = isDecoder ? decoderOptions : converterOptions;
   const activeOption = options.find(option => option.id === activeTool.id) ?? options[0];
   const components = isDecoder ? implementedDecoders : implementedConverters;
   const ActiveComponent = components[activeTool.id as keyof typeof components];
   const groups = [
-    { label: 'Encode to Base64', options: converterOptions.map(option => ({ ...option, id: 'converter:' + option.id })) },
-    { label: 'Decode from Base64', options: decoderOptions.map(option => ({ ...option, id: 'decoder:' + option.id })) },
+    { label: 'Encode to Base64', options: converterOptions.map(option => ({ ...option, id: 'converter:' + option.id, href: `/tools/${option.id}-to-base64/` })) },
+    { label: 'Decode from Base64', options: decoderOptions.map(option => ({ ...option, id: 'decoder:' + option.id, href: `/tools/base64-to-${option.id}/` })) },
   ];
   return (
-    <ToolWorkspace studio="Base64 Studio" studioHref="/base64-converter/" icon="code" tone="code" title={activeOption.label} description={activeOption.longDescription} activeId={activeTool.kind + ':' + activeTool.id} groups={groups} onSelect={value => { const [kind, id] = value.split(':'); setActiveTool({ kind: kind as ActiveTool['kind'], id }); }}>
+    <ToolWorkspace studio="Base64 Studio" studioHref="/base64-converter/" icon="code" tone="code" title={activeOption.label} description={activeOption.longDescription} activeId={activeTool.kind + ':' + activeTool.id} groups={groups}>
       {ActiveComponent ? <ActiveComponent key={activeTool.kind + ':' + activeTool.id} /> : <ComingSoonConverter label={activeOption.label} nextHint="Try another tool from the list." />}
     </ToolWorkspace>
   );

@@ -40,6 +40,9 @@ locally; conversions that need a server are clearly labeled before upload.
 Shared workspaces include searchable tool navigation, mobile layouts, keyboard
 focus support, and light/dark themes. See the [studio guide](STUDIOS_HUB_README.md)
 and [PDF feature reference](PDF_TOOLS_FEATURES.md) for scope and limitations.
+All 78 tools have direct, crawlable landing URLs. Studio navigation preserves the
+selected tool in its URL, including the local [PDF to PNG converter](https://www.dhebe.com/pdf-to-png/).
+The production build audits each tool against the sitemap and its rendered workspace.
 The [browser utilities guide](docs/UTILITY_TOOLS.md) documents the eight additional
 tools, QR modes, target-size PDF controls, limits, and third-party notices.
 

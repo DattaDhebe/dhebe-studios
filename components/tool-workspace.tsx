@@ -9,6 +9,7 @@ interface WorkspaceOption {
   id: string;
   label: string;
   description: string;
+  href: string;
 }
 
 interface ToolWorkspaceProps {
@@ -20,12 +21,11 @@ interface ToolWorkspaceProps {
   description: string;
   activeId: string;
   groups: { label: string; options: readonly WorkspaceOption[] }[];
-  onSelect: (id: string) => void;
   serverProcessing?: boolean;
   children: ReactNode;
 }
 
-export function ToolWorkspace({ studio, studioHref, icon, tone, title, description, activeId, groups, onSelect, serverProcessing = false, children }: ToolWorkspaceProps) {
+export function ToolWorkspace({ studio, studioHref, icon, tone, title, description, activeId, groups, serverProcessing = false, children }: ToolWorkspaceProps) {
   const [query, setQuery] = useState('');
   const [expanded, setExpanded] = useState(false);
   const deferredQuery = useDeferredValue(query.trim().toLowerCase());
@@ -50,7 +50,7 @@ export function ToolWorkspace({ studio, studioHref, icon, tone, title, descripti
               <nav aria-label={`${studio} tools`} className="tool-nav">
                 {filteredGroups.map(group => group.options.length > 0 && <div className="tool-nav-group" key={group.label}>
                   <p className="tool-group-label">{group.label}</p>
-                  {group.options.map(option => <button type="button" key={option.id} aria-label={`Open ${option.label}`} aria-current={activeId === option.id ? 'page' : undefined} className={`tool-nav-item ${activeId === option.id ? 'is-active' : ''}`} onClick={() => { trackToolSelection(option.id, tone); onSelect(option.id); setExpanded(false); }}><span>{option.label}</span>{activeId === option.id && <UiIcon name="arrow" width="16" height="16" />}</button>)}
+                  {group.options.map(option => <Link href={option.href} prefetch={false} key={option.id} aria-label={`Open ${option.label}`} aria-current={activeId === option.id ? 'page' : undefined} className={`tool-nav-item ${activeId === option.id ? 'is-active' : ''}`} onClick={() => { trackToolSelection(option.id, tone); setExpanded(false); }}><span>{option.label}</span>{activeId === option.id && <UiIcon name="arrow" width="16" height="16" />}</Link>)}
                 </div>)}
                 {resultCount === 0 && <div className="tool-empty"><p>No matching tools.</p><button type="button" onClick={() => setQuery('')}>Clear search</button></div>}
               </nav>

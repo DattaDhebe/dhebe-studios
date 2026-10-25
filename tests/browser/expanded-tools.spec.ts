@@ -56,12 +56,12 @@ for (const [route, label] of routes) for (const width of [390, 1280]) {
   });
 }
 
-test('Directory exposes 77 unique, crawlable tool links and finder opens exact new routes', async ({ page }) => {
+test('Directory exposes 78 unique, crawlable tool links and finder opens exact new routes', async ({ page }) => {
   test.setTimeout(90000);
   await page.goto('/');
   const directory = page.locator('#tool-directory'); await directory.locator('summary').click();
   const hrefs = await directory.getByRole('link').evaluateAll(links => links.map(link => link.getAttribute('href')));
-  expect(hrefs).toHaveLength(77); expect(new Set(hrefs).size).toBe(77);
+  expect(hrefs).toHaveLength(78); expect(new Set(hrefs).size).toBe(78);
   for (const [route] of routes) expect(hrefs).toContain(route);
   await page.getByLabel('Search all tools').fill('JSON formatter');
   await page.getByRole('region', { name: 'Tool search results' }).getByRole('link').first().click();

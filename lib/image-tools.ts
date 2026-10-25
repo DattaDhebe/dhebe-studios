@@ -20,7 +20,7 @@ export const imageTools: ImageTool[] = [
     label: 'Image Resizer',
     description: 'Change image dimensions.',
     longDescription:
-      'Resize images to specific pixel widths and heights or by percentage for social media, blogs, and print.',
+      'Resize images to specific pixel widths and heights for social media, blogs, and print.',
     status: 'ready',
   },
   {
@@ -36,7 +36,7 @@ export const imageTools: ImageTool[] = [
     label: 'JPG to PNG',
     description: 'Convert JPG to PNG format.',
     longDescription:
-      'Convert JPEG images to PNG format to support transparency and lossless quality.',
+      'Convert JPEG images to PNG in your browser. Conversion keeps the background and cannot restore detail lost in the original JPEG.',
     status: 'ready',
   },
   {
@@ -50,9 +50,9 @@ export const imageTools: ImageTool[] = [
   {
     id: 'webp-converter',
     label: 'WebP Converter',
-    description: 'Convert to/from WebP.',
+    description: 'Convert JPG and PNG to WebP.',
     longDescription:
-      'Convert images to the modern WebP format for superior web compression or convert WebP back to JPG/PNG.',
+      'Convert JPG, PNG, or other browser-supported images to WebP for your website. Use the PNG or JPG converter for other output formats.',
     status: 'ready',
   },
   {

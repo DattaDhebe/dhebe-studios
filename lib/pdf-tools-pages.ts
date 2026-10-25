@@ -33,6 +33,14 @@ export const pdfToolPages: PdfToolPageEntry[] = [
     path: '/pdf-to-jpg/',
   },
   {
+    slug: 'pdf-to-png',
+    id: 'pdf-to-png',
+    label: 'PDF to PNG',
+    description: 'Convert selected PDF pages to PNG images free in your browser. Choose resolution and download one PNG or a ZIP, with no file upload.',
+    longDescription: 'Save whole PDF pages as PNG images. Select a page range and resolution; your PDF stays on your device.',
+    path: '/pdf-to-png/',
+  },
+  {
     slug: 'merge-pdf',
     id: 'merge',
     label: 'Merge PDF',

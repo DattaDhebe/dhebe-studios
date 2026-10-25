@@ -9,11 +9,13 @@ import { trackToolSelection } from '@/lib/analytics';
 import { testerApps } from '@/lib/tester-apps';
 import { AppPlayLinks } from './app-play-links';
 import { marriageWebsite } from '@/lib/featured-websites';
+import { pdfTools } from '@/lib/pdf-tools';
+import { calculatorTools } from '@/lib/calculator-tools';
 
 const studios: { id: string; name: string; category: string; description: string; href: string; icon: IconName; tone: string; count: string; external?: boolean }[] = [
-  { id: 'pdf', name: 'PDF Studio', category: 'Documents', description: 'Smaller files. Neater pages. Convert, combine, and get your documents ready to go.', href: '/pdf-studio/', icon: 'pdf', tone: 'pdf', count: '28 tools' },
+  { id: 'pdf', name: 'PDF Studio', category: 'Documents', description: 'Smaller files. Neater pages. Convert, combine, and get your documents ready to go.', href: '/pdf-studio/', icon: 'pdf', tone: 'pdf', count: `${pdfTools.length} tools` },
   { id: 'image', name: 'Image Studio', category: 'Images', description: 'Give every image the right size, format, and finishing touch. No heavy software needed.', href: '/image-studio/', icon: 'image', tone: 'image', count: '7 tools' },
-  { id: 'calculator', name: 'Calculator Studio', category: 'Everyday math', description: 'From monthly payments to important dates. Make the numbers make sense.', href: '/calculator-studio/', icon: 'calculator', tone: 'calculator', count: '11 calculators' },
+  { id: 'calculator', name: 'Calculator Studio', category: 'Everyday math', description: 'From monthly payments to important dates. Make the numbers make sense.', href: '/calculator-studio/', icon: 'calculator', tone: 'calculator', count: `${calculatorTools.length} calculators` },
   { id: 'base64', name: 'Base64 Studio', category: 'For developers', description: 'Encode, decode, and get back to building. Text, files, images, and everything in between.', href: '/base64-converter/', icon: 'code', tone: 'code', count: '18 tools' },
   { id: 'email', name: 'Email Editor', category: 'Create & send', description: 'Turn a good idea into a great email. Build visually, preview, and export your HTML.', href: '/email-template-editor/', icon: 'mail', tone: 'email', count: 'Visual builder' },
   { id: 'milan', name: 'Marriage Biodata', category: 'Create & send', description: 'Create a marriage biodata on Milan. Choose from 30 templates and download a free PDF or PNG, without a watermark.', href: marriageWebsite.href, icon: 'heart', tone: 'email', count: 'Free PDF & PNG / New tab', external: true },

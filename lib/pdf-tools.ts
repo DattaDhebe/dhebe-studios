@@ -32,6 +32,13 @@ const toolDefinitions: PdfTool[] = [
     status: 'ready',
   },
   {
+    id: 'pdf-to-png',
+    label: 'PDF to PNG',
+    description: 'Convert PDF pages to PNG images.',
+    longDescription: 'Save whole PDF pages as PNG images. Select a page range and resolution; your PDF stays on your device.',
+    status: 'ready',
+  },
+  {
     id: 'merge',
     label: 'Merge PDF',
     description: 'Combine multiple PDFs into one.',

@@ -33,7 +33,7 @@ export function PdfToolLandingPage({ tool, seoPage }: PdfToolLandingPageProps) {
           priceCurrency: 'USD',
         },
       },
-      {
+      ...(seoPage.faqs.length ? [{
         '@type': 'FAQPage',
         mainEntity: seoPage.faqs.map((faq) => ({
           '@type': 'Question',
@@ -43,7 +43,7 @@ export function PdfToolLandingPage({ tool, seoPage }: PdfToolLandingPageProps) {
             text: faq.answer,
           },
         })),
-      },
+      }] : []),
     ],
   };
 
@@ -153,7 +153,7 @@ export function PdfToolLandingPage({ tool, seoPage }: PdfToolLandingPageProps) {
             </div>
           </section>
 
-          <section className="theme-panel rounded-[2rem] border p-6 sm:p-8">
+          {seoPage.faqs.length > 0 && <section className="theme-panel rounded-[2rem] border p-6 sm:p-8">
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-amber-600">
               FAQ
             </p>
@@ -168,7 +168,7 @@ export function PdfToolLandingPage({ tool, seoPage }: PdfToolLandingPageProps) {
                 </details>
               ))}
             </div>
-          </section>
+          </section>}
         </div>
       </section>
     </>

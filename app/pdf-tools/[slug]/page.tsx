@@ -1,11 +1,9 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { LegacyRedirectPage } from '@/components/legacy-redirect-page';
-import { PdfToolsWorkbench } from '@/components/pdf-tools-workbench';
-import { BreadcrumbSchema } from '@/components/breadcrumb-schema';
-import { buildPdfToolMetadata } from '@/lib/pdf-seo-pages';
+import { PdfToolLandingPage } from '@/components/pdf-tool-landing-page';
+import { buildPdfToolMetadata, getPdfSeoPageById } from '@/lib/pdf-seo-pages';
 import { getPdfToolPageBySlug, getPdfToolPath, pdfToolPages } from '@/lib/pdf-tools-pages';
-import { siteRoute } from '@/lib/site';
 
 interface PdfToolPageProps {
   params: Promise<{
@@ -60,42 +58,5 @@ export default async function PdfToolPage({ params }: PdfToolPageProps) {
     return <LegacyRedirectPage href={normalizedTargetPath} label={tool.label} />;
   }
 
-  const structuredData = {
-    '@context': 'https://schema.org',
-    '@graph': [
-      {
-        '@type': 'WebApplication',
-        name: `${tool.label} | PDF Studio`,
-        applicationCategory: 'DeveloperApplication',
-        operatingSystem: 'Web',
-        url: siteRoute(targetPath),
-        description: tool.description,
-        offers: {
-          '@type': 'Offer',
-          price: '0',
-          priceCurrency: 'USD',
-        },
-      },
-    ],
-  };
-
-  return (
-    <>
-      <BreadcrumbSchema
-        items={[
-          { name: 'Home', item: '/' },
-          { name: 'PDF Studio', item: '/pdf-studio/' },
-          { name: tool.label, item: targetPath },
-        ]}
-      />
-      <script
-        id={`pdf-tool-structured-data-${tool.slug}`}
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-      />
-      <PdfToolsWorkbench
-        initialTool={tool.id}
-      />
-    </>
-  );
+  return <PdfToolLandingPage tool={tool} seoPage={getPdfSeoPageById(tool.id)!} />;
 }

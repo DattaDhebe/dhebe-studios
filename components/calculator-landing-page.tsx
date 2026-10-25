@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { CalculatorToolsWorkbench } from '@/components/calculator-tools-workbench';
 import { BreadcrumbSchema } from '@/components/breadcrumb-schema';
 import type { CalculatorToolPageEntry } from '@/lib/calculator-tool-pages';
+import { calculatorToolPages } from '@/lib/calculator-tool-pages';
 import { siteRoute } from '@/lib/site';
 
 interface CalculatorLandingPageProps {
@@ -25,7 +26,7 @@ export function CalculatorLandingPage({ tool }: CalculatorLandingPageProps) {
           priceCurrency: 'USD',
         },
       },
-      {
+      ...(tool.faqs.length ? [{
         '@type': 'FAQPage',
         mainEntity: tool.faqs.map((faq) => ({
           '@type': 'Question',
@@ -35,7 +36,7 @@ export function CalculatorLandingPage({ tool }: CalculatorLandingPageProps) {
             text: faq.answer,
           },
         })),
-      },
+      }] : []),
     ],
   };
 
@@ -98,29 +99,13 @@ export function CalculatorLandingPage({ tool }: CalculatorLandingPageProps) {
               ))}
             </div>
 
-            <aside className="grid gap-6">
-              {tool.keywordGroups.map((group) => (
-                <section key={group.title} className="theme-panel rounded-[2rem] border p-6">
-                  <h2 className="text-lg font-semibold theme-title">{group.title}</h2>
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {group.items.map((keyword) => (
-                      <span
-                        key={keyword}
-                        className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-900 sm:text-sm"
-                      >
-                        {keyword}
-                      </span>
-                    ))}
-                  </div>
-                  {group.note ? (
-                    <p className="mt-4 text-xs leading-6 theme-muted sm:text-sm">{group.note}</p>
-                  ) : null}
-                </section>
-              ))}
+            <aside className="theme-panel rounded-[2rem] border p-6" aria-label="Other calculators">
+              <h2 className="text-lg font-semibold theme-title">Other calculators</h2>
+              <ul className="mt-4 space-y-3">{calculatorToolPages.filter(page => page.id !== tool.id).map(page => <li key={page.id}><Link href={page.path} className="text-sm font-semibold underline underline-offset-4 theme-title">{page.label}</Link></li>)}</ul>
             </aside>
           </div>
 
-          <section className="theme-panel rounded-[2rem] border p-6 sm:p-8">
+          {tool.faqs.length > 0 && <section className="theme-panel rounded-[2rem] border p-6 sm:p-8">
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-amber-600">
               FAQ
             </p>
@@ -135,7 +120,7 @@ export function CalculatorLandingPage({ tool }: CalculatorLandingPageProps) {
                 </article>
               ))}
             </div>
-          </section>
+          </section>}
         </div>
       </section>
     </>

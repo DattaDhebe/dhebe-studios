@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import type { PdfToolPageEntry } from '@/lib/pdf-tools-pages';
-import { getPdfToolPath } from '@/lib/pdf-tools-pages';
+import { getPdfToolPath, getPdfToolPageById } from '@/lib/pdf-tools-pages';
+import { pdfToolGuides } from '@/lib/pdf-tool-guides';
 import { SITE_NAME, siteRoute } from '@/lib/site';
 
 export interface PdfFaqEntry {
@@ -201,13 +202,13 @@ export const pdfSeoPages: PdfSeoPage[] = [
       ...sharedPdfKeywords,
     ],
     intro:
-      'Use this PDF to Word converter to convert PDF to editable Word online for free. It is a fast PDF to DOCX style workflow for extracting text from PDF files into a Word-readable document without a long signup process.',
+      'Convert a text-based PDF into an editable DOCX document. Choose a PDF up to 25 MB for temporary server conversion, download the Word file, and check its text and layout before editing.',
     howToTitle: 'How to Convert PDF to Word',
     howToSteps: [
       'Upload the PDF file you want to convert.',
-      'Let the tool read the document and prepare text extraction.',
+      'Use a PDF up to 25 MB with selectable text. Scans may need OCR first.',
       'Start the PDF to Word conversion and wait for processing to finish.',
-      'Download the generated Word-readable file and edit it locally.',
+      'Download the DOCX file and review its formatting in Word or another compatible editor.',
     ],
     featuresTitle: 'Why Use Our PDF to Word Converter',
     features: [
@@ -222,7 +223,7 @@ export const pdfSeoPages: PdfSeoPage[] = [
       {
         question: 'How to convert PDF to Word?',
         answer:
-          'Upload the PDF and start the conversion. The tool extracts readable text and packages it into a Word-readable file for download.',
+          'Choose a PDF up to 25 MB, select Convert and Download, and open the generated DOCX file. Only the selected file is uploaded, and temporary source files are deleted after processing.',
       },
       {
         question: 'How to convert PDF to editable Word?',
@@ -273,16 +274,16 @@ export const pdfSeoPages: PdfSeoPage[] = [
       'Convert Word to PDF online for free when you need a clean shareable document. This DOCX to PDF workflow is useful for office files, assignments, reports, and printable records.',
     howToTitle: 'How to Convert Word to PDF',
     howToSteps: [
-      'Choose the Word or Word-style content you want to turn into PDF.',
-      'Load the document details into the converter workflow.',
-      'Start the conversion to create a PDF output.',
+      'Choose a DOC, DOCX, or ODT file up to 25 MB.',
+      'Check that the selected document is the one you want to upload.',
+      'Select Convert and Download to create the PDF on the conversion server.',
       'Download the generated PDF and share or print it as needed.',
     ],
     featuresTitle: 'Why Use Our Word to PDF Converter',
     features: [
       'Convert Word to PDF online without a heavy desktop workflow.',
       'Helpful for DOCX sharing, job applications, assignments, and forms.',
-      'Designed for quick PDF creation from Word-style content.',
+      'Accepts DOC, DOCX, and ODT files; no need to paste document text.',
       'Converts uploaded Office documents and deletes temporary files after processing.',
     ],
     relatedTitle: 'Related PDF Tools',
@@ -291,7 +292,7 @@ export const pdfSeoPages: PdfSeoPage[] = [
       {
         question: 'How to convert Word to PDF?',
         answer:
-          'Load the Word-style content, run the converter, and download the PDF output once processing completes.',
+          'Choose a DOC, DOCX, or ODT file up to 25 MB, select Convert and Download, and review the generated PDF. Temporary uploaded source files are deleted after processing.',
       },
       {
         question: 'How to convert DOCX to PDF?',
@@ -358,7 +359,7 @@ export const pdfSeoPages: PdfSeoPage[] = [
       'Convert image to PDF online for free without a signup wall.',
       'Combine multiple JPG files into one PDF for easier submission.',
       'Useful for student documents, photos, forms, and office paperwork.',
-      'Great for common searches like photo to PDF converter and picture to PDF.',
+      'Combine photos and scanned pages into a single document for sharing.',
     ],
     relatedTitle: 'Related PDF Tools',
     relatedToolIds: ['pdf-to-jpg', 'merge', 'compress', 'word-to-pdf'],
@@ -460,6 +461,26 @@ export const pdfSeoPages: PdfSeoPage[] = [
     ],
   },
   {
+    id: 'pdf-to-png',
+    seoTitle: 'PDF to PNG Converter - Save PDF Pages as PNG Free',
+    metaDescription: 'Convert PDF to PNG free in your browser. Select pages and resolution, then download a PNG or ZIP. No signup, watermark, or document upload.',
+    keywords: ['pdf to png', 'pdf to png converter', 'convert pdf pages to png'],
+    intro: 'Save complete PDF pages as PNG images for screenshots, diagrams, document previews, or presentations. Choose individual pages or a range and convert locally, without uploading your document.',
+    howToTitle: 'How to convert PDF to PNG',
+    howToSteps: ['Choose a PDF up to 25 MB.', 'Leave Pages blank for all pages, or enter a selection such as 1-3, 5.', 'Choose 72, 144, 200, or 300 DPI. Large pages are downscaled to the image safety limits.', 'Select Convert PDF to PNG. One page downloads as a PNG; multiple pages arrive in one ZIP.'],
+    featuresTitle: 'PNG page export, without a file upload',
+    features: ['Real PNG output with lossless image encoding of the rendered page.', 'Page ranges let you export just the pages you need, up to 50 at a time.', 'White page backgrounds and no added watermark.', 'Up to 150 source pages, 4096 pixels per image edge, 8 megapixels per image, and 50 MB total output.'],
+    relatedTitle: 'Other document conversions',
+    relatedToolIds: ['pdf-to-jpg', 'jpg-to-pdf', 'split', 'compress'],
+    faqs: [
+      { question: 'Does this extract the original images from a PDF?', answer: 'No. It renders the entire page, including text and graphics, into a PNG. It does not recover individual embedded image files.' },
+      { question: 'Is the PNG identical to the original PDF?', answer: 'PNG encoding is lossless, but rendering turns vector text and drawings into pixels. Resolution is capped for browser safety; PNG cannot preserve selectable PDF text or unlimited vector detail.' },
+      { question: 'Can I export only selected pages?', answer: 'Yes. Enter page numbers and ranges, such as 1-3, 5. The ZIP uses the original page numbers in its filenames.' },
+      { question: 'Are my PDF files uploaded?', answer: 'No. This converter uses PDF.js on your device. Password-protected files require an unlocked copy.' },
+      { question: 'Should I use PNG or JPG?', answer: 'PNG is useful for crisp diagrams and text. JPG often makes smaller files for photographic pages. The PDF to JPG tool is linked above.' },
+    ],
+  },
+  {
     id: 'pdf-to-jpg',
     seoTitle: 'PDF to JPG Converter - Convert PDF Pages to Images',
     metaDescription:
@@ -474,7 +495,6 @@ export const pdfSeoPages: PdfSeoPage[] = [
       'pdf pages to jpg',
       'pdf to jpg online',
       'pdf to jpg free',
-      'pdf to png',
       'convert pdf pages to images',
       'pdf image converter',
       'extract images from pdf',
@@ -487,19 +507,19 @@ export const pdfSeoPages: PdfSeoPage[] = [
     howToTitle: 'How to Convert PDF to JPG',
     howToSteps: [
       'Upload the PDF file you want to convert.',
-      'Let the tool load the document pages for image export.',
-      'Run the PDF to JPG conversion to generate page images.',
-      'Download the JPG output for each page or use the exported images as needed.',
+      'Choose all pages or enter a range such as 1-3, 5.',
+      'Select the resolution and run Convert PDF to JPG.',
+      'One page downloads as a JPG; multiple pages download in a ZIP archive.',
     ],
     featuresTitle: 'Why Use Our PDF to JPG Converter',
     features: [
       'Convert PDF pages to images directly in the browser.',
       'Useful for previews, design handoff, image sharing, and slide exports.',
       'Works as a PDF to image and PDF to JPEG style workflow.',
-      'Fast for common searches like convert PDF to high quality JPG and PDF pages to JPG.',
+      'Choose 72 to 300 DPI; large pages are downscaled to 4096 pixels per edge and 8 megapixels. Export up to 50 pages from a PDF up to 25 MB and 150 pages.',
     ],
     relatedTitle: 'Related PDF Tools',
-    relatedToolIds: ['jpg-to-pdf', 'pdf-to-word', 'compress', 'split'],
+    relatedToolIds: ['pdf-to-png', 'jpg-to-pdf', 'compress', 'split'],
     faqs: [
       {
         question: 'How to convert PDF to JPG?',
@@ -524,7 +544,7 @@ export const pdfSeoPages: PdfSeoPage[] = [
       {
         question: 'How to convert PDF to PNG?',
         answer:
-          'This page focuses on PDF to JPG output. PNG export can be added as a related image conversion workflow later.',
+          'Use the separate PDF to PNG tool linked above for genuine PNG page images. This tool exports JPEG images, which use lossy compression.',
       },
     ],
   },
@@ -599,8 +619,16 @@ export const pdfSeoPages: PdfSeoPage[] = [
   },
 ];
 
-export function getPdfSeoPageById(id: string) {
-  return pdfSeoPages.find((page) => page.id === id);
+export function getPdfSeoPageById(id: string): PdfSeoPage | undefined {
+  const existing = pdfSeoPages.find((page) => page.id === id);
+  if (existing) return existing;
+  const guide = pdfToolGuides[id];
+  const tool = getPdfToolPageById(id);
+  if (!guide || !tool) return undefined;
+  return { id, seoTitle: guide.title, metaDescription: guide.description, keywords: [], intro: guide.description,
+    howToTitle: `How to use ${tool.label}`, howToSteps: guide.steps,
+    featuresTitle: 'Before you export', features: [guide.note], relatedTitle: 'Useful next tools', relatedToolIds: guide.related,
+    faqs: [] };
 }
 
 export function buildPdfToolMetadata(tool: PdfToolPageEntry): Metadata {

@@ -12,6 +12,11 @@ export const dynamic = 'force-static';
 // Update only when published content changes, not on every rebuild.
 const CONTENT_UPDATED = '2026-10-19';
 const SEARCH_REFRESHED_URLS = new Set(['/', '/privacy/'].map(siteRoute));
+const TOOL_REFRESHED_URLS = new Set([
+  '/', '/pdf-studio/', '/pdf-tools/', '/image-studio/',
+  ...pdfToolPages.map(getPdfToolPath), ...imageToolPages.map(getImageToolPath),
+  ...calculatorToolPages.map(tool => tool.path), ...base64ToolPages.map(getBase64ToolPath),
+].map(siteRoute));
 const BRAND_REFRESHED_URLS = new Set(['/', '/apps/rivetprep/', '/apps/rostercairn/'].map(siteRoute));
 const APP_REFRESHED_URLS = new Set(['/', '/privacy/', '/dhebevoice/', '/apps/rivetprep/', '/apps/rivetprep/tester-privacy/', '/apps/rostercairn/', '/apps/rostercairn/tester-privacy/'].map(siteRoute));
 const REFRESHED_URLS = new Set([
@@ -34,6 +39,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ];
   return [...new Set(paths.map(path => siteRoute(path)))].map(url => ({
     url,
-    lastModified: new Date(SEARCH_REFRESHED_URLS.has(url) ? '2026-10-25' : BRAND_REFRESHED_URLS.has(url) ? '2026-10-23' : APP_REFRESHED_URLS.has(url) ? '2026-10-22' : REFRESHED_URLS.has(url) ? '2026-10-21' : CONTENT_UPDATED),
+    lastModified: new Date(TOOL_REFRESHED_URLS.has(url) || SEARCH_REFRESHED_URLS.has(url) ? '2026-10-25' : BRAND_REFRESHED_URLS.has(url) ? '2026-10-23' : APP_REFRESHED_URLS.has(url) ? '2026-10-22' : REFRESHED_URLS.has(url) ? '2026-10-21' : CONTENT_UPDATED),
   }));
 }

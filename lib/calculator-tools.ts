@@ -8,6 +8,7 @@ export interface CalculatorTool {
 }
 
 export const calculatorTools: CalculatorTool[] = [
+  { id: 'circle', label: 'Circle Calculator', description: 'Find circle area and circumference.', longDescription: 'Enter a radius or diameter to calculate circle measurements in your browser.', category: 'everyday', status: 'ready' },
   {
     id: 'age',
     label: 'Age Calculator',

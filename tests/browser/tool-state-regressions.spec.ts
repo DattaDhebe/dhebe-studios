@@ -144,7 +144,7 @@ for (const route of ['/split-pdf/', '/pdf-tools/extract-pdf-pages/']) {
   test(`Switching tools discards a pending PDF download at ${route}`, async ({ page }) => {
     let downloads = 0; page.on('download', () => downloads++);
     await delayedExport(page, route);
-    await page.getByRole('button', { name: 'Open Merge PDF', exact: true }).click();
+    await page.getByRole('link', { name: 'Open Merge PDF', exact: true }).click();
     await expect(page.locator('.workspace-heading h1')).toHaveText('Merge PDF');
     await page.evaluate(() => (window as DelayedWindow).releasePdfRead!());
     await expect.poll(() => page.evaluate(() => (window as DelayedWindow).pdfReadFinished)).toBe(true);

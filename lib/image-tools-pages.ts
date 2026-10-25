@@ -13,7 +13,7 @@ export const imageToolPages: ImageToolPageEntry[] = [
     id: 'image-compressor',
     label: 'Image Compressor',
     description: 'Compress JPG, PNG, and WebP images online.',
-    longDescription: 'Reduce image file size without losing quality.',
+    longDescription: 'Reduce image file size with adjustable quality. PNG images may be saved as WebP.',
     path: '/image-tools/image-compressor',
   },
   {
@@ -37,7 +37,7 @@ export const imageToolPages: ImageToolPageEntry[] = [
     id: 'jpg-to-png',
     label: 'JPG to PNG',
     description: 'Convert JPG images to PNG format.',
-    longDescription: 'High-quality conversion with transparency support.',
+    longDescription: 'Convert JPEG to PNG in your browser. The original background is kept; this does not remove backgrounds.',
     path: '/image-tools/jpg-to-png',
   },
   {
@@ -52,7 +52,7 @@ export const imageToolPages: ImageToolPageEntry[] = [
     slug: 'webp-converter',
     id: 'webp-converter',
     label: 'WebP Converter',
-    description: 'Convert images to or from WebP format.',
+    description: 'Convert JPG and PNG images to WebP format.',
     longDescription: 'Modern web format conversion for better performance.',
     path: '/image-tools/webp-converter',
   },

@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import { PdfDropZone } from './pdf-drop-zone';
 import { ServerRequiredTool } from './server-required-tool';
 import { PdfToJpgTool } from './pdf-to-jpg-tool';
+import { PdfToPngTool } from './pdf-to-png-tool';
 import { PdfToWordTool } from './pdf-to-word-tool';
 import { loadPdf } from '@/lib/pdfjs';
 import { downloadBlob, isPdfFile } from '@/lib/download';
@@ -38,8 +39,8 @@ export function PdfExporterTool({ mode }: { mode: 'repair' | 'convert-from-pdf' 
 
   if (mode !== 'convert-from-pdf') return <ServerRequiredTool />;
   return <div className="space-y-5">
-    <label className="block text-sm theme-title">Export format<select aria-label="Export format" value={format} onChange={event => setFormat(event.target.value)} className="theme-card mt-2 block w-full rounded-lg border p-3"><option value="text">Text (.txt)</option><option value="jpg">JPG pages</option><option value="word">Word-readable HTML</option></select></label>
-    {format === 'jpg' ? <PdfToJpgTool /> : format === 'word' ? <PdfToWordTool /> : <>
+    <label className="block text-sm theme-title">Export format<select aria-label="Export format" value={format} onChange={event => setFormat(event.target.value)} className="theme-card mt-2 block w-full rounded-lg border p-3"><option value="text">Text (.txt)</option><option value="jpg">JPG pages</option><option value="png">PNG pages</option><option value="word">Word-readable HTML</option></select></label>
+    {format === 'jpg' ? <PdfToJpgTool /> : format === 'png' ? <PdfToPngTool /> : format === 'word' ? <PdfToWordTool /> : <>
       <PdfDropZone inputRef={ref} disabled={busy} onSelect={selected => { if (selected instanceof File) { setFile(isPdfFile(selected) ? selected : null); setError(isPdfFile(selected) ? '' : 'Please select a PDF file.'); } }} title="Drop your PDF here" />
       {file && <button onClick={extract} disabled={busy} className="w-full rounded-lg bg-cyan-600 p-3 font-semibold text-white disabled:opacity-50">{busy ? 'Extracting...' : 'Download Text'}</button>}
     </>}

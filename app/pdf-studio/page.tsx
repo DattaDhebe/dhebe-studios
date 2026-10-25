@@ -115,14 +115,14 @@ export default function PdfStudioPage() {
               <PdfToolLinkGroup
               title="Core Tools"
                 tools={pdfToolPages.filter((tool) =>
-                  ['pdf-to-word', 'jpg-to-pdf', 'pdf-to-jpg', 'merge', 'compress', 'word-to-pdf', 'split', 'sign'].includes(tool.id),
+                  ['pdf-to-word', 'jpg-to-pdf', 'pdf-to-jpg', 'pdf-to-png', 'merge', 'compress', 'word-to-pdf', 'split', 'sign'].includes(tool.id),
                 )}
                 accentClass="text-purple-600"
               />
               <PdfToolLinkGroup
                 title="More Tools"
                 tools={pdfToolPages.filter((tool) =>
-                  !['pdf-to-word', 'jpg-to-pdf', 'pdf-to-jpg', 'merge', 'compress', 'word-to-pdf', 'split', 'sign'].includes(tool.id),
+                  !['pdf-to-word', 'jpg-to-pdf', 'pdf-to-jpg', 'pdf-to-png', 'merge', 'compress', 'word-to-pdf', 'split', 'sign'].includes(tool.id),
                 )}
                 accentClass="text-cyan-600"
               />
