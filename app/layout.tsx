@@ -76,6 +76,7 @@ export default function RootLayout({
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
+    '@id': siteRoute('/#organization'),
     name: SITE_NAME,
     url: siteRoute('/'),
     logo: siteAsset('/logo4-optimized.webp'),

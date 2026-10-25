@@ -17,7 +17,7 @@ function environment({ hostname = 'www.dhebe.com', signal = false, noindex = fal
   };
   const window = {};
   const context = vm.createContext({ location, document, window, navigator: { globalPrivacyControl: signal }, URL });
-  vm.runInContext(outputText.replace(/^export /gm, '') + '\nglobalThis.api = { setAnalyticsEnabled, trackPageView, trackDownload, trackTesterSignup, trackToolSelection, trackToolEvent };', context);
+  vm.runInContext(outputText.replace(/^export /gm, '') + '\nglobalThis.api = { setAnalyticsEnabled, trackPageView, trackDownload, trackTesterSignup, trackToolSelection, trackToolEvent, trackWebsiteSelection };', context);
   return { api: context.api, window, location, scripts };
 }
 
@@ -27,6 +27,19 @@ test('Analytics stays off before opt-in, on previews, under privacy signals and 
     const state = environment(options); state.api.setAnalyticsEnabled(true); state.api.trackPageView();
     assert.equal(state.scripts.length, 0);
   }
+});
+
+test('Website clicks use fixed identifiers and placements only after analytics consent', () => {
+  const state = environment(); state.api.trackWebsiteSelection('milan', 'featured'); assert.equal(state.scripts.length, 0);
+  state.api.setAnalyticsEnabled(true);
+  for (const placement of ['featured', 'footer', 'search']) state.api.trackWebsiteSelection('milan', placement);
+  state.api.trackWebsiteSelection('private@example.com', 'featured'); state.api.trackWebsiteSelection('milan', 'private@example.com');
+  const events = state.window.dataLayer.filter(event => event[0] === 'event' && event[1] === 'website_select');
+  assert.deepEqual(Array.from(events, event => [event[2].website_id, event[2].placement]), [['milan', 'featured'], ['milan', 'footer'], ['milan', 'search']]);
+  assert.doesNotMatch(JSON.stringify(events), /private|email|query|https|biodata_content/);
+  state.api.setAnalyticsEnabled(false); state.api.trackWebsiteSelection('milan', 'featured');
+  assert.equal(state.window.dataLayer.filter(event => event[0] === 'event' && event[1] === 'website_select').length, 3);
+  const blocked = environment({ signal: true }); blocked.api.setAnalyticsEnabled(true); blocked.api.trackWebsiteSelection('milan', 'featured'); assert.equal(blocked.scripts.length, 0);
 });
 
 test('Analytics strips query strings and referrer paths and deduplicates canonical navigation', () => {

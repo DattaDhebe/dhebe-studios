@@ -29,6 +29,80 @@ Legacy live calculators and some older operations do not yet emit the full start
 Never add email addresses, filenames, file contents, tool inputs, search terms, query strings, or URL fragments.
 The website notice is at [/privacy/](https://www.dhebe.com/privacy/). The Android app has a separate policy.
 
+Milan referrals use `website_select` only after consent, with `website_id=milan`
+and one allowlisted placement: `featured`, `footer`, or `search`. No destination
+query, biodata, photo, form value, or search term is attached. These parameters
+remain available in the event payload; no new GA4 custom dimension is claimed.
+
+## October 25 Milan Referral and Canonical Cleanup
+
+- Added one compact Marriage Biodata card in the sixth studio-grid position,
+  matching the existing cards rather than creating a large separate section.
+  It opens the existing Milan website at `https://shaadi.dhebe.com/` in a new
+  tab. No biodata editor or duplicate keyword landing pages were added here.
+- The footer links to Milan, and the finder
+  labels this result as a separate website. The tool directory still lists the
+  same 77 local tools; the main sitemap contains 94 canonical DHEBE pages.
+- Homepage title, description, share image, and linked WebSite/WebPage/ItemList
+  structured data describe the actual catalog. The external Milan URL is not
+  falsely treated as the canonical URL of a DHEBE Studios tool page.
+- `scripts/static-search-config.mjs` generates allowlisted public redirects:
+  known `index.html` copies and legacy aliases lead to clean canonical URLs.
+  Explicit-request guards prevent internal DirectoryIndex loops, and host
+  guards exclude separately managed subdomains. APIs and route-data files keep
+  noindex headers; private or unrelated paths are not redirected to home.
+- Sitemap `lastmod` changes only for the substantively updated homepage and
+  website privacy notice, not every unchanged tool on a rebuild.
+- Before publishing, lint, 40 unit checks, the build/static audit, and 59
+  affected browser checks passed. Browser analytics requests were intercepted;
+  no synthetic events were sent to production Google Analytics.
+- Search Console's www URL-prefix report inspected on October 25 was last
+  updated October 16: 30 indexed, 86 excluded (15 noindex, 13 redirects, 2
+  malformed 404 URLs, 40 crawled-not-indexed, 16 discovered-not-indexed). It
+  predates this release and does not establish post-release indexing. The two
+  404 examples are `/&` and `/$`; they should remain 404, not soft-homepages.
+
+### October 25 Live and Google Verification
+
+- Published 958 allowlisted static files, then applied the reviewed canonical
+  configuration separately. Kept a local rollback copy of the previous rules;
+  no backend code, database, credentials, or separately hosted app was uploaded.
+- The live audit checked all 94 sitemap URLs: HTTP 200, unique titles and
+  descriptions, one primary heading, self-canonicals, valid JSON-LD, and no
+  accidental noindex. All 84 referenced Next runtime assets returned 200.
+- Verified direct 301s from `/index.html`, `/compress-pdf/index.html`, and the
+  legacy `/pdf-tools/compress-pdf/index.html` to their clean canonical URLs.
+  Junk `/&` and `/$` paths still return 404. Route data and tester-list APIs
+  return `X-Robots-Tag: noindex` without blocking the public HTML pages.
+- Milan's homepage and the RivetPrep/RosterCairn app privacy pages returned 200
+  and matched the byte hashes captured before this deployment. Their application
+  files and data were not changed.
+- Resubmitted `https://www.dhebe.com/sitemap.xml` in the www URL-prefix property.
+  Google confirmed success, last read October 25, and **94 discovered pages**.
+  This is discovery, not an indexed-page count.
+- Homepage URL Inspection reported **URL is on Google**. After publication,
+  Google accepted one new indexing request and confirmed the URL was added to
+  its priority crawl queue. This is not confirmation that the new content has
+  already been indexed or that its ranking has improved. No repeated request,
+  CAPTCHA solution, or challenge bypass was performed.
+- Temporary upload archives were moved to recoverable hosting Trash. Live
+  verification receipts and screenshots remain in ignored local release/test
+  directories; private content and credentials were not committed.
+- Final layout refinement replaced the initial standalone panel with the compact
+  sixth studio-grid card, preserving the original header and global layout.
+  The final build/static audit, lint, 40 unit checks, and **237 browser checks**
+  passed; four opt-in live-service checks were skipped. Tests verify the exact
+  second-row/third-column desktop position, category filtering, mobile layouts,
+  new-tab behavior, and consent-only measurements. The static-only refinement
+  left the already verified canonical configuration unchanged and did not send
+  another indexing request for the same homepage.
+
+Indexing requests and sitemap submission are recorded separately from actual
+indexing. No first-position ranking, rich result, or indexing deadline is
+promised. Google decides which pages to crawl, index, and serve. Milan's own
+SEO, Search Console property, sitemap, and application remain outside this
+repository and this release's scope.
+
 In GA4 Admin > Data streams > dhebe > Enhanced measurement, disable history-based page views,
 site search, form interactions, outbound clicks, video engagement, scrolls and automatic file downloads.
 Manual sanitized page views avoid double-counting. Automatic measurement must not reintroduce user input.

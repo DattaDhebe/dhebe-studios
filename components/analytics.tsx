@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
-import { ANALYTICS_CONSENT_KEY, privacySignalEnabled, setAnalyticsEnabled, trackPageView } from '@/lib/analytics';
+import { ANALYTICS_CONSENT_KEY, privacySignalEnabled, setAnalyticsEnabled, trackPageView, trackWebsiteSelection } from '@/lib/analytics';
 
 export function Analytics() {
   const pathname = usePathname();
@@ -26,9 +26,15 @@ export function Analytics() {
     };
     window.addEventListener('dhebe-privacy-settings', open);
     window.addEventListener('storage', sync);
+    const websiteClick = (event: MouseEvent) => {
+      const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>('a[data-website-id="milan"]') : null;
+      if (link?.href === 'https://shaadi.dhebe.com/') trackWebsiteSelection('milan', link.dataset.websitePlacement || '');
+    };
+    document.addEventListener('click', websiteClick);
     return () => {
       window.removeEventListener('dhebe-privacy-settings', open);
       window.removeEventListener('storage', sync);
+      document.removeEventListener('click', websiteClick);
     };
   }, []);
 

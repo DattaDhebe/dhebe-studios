@@ -5,38 +5,28 @@ import { ToolDirectorySection } from '@/components/tool-directory-section';
 import { toolDirectory } from '@/lib/tool-directory';
 import { BreadcrumbSchema } from '@/components/breadcrumb-schema';
 import { SITE_NAME, SUPPORT_EMAIL, siteRoute } from '@/lib/site';
+import { marriageWebsite } from '@/lib/featured-websites';
+
+const homeTitle = `Free Online Tools & Marriage Biodata | ${SITE_NAME}`;
+const homeDescription = 'Use free PDF, image and Base64 tools, calculators, and an email editor. Discover Milan, our marriage biodata maker at shaadi.dhebe.com.';
 
 export const metadata: Metadata = {
-  title: { absolute: `Free Online PDF, Image & Base64 Tools | ${SITE_NAME}` },
-  description:
-    'Compress and convert PDFs, resize images, generate QR codes, count words, encode Base64 and use everyday calculators. Free online tools, no account needed.',
-  keywords: [
-    'dhebe studios',
-    'free online tools',
-    'base64 tools',
-    'pdf tools',
-    'calculator tools',
-    'email templates',
-    'text reader app',
-    'dhebevoice privacy policy',
-    'encoding tools',
-    'online utilities',
-  ],
+  title: { absolute: homeTitle },
+  description: homeDescription,
   alternates: {
     canonical: siteRoute('/'),
   },
-  openGraph: { images: ['/social-preview.png'],
-    title: `${SITE_NAME} - Professional Tools Suite`,
-    description:
-      'Free online tools for Base64 encoding, PDF workflows, calculators, email design, and DhebeVoice app information with public privacy-policy access.',
+  openGraph: { images: [{ url: '/home-preview.png', width: 1200, height: 630, alt: 'DHEBE Studios free online tools and Milan marriage biodata maker' }],
+    title: homeTitle,
+    description: homeDescription,
     url: siteRoute('/'),
     type: 'website',
     siteName: SITE_NAME,
   },
-  twitter: { images: ['/social-preview.png'],
+  twitter: { images: ['/home-preview.png'],
     card: 'summary_large_image',
-    title: `${SITE_NAME} - Professional Tools Suite`,
-    description: 'Free online tools plus DhebeVoice app information. Local editing and temporary document conversion.',
+    title: homeTitle,
+    description: homeDescription,
   },
 };
 
@@ -46,10 +36,11 @@ export default function Home() {
     '@graph': [
       {
         '@type': 'WebSite',
+        '@id': siteRoute('/#website'),
         name: SITE_NAME,
         url: siteRoute('/'),
-        description:
-          'Professional tools suite featuring a Base64 Converter, PDF Studio, Calculator Studio, Email Template Editor, and DhebeVoice app information.',
+        description: homeDescription,
+        publisher: { '@id': siteRoute('/#organization') },
         potentialAction: {
           '@type': 'SearchAction',
           target: siteRoute('/?q={search_term_string}'),
@@ -58,6 +49,7 @@ export default function Home() {
       },
       {
         '@type': 'Organization',
+        '@id': siteRoute('/#organization'),
         name: SITE_NAME,
         url: siteRoute('/'),
         email: SUPPORT_EMAIL,
@@ -68,6 +60,22 @@ export default function Home() {
           availableLanguage: ['English'],
           url: siteRoute('/'),
         },
+      },
+      {
+        '@type': 'WebPage', '@id': siteRoute('/#webpage'), url: siteRoute('/'),
+        name: homeTitle, description: homeDescription,
+        isPartOf: { '@id': siteRoute('/#website') },
+        mainEntity: { '@id': siteRoute('/#toolkit') },
+        hasPart: { '@type': 'WebPageElement', '@id': siteRoute('/#marriage-biodata'), name: 'Marriage biodata maker on Milan', description: marriageWebsite.description, url: siteRoute('/#marriage-biodata') },
+      },
+      {
+        '@type': 'ItemList', '@id': siteRoute('/#toolkit'), name: 'DHEBE Studios tools and websites',
+        itemListElement: [
+          [marriageWebsite.label + ' on Milan', marriageWebsite.href],
+          ['PDF tools', siteRoute('/pdf-studio/')], ['Image tools', siteRoute('/image-studio/')],
+          ['Calculators', siteRoute('/calculator-studio/')], ['Base64 converter', siteRoute('/base64-converter/')],
+          ['Email template editor', siteRoute('/email-template-editor/')],
+        ].map(([name, url], index) => ({ '@type': 'ListItem', position: index + 1, name, url })),
       },
     ],
   };

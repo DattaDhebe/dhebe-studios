@@ -1,6 +1,6 @@
 import type { ReactNode, SVGProps } from 'react';
 
-export type IconName = 'arrow' | 'search' | 'pdf' | 'image' | 'code' | 'calculator' | 'mail' | 'voice' | 'shield' | 'bolt' | 'check' | 'upload' | 'chevron' | 'sun' | 'moon' | 'menu' | 'close' | 'grid';
+export type IconName = 'arrow' | 'search' | 'pdf' | 'image' | 'code' | 'calculator' | 'mail' | 'heart' | 'voice' | 'shield' | 'bolt' | 'check' | 'upload' | 'chevron' | 'sun' | 'moon' | 'menu' | 'close' | 'grid';
 
 const paths: Record<IconName, ReactNode> = {
   arrow: <path d="M5 12h14m-6-6 6 6-6 6" />,
@@ -10,6 +10,7 @@ const paths: Record<IconName, ReactNode> = {
   code: <><path d="m7 7-5 5 5 5m10-10 5 5-5 5m-3-14-4 18" /></>,
   calculator: <><rect x="5" y="2" width="14" height="20" rx="3" /><path d="M8 6h8M8 11h1m6 0h1m-8 4h1m6 0h1m-8 4h1m6 0h1" /></>,
   mail: <><rect x="3" y="5" width="18" height="14" rx="3" /><path d="m3 7 9 6 9-6" /></>,
+  heart: <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z" />,
   voice: <><rect x="9" y="2" width="6" height="13" rx="3" /><path d="M5 10v2a7 7 0 0 0 14 0v-2m-7 9v3m-4 0h8" /></>,
   shield: <><path d="m12 2 8 4v6c0 5-8 10-8 10S4 17 4 12V6z" /><path d="m8 12 3 3 5-6" /></>,
   bolt: <path d="m13 2-9 12h7l-1 8 10-13h-7z" />,

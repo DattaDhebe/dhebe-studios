@@ -8,13 +8,15 @@ import { utilityTools } from '@/lib/utility-tools';
 import { trackToolSelection } from '@/lib/analytics';
 import { testerApps } from '@/lib/tester-apps';
 import { AppPlayLinks } from './app-play-links';
+import { marriageWebsite } from '@/lib/featured-websites';
 
-const studios: { id: string; name: string; category: string; description: string; href: string; icon: IconName; tone: string; count: string }[] = [
+const studios: { id: string; name: string; category: string; description: string; href: string; icon: IconName; tone: string; count: string; external?: boolean }[] = [
   { id: 'pdf', name: 'PDF Studio', category: 'Documents', description: 'Smaller files. Neater pages. Convert, combine, and get your documents ready to go.', href: '/pdf-studio/', icon: 'pdf', tone: 'pdf', count: '28 tools' },
   { id: 'image', name: 'Image Studio', category: 'Images', description: 'Give every image the right size, format, and finishing touch. No heavy software needed.', href: '/image-studio/', icon: 'image', tone: 'image', count: '7 tools' },
   { id: 'calculator', name: 'Calculator Studio', category: 'Everyday math', description: 'From monthly payments to important dates. Make the numbers make sense.', href: '/calculator-studio/', icon: 'calculator', tone: 'calculator', count: '11 calculators' },
   { id: 'base64', name: 'Base64 Studio', category: 'For developers', description: 'Encode, decode, and get back to building. Text, files, images, and everything in between.', href: '/base64-converter/', icon: 'code', tone: 'code', count: '18 tools' },
   { id: 'email', name: 'Email Editor', category: 'Create & send', description: 'Turn a good idea into a great email. Build visually, preview, and export your HTML.', href: '/email-template-editor/', icon: 'mail', tone: 'email', count: 'Visual builder' },
+  { id: 'milan', name: 'Marriage Biodata', category: 'Create & send', description: 'Create a marriage biodata on Milan. Choose from 30 templates and download a free PDF or PNG, without a watermark.', href: marriageWebsite.href, icon: 'heart', tone: 'email', count: 'Free PDF & PNG / New tab', external: true },
 ];
 
 const androidAppCards = [
@@ -34,18 +36,21 @@ export function StudiosHub({ tools, featuredApp, toolIndex }: { tools: Directory
   const [category, setCategory] = useState('All studios');
   const deferredQuery = useDeferredValue(query.trim().toLowerCase());
   useEffect(() => { const initialQuery = new URLSearchParams(window.location.search).get('q'); if (initialQuery) setQuery(initialQuery); }, []);
-  const results = deferredQuery ? tools.filter(tool => (tool.label + ' ' + tool.description + ' ' + tool.category).toLowerCase().includes(deferredQuery)) : [];
+  const results: (DirectoryTool & { external?: boolean })[] = deferredQuery ? [
+    ...tools.filter(tool => (tool.label + ' ' + tool.description + ' ' + tool.category).toLowerCase().includes(deferredQuery)),
+    ...(marriageWebsite.searchTerms.includes(deferredQuery) || marriageWebsite.label.toLowerCase().includes(deferredQuery) ? [{ ...marriageWebsite, category: 'Separate website', external: true }] : []),
+  ] : [];
   const visibleStudios = category === 'All studios' ? studios : studios.filter(studio => studio.category === category);
   return (
     <div className="home-page" onClickCapture={event => { const link = (event.target as Element).closest<HTMLAnchorElement>('a[data-tool-id]'); if (link?.dataset.toolId) trackToolSelection(link.dataset.toolId, 'home'); }}>
       <section className="home-hero content-container">
         <div className="hero-copy reveal">
           <p className="eyebrow"><span className="status-dot" />A simpler way to get things done</p>
-          <h1>Your everyday<br /><span>shortcut.</span></h1>
-          <p className="hero-description">The little tasks shouldn't take all day. Convert a file, polish an image, run the numbers. Find your tool and keep moving.</p>
+          <h1>Free online tools.<br /><span>Less busywork.</span></h1>
+          <p className="hero-description">Convert a PDF, polish an image, run the numbers, or discover Milan for marriage biodata. Find your tool and keep moving.</p>
           <div className="home-search-wrap">
             <label className="home-search"><UiIcon name="search" width="22" height="22" /><input aria-label="Search all tools" placeholder="What do you need to do?" value={query} onChange={event => setQuery(event.target.value)} onKeyDown={event => { if (event.key === 'Escape') setQuery(''); }} />{query ? <button type="button" aria-label="Clear tool search" onClick={() => setQuery('')}><UiIcon name="close" width="18" height="18" /></button> : <span className="search-hint">Find a tool</span>}</label>
-            {deferredQuery && <div className="home-search-results" role="region" aria-label="Tool search results"><p className="search-result-count" role="status">{results.length} {results.length === 1 ? 'tool' : 'tools'} found{results.length > 12 ? ' / showing first 12' : ''}</p>{results.slice(0, 12).map(tool => <Link key={tool.href} href={tool.href} data-tool-id={tool.href.replace(/^\/|\/$/g, '').replace(/\//g, ':')}><div><strong>{tool.label}</strong><span>{tool.category}</span></div><UiIcon name="arrow" width="17" height="17" /></Link>)}{results.length === 0 && <div className="home-search-empty">Try "PDF", "resize", or "calculator".</div>}</div>}
+            {deferredQuery && <div className="home-search-results" role="region" aria-label="Tool search results"><p className="search-result-count" role="status">{results.length} {results.length === 1 ? 'tool' : 'tools'} found{results.length > 12 ? ' / showing first 12' : ''}</p>{results.slice(0, 12).map(tool => <Link key={tool.href} href={tool.href} target={tool.external ? '_blank' : undefined} rel={tool.external ? 'noopener noreferrer' : undefined} data-tool-id={tool.external ? undefined : tool.href.replace(/^\/|\/$/g, '').replace(/\//g, ':')} data-website-id={tool.external ? 'milan' : undefined} data-website-placement={tool.external ? 'search' : undefined}><div><strong>{tool.label}</strong><span>{tool.category}{tool.external ? ' / Opens in a new tab' : ''}</span></div><UiIcon name="arrow" width="17" height="17" /></Link>)}{results.length === 0 && <div className="home-search-empty">Try "PDF", "resize", "biodata", or "calculator".</div>}</div>}
           </div>
           <div className="hero-popular"><span>Popular:</span><Link href="/compress-pdf/">Compress PDF</Link><Link href="/pdf-to-word/">PDF to Word</Link><Link href="/image-tools/image-resizer/">Resize image</Link></div>
           <div className="hero-assurances"><span><UiIcon name="check" width="15" height="15" />Free to use</span><span><UiIcon name="check" width="15" height="15" />No sign-up</span><span><UiIcon name="check" width="15" height="15" />Made to be simple</span></div>
@@ -59,7 +64,7 @@ export function StudiosHub({ tools, featuredApp, toolIndex }: { tools: Directory
       <section id="all-studios" className="studio-section content-container">
         <div className="section-heading"><div><p className="eyebrow">THE RIGHT TOOL, RIGHT HERE</p><h2>A toolkit for your kind of day.</h2></div><p>Less searching. More doing.<br />Choose a studio and make it happen.</p></div>
         <div className="category-tabs" aria-label="Filter studios">{['All studios', 'Documents', 'Images', 'Everyday math', 'For developers', 'Create & send'].map(item => <button key={item} type="button" aria-pressed={category === item} onClick={() => setCategory(item)}>{item}</button>)}</div>
-        <div className="studio-grid">{visibleStudios.map((studio, index) => <Link key={studio.id} href={studio.href} className={'studio-card tone-' + studio.tone} prefetch={false}><div className="studio-card-top"><span className="studio-icon"><UiIcon name={studio.icon} width="25" height="25" /></span><span className="card-index">{String(index + 1).padStart(2, '0')}</span></div><p className="studio-category">{studio.category}</p><h3>{studio.name}</h3><p className="studio-description">{studio.description}</p><div className="studio-card-bottom"><span>{studio.count}</span><span className="card-arrow"><UiIcon name="arrow" width="19" height="19" /></span></div></Link>)}</div>
+        <div className="studio-grid">{visibleStudios.map((studio, index) => <Link key={studio.id} id={studio.id === 'milan' ? 'marriage-biodata' : undefined} href={studio.href} target={studio.external ? '_blank' : undefined} rel={studio.external ? 'noopener noreferrer' : undefined} data-website-id={studio.external ? 'milan' : undefined} data-website-placement={studio.external ? 'featured' : undefined} className={'studio-card tone-' + studio.tone} prefetch={false}><div className="studio-card-top"><span className="studio-icon"><UiIcon name={studio.icon} width="25" height="25" /></span><span className="card-index">{String(index + 1).padStart(2, '0')}</span></div><p className="studio-category">{studio.category}</p><h3>{studio.name}</h3><p className="studio-description">{studio.description}</p><div className="studio-card-bottom"><span>{studio.count}</span><span className="card-arrow"><UiIcon name="arrow" width="19" height="19" /></span></div>{studio.external && <span className="sr-only">Opens Milan at shaadi.dhebe.com in a new tab.</span>}</Link>)}</div>
       </section>
       <section id="android-apps" className="android-app-section content-container" aria-labelledby="android-apps-title">
         <div className="section-heading"><div><p className="eyebrow">FROM OUR ANDROID WORKBENCH</p><h2 id="android-apps-title">Try what we're building.</h2></div><p>Three apps in closed testing.<br />Join your invited app, or request access.</p></div>

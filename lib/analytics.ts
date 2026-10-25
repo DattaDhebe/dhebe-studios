@@ -117,3 +117,8 @@ export function trackTesterSignup(appId = 'dhebevoice') {
     (window as AnalyticsWindow).gtag?.('event', 'tester_signup', { app_id: appId });
   }
 }
+
+export function trackWebsiteSelection(websiteId: string, placement: string) {
+  if (!enabled || privacySignalEnabled() || !publicPageLocation() || websiteId !== 'milan' || !['featured', 'footer', 'search'].includes(placement)) return;
+  (window as AnalyticsWindow).gtag?.('event', 'website_select', { website_id: 'milan', placement });
+}

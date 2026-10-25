@@ -35,6 +35,7 @@ locally; conversions that need a server are clearly labeled before upload.
 | Developer utilities | Validate JSON, compare text, or generate website icons | [JSON](https://www.dhebe.com/json-formatter/), [Diff](https://www.dhebe.com/text-diff-checker/), [Favicons](https://www.dhebe.com/favicon-generator/) |
 | Business documents | Prepare and export an invoice or quotation locally | [Invoice Generator](https://www.dhebe.com/invoice-generator/) |
 | AI Trading | Open the separate private research and paper-trading dashboard | [AI Trading](https://trade.dhebe.com/) |
+| Milan | Open the separate marriage biodata maker with templates and PDF/PNG downloads | [Milan](https://shaadi.dhebe.com/) |
 
 Shared workspaces include searchable tool navigation, mobile layouts, keyboard
 focus support, and light/dark themes. See the [studio guide](STUDIOS_HUB_README.md)
@@ -140,6 +141,12 @@ not enabled and does not promise passive income. It does not expose
 account data, offer public registration, or claim live orders or profitable AI
 predictions. The app remains sign-in-required; its code and operations stay in
 the separate trading repository.
+
+The sixth studio-grid card, Marriage Biodata, and footer open `https://shaadi.dhebe.com/`
+in a new tab. The tool finder identifies Milan as a separate website. There is no large standalone
+marriage section. This repository does not contain
+its editor, user drafts, photographs, or storage. SEO and indexing changes here
+apply to DHEBE Studios; Milan retains its own pages, sitemap, and policies.
 
 ## Documentation and support
 
