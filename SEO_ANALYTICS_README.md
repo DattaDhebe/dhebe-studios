@@ -253,6 +253,24 @@ Validation for this release: lint, 43 unit tests, the production build/static au
 326 browser checks passed. Four opt-in live-service checks were skipped. The export audit
 verified all 95 canonical pages and all 78 direct tool landings before packaging.
 
+Live verification completed October 26, 2026 (Asia/Kolkata): 994 changed static files were
+overlaid without replacing the document root; reviewed redirect rules were applied separately.
+All 95 live canonical HTML pages and 85 referenced runtime assets matched the tested build.
+The Milan homepage and both Android subdomain privacy pages retained their pre-release hashes.
+Temporary deployment archives were moved to recoverable Trash, not permanently deleted.
+
+Every one of the 78 live tool landings passed at both tested widths; all seven synthetic PNG
+export checks passed. One initial live PDF navigation exceeded the five-second assertion
+deadline while its route-data requests were pending. Both route-data files matched the build,
+and all four live navigation/history rechecks passed unchanged. This is a latency observation,
+not a claim of perfect availability or a clean first live-suite run.
+
+Google Search Console accepted the updated sitemap and reported Success with 95 discovered
+pages on October 26. PNG to JPG was already indexed at its exact canonical tool URL. Google
+accepted one recrawl request for that updated page and one indexing request for the new
+PDF to PNG page. The new page was discovered but not indexed at inspection time; request
+acceptance is not confirmation of indexing or ranking. The homepage request was not repeated.
+
 ```sh
 npm run lint
 npm test
