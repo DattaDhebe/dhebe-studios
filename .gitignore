@@ -1,0 +1,5 @@
+e
+*.zip
+*.pem
+preflight.json
+upload-metadata.json
