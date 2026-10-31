@@ -1,0 +1,30 @@
+if(PHP_SAPI!=="cli")exit(1);
+umask(0077);ini_set("display_errors","0");
+$root="/home/u942725982/domains/dhebe.com";
+$work=$root."/private/site-releases/codeme-maintenance-20261031-02";
+$endpoint=$root."/public_html/codeme-release-75b7434db58b7840.php";
+if(realpath($work)!==$work||is_link($work)||is_link($endpoint))throw new RuntimeException("Unsafe upload location");
+if(is_file($work."/upload-received.json")){echo "{\"ready\":true,\"alreadyUploaded\":true}\n";return;}
+$source=<<<'RECEIVER'
+<?php
+declare(strict_types=1);
+ini_set('display_errors','0');ini_set('log_errors','0');umask(0077);
+header('Content-Type: application/json; charset=utf-8');header('Cache-Control: no-store, private');header('X-Robots-Tag: noindex, nofollow');header('X-Content-Type-Options: nosniff');
+try{
+ if(($_SERVER['REQUEST_METHOD']??'')!=='POST'||($_SERVER['HTTP_HOST']??'')!=='www.dhebe.com'||($_SERVER['HTTP_ORIGIN']??'')!=='https://www.dhebe.com'||strtolower($_SERVER['HTTPS']??'')!=='on'||($_SERVER['CONTENT_TYPE']??'')!=='application/octet-stream'||!hash_equals('b9c79c0ef3db6ad6d6ece96f056f7fac79cfaac5eff58c8be0fb186213ed36ac',hash('sha256',$_SERVER['HTTP_X_DEPLOY_TOKEN']??''))){http_response_code(404);echo '{"error":"not_found"}';exit;}
+ $work='/home/u942725982/domains/dhebe.com/private/site-releases/codeme-maintenance-20261031-02';
+ if(realpath($work)!==$work||is_link($work)||is_link($work.'/e')||is_link($work.'/upload-received.json'))throw new RuntimeException('Unavailable');
+ $lock=fopen($work.'/upload.lock','c');if(!$lock||!flock($lock,LOCK_EX|LOCK_NB))throw new RuntimeException('Busy');
+ if((int)($_SERVER['CONTENT_LENGTH']??0)!==842211)throw new RuntimeException('Size');
+ $data=file_get_contents('php://input',false,null,0,842212);
+ if($data===false||strlen($data)!==842211||!hash_equals('bcf6875bc95853e8c878d09edf6e9c1d5312eec8b415ac43655de40f77fa935c',hash('sha256',$data)))throw new RuntimeException('Integrity');
+ $temp=tempnam($work,'upload-');if($temp===false)throw new RuntimeException('Storage');
+ try{if(file_put_contents($temp,$data,LOCK_EX)!==842211||!chmod($temp,0600)||!rename($temp,$work.'/e'))throw new RuntimeException('Write');}finally{if(is_file($temp))unlink($temp);}
+ $result=['stored'=>true,'bytes'=>842211,'sha256'=>'bcf6875bc95853e8c878d09edf6e9c1d5312eec8b415ac43655de40f77fa935c'];
+ if(file_put_contents($work.'/upload-received.json',json_encode($result))===false||!chmod($work.'/upload-received.json',0600))throw new RuntimeException('Receipt');
+ $result['receiverRemoved']=unlink(__FILE__);echo json_encode($result);
+}catch(Throwable $e){http_response_code(503);echo '{"stored":false,"error":"upload_failed"}';}
+RECEIVER;
+$temp=tempnam(dirname($endpoint),'.codeme-upload-');
+if($temp===false||file_put_contents($temp,$source,LOCK_EX)!==strlen($source)||!chmod($temp,0644)||!rename($temp,$endpoint))throw new RuntimeException("Receiver install failed");
+echo "{\"ready\":true,\"receiverInstalled\":true}\n";
